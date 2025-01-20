@@ -380,4 +380,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public double percentOutputToRadiansPerSecond(double percentOutput) {
         return DrivetrainConstants.maxAngularVelocityRadiansPerSecond * percentOutput;
     }
+
+    public Command zeroGyro() {
+        return run(() -> zeroHeading());
+    }
+
+    private void zeroHeading() {
+        // Implementation to zero the heading
+        getState().RawHeading = Rotation2d.kZero;
+    }
 }

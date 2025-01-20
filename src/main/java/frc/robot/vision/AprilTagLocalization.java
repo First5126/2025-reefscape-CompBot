@@ -18,6 +18,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import static frc.robot.vision.AprilTagLocalizationConstants.MAX_TAG_DISTANCE;
 import static frc.robot.vision.AprilTagLocalizationConstants.LOCALIZATION_PERIOD;
 import frc.robot.vision.AprilTagLocalizationConstants.LimelightDetails;
@@ -30,13 +32,13 @@ import frc.robot.vision.LimelightHelpers.PoseEstimate;
  * it runs in a background thread instead of the main robot loop.
  */
 public class AprilTagLocalization {
-  private Notifier m_notifier = new Notifier(this::poseEstimate);  //calls pose estimate on the the period
+  private Notifier m_notifier = new Notifier(this::periodic);  //calls pose estimate on the the period
   private LimelightDetails[] m_LimelightDetails;  // list of limelights that can provide updates
   private Supplier<Pose2d> m_robotPoseSupplier;  // supplies the pose of the robot
   public boolean m_fullTrust;  //to allow for button trust the tag estimate over all else.
   public double oldyawDegrees = 0;
   private MutAngle m_yaw = Degrees.mutable(0); ;
-  public MutAngle M_OldYaw = Degrees.mutable(0);  // the previous yaw 
+  public MutAngle M_OldYaw = Degrees.mutable(0);  
   private VisionConsumer m_VisionConsumer;
  
   
@@ -94,7 +96,7 @@ public class AprilTagLocalization {
    * Estimates the pose of the robot using the limelight.
    * This function will run in a background thread once per AprilTagLocalizationConstants.LOCALIZATION_PERIOD.
    */
-  public void poseEstimate() {
+  public void periodic() {
     for (LimelightDetails limelightDetail : m_LimelightDetails) {
       m_yaw.mut_replace(Degrees.of(m_robotPoseSupplier.get().getRotation().getDegrees()));
       // Yaw Rate is calculated by the difference between the current yaw and the old yaw divided by the localization period
@@ -103,6 +105,12 @@ public class AprilTagLocalization {
       LimelightHelpers.SetRobotOrientation(limelightDetail.name, m_yaw.in(Degrees), yawRate.in(DegreesPerSecond),0,0,0,0 );  // Set Orientation using LimelightHelpers.SetRobotOrientation and the m_robotPoseSupplier
       // Pose Estimate from LimelightHelpers
       PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightDetail.name);  // Retrieving the current pose estimation from the Limelight using the specified Limelight detail
+      if (poseEstimate != null) {
+        // If the pose estimate is not null, then the pose is printed to the console
+      System.out.println("Pose X: " + poseEstimate.pose.getX());
+      System.out.println("Pose Y: " + poseEstimate.pose.getY());
+      SmartDashboard.putNumber("Pose Estimate X", poseEstimate.pose.getX());
+      SmartDashboard.putNumber("Pose Estimate Y", poseEstimate.pose.getY());
       double scale = poseEstimate.avgTagDist / MAX_TAG_DISTANCE.in(Meters); // Dividing the average tag distance by the max tag distance
       // If Else statement to determine if the pose is on the field and if the pose is within the max tag distance
       if (m_fullTrust) { // Full Trust is when the robot trusts the vision system over all other sensors
@@ -116,6 +124,7 @@ public class AprilTagLocalization {
       M_OldYaw.mut_replace(m_yaw);
     }
   }
+}
   
   @FunctionalInterface
   public interface VisionConsumer {
