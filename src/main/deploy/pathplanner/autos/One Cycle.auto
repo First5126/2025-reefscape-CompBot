@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DebugPath"
+            "pathName": "Start to Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Left to Coral Station"
           }
         }
       ]
