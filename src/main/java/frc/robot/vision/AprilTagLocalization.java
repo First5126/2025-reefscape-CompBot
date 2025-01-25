@@ -84,19 +84,11 @@ public class AprilTagLocalization {
   }
 
   /**
-<<<<<<< HEAD
-   * Checks if the pose is on the field.
-   * @param observation
-   * @return
-   */
-  private boolean isPoseOfffield(Pose2d observation) { 
-=======
    * Checks if the pose is off the field.
    * @param observation
    * @return
    */
   private boolean isPoseOffField(Pose2d observation) { 
->>>>>>> 45cc9f62983982997f55ae573087a37f02bd3fa7
     // Coordinates for where Pose is on the field
     return observation.getX() < 0.0 // What X position robot is on the field.
         || observation.getY() < 0.0 // What Y position robot is on the field.
@@ -129,22 +121,14 @@ public class AprilTagLocalization {
       LimelightHelpers.SetRobotOrientation(limelightDetail.name, m_yaw.in(Degrees), yawRate.in(DegreesPerSecond),0,0,0,0 );  // Set Orientation using LimelightHelpers.SetRobotOrientation and the m_robotPoseSupplier
       // Get the pose from the Limelight
       PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightDetail.name);  // Get the pose from the Limelight 
-<<<<<<< HEAD
-      if (poseEstimate != null && poseEstimate.pose.getX()!=0.0 && poseEstimate.pose.getY()!=0.0) {
-=======
       if (poseEstimate != null && poseEstimate.pose.getX() != 0.0 && poseEstimate.pose.getY() != 0.0) {
->>>>>>> 45cc9f62983982997f55ae573087a37f02bd3fa7
         double scale = poseEstimate.avgTagDist / MAX_TAG_DISTANCE.in(Meters); // scale the std deviation by the distance
         // Validate the pose for sanity reject bad poses  if fullTrust is true accept regarless of sanity
 
         if (m_FullTrust) {
           // set the pose in the pose consumer
           m_poseReset.accept(new Pose2d(poseEstimate.pose.getX(),poseEstimate.pose.getY(),Rotation2d.fromDegrees(m_yaw.in(Degrees))));
-<<<<<<< HEAD
-        } else if (!(isPoseOfffield(poseEstimate.pose)) && poseEstimate.avgTagDist < MAX_TAG_DISTANCE.in(Meters)) { // reject poses that are more than max tag distance we trust
-=======
         } else if (!(isPoseOffField(poseEstimate.pose)) && poseEstimate.avgTagDist < MAX_TAG_DISTANCE.in(Meters)) { // reject poses that are more than max tag distance we trust
->>>>>>> 45cc9f62983982997f55ae573087a37f02bd3fa7
           // scale std deviation by distance if fullTrust is true set the stdDevs super low.
           Matrix<N3,N1> interpolated = interpolate(limelightDetail.closeStdDevs, limelightDetail.farStdDevs, scale);
           
@@ -152,11 +136,7 @@ public class AprilTagLocalization {
           m_VisionConsumer.accept(poseEstimate.pose, poseEstimate.timestampSeconds, interpolated);
         }
         m_OldYaw.mut_replace(m_yaw);
-<<<<<<< HEAD
-      } 
-=======
       }
->>>>>>> 45cc9f62983982997f55ae573087a37f02bd3fa7
     }
   }
   
