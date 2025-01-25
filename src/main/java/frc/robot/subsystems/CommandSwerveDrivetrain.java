@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
+import javax.sound.sampled.ReverbType;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -334,6 +336,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        System.out.println("drivetrain pose X: " + getPose2d().getX());
+        System.out.println("drivetrain pose Y: " + getPose2d().getY());
     }
 
     private void startSimThread() {
@@ -381,12 +385,43 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return DrivetrainConstants.maxAngularVelocityRadiansPerSecond * percentOutput;
     }
 
-    public Command zeroGyro() {
-        return run(() -> zeroHeading());
+    public Command zero_pidgeon(){
+        return runOnce(this::seedFieldCentric);
+    }
+    public Command goToPose(Pose2d pose) {
+        return AutoBuilder.pathfindToPose(pose, DrivetrainConstants.pathConstraints);
     }
 
-    private void zeroHeading() {
-        // Implementation to zero the heading
-        getState().RawHeading = Rotation2d.kZero;
+    /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     */
+    @Override
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
+    }
+    /**
+     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * while still accounting for measurement noise.
+     * <p>
+     * Note that the vision measurement standard deviations passed into this method
+     * will continue to apply to future measurements until a subsequent call to
+     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
+     *
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
+     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
+     */
+    @Override
+    public void addVisionMeasurement(
+        Pose2d visionRobotPoseMeters,
+        double timestampSeconds,
+        Matrix<N3, N1> visionMeasurementStdDevs
+    ) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 }
