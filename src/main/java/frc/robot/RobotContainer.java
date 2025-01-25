@@ -6,12 +6,15 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import javax.imageio.plugins.tiff.GeoTIFFTagSet;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,8 +46,7 @@ public class RobotContainer {
     private final CommandXboxController m_driverController = new CommandXboxController(0);
     private AprilTagLocalization m_aprilTagLocalization = new AprilTagLocalization(
       m_drivetrain::getPose2d,
-      m_drivetrain::addVisionMeasurement,
-      AprilTagLocalizationConstants.LIMELIGHT_DETAILS
+      m_drivetrain::addVisionMeasurement
     );
 
     public RobotContainer() {
@@ -56,25 +58,19 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        
-        m_drivetrain.setDefaultCommand(m_drivetrain.gasPedalCommand(
-            m_driverController::getRightTriggerAxis,
-            m_driverController::getRightX,
-            m_driverController::getLeftY,
-            m_driverController::getLeftX
-        ));
+         // Note that X is defined as forward according to WPILib convention,
+      // and Y is defined as to the left according to WPILib convention.
+      
+      m_drivetrain.setDefaultCommand(m_drivetrain.gasPedalCommand(
+        m_driverController::getRightTriggerAxis,
+        m_driverController::getRightX,
+        m_driverController::getLeftY,
+        m_driverController::getLeftX
+    ));
 
-    m_drivetrain.setDefaultCommand(
-        m_drivetrain.gasPedalCommand(
-            m_driver_controller::getRightTriggerAxis,
-            m_driver_controller::getRightX,
-            m_driver_controller::getLeftY,
-            m_driver_controller::getLeftX
-        )
-    );
-  }
+    m_driverController.rightBumper().onTrue(Commands.run(() -> m_drivetrain.zero_pidgeon()));
+    m_driverController.a().whileTrue(m_drivetrain.goToPose(new Pose2d(0,0,Rotation2d.fromDegrees(0))));
+    }
 
   private void configureCoDriverControls() {
     // Setup codriver's controlls

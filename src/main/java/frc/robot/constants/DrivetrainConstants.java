@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
@@ -29,9 +31,13 @@ public class DrivetrainConstants {
   public static final double currentLimit = 60;
   public static final double autoMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond * 0.8;
   public static final double estimatedKp = 12/(maxSpeedMetersPerSecond/ (TunerConstants.kWheelRadius.in(Meters) * 2 * Math.PI));
+  public static final PathConstraints pathConstraints = new PathConstraints(autoMaxSpeedMetersPerSecond, autoMaxSpeedMetersPerSecond / 2, 0, 0);
   public class CurrentLimits {
     public static final Current kDriveCurrentLimitMax = Amps.of(70); //Max draw allowed
     public static final Current  kDriveCurrentLimitMin = Amps.of(40); //Motor drops to min after hitting ma
     public static final Time kDriveCurrentDuration = Seconds.of(0.25); //Time to hold at min current
+    
+
   }
+
 }
