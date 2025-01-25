@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
@@ -23,9 +24,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.vision.AprilTagLocalizationConstants.LimelightDetails;
@@ -40,28 +44,28 @@ import frc.robot.vision.LimelightHelpers.PoseEstimate;
  * A class that uses the limelight to localize the robot using AprilTags.
  * it runs in a background thread instead of the main robot loop.
  */
-public class AprilTagLocalization extends SubsystemBase{
+public class AprilTagLocalization {
+  private Notifier m_notifier = new Notifier(this::poseEstimate);  //calls pose estimate on the the period
   private LimelightDetails[] m_LimelightDetails;  // list of limelights that can provide updates
   private Supplier<Pose2d> m_robotPoseSupplier;  // supplies the pose of the robot
   private boolean m_FullTrust;  //to allow for button trust the tag estimate over all else.
   private MutAngle m_yaw = Degrees.mutable(0); ;
   private MutAngle m_OldYaw = Degrees.mutable(0);  // the previous yaw 
   private VisionConsumer m_VisionConsumer;
-  private PoseReset m_poseReset;
-
+  private ResetPose m_poseReset;
 
   /**
    * Creates a new AprilTagLocalization.
    * @param poseSupplier supplies the current robot pose
    * @param visionConsumer // a consumer that accepts the vision pose, timestamp, and std deviations
+   * @param details // the details of the limelight, more than one can be passed to allow for multipe on the bot.
    */
-  public AprilTagLocalization(Supplier<Pose2d> poseSupplier, VisionConsumer visionConsumer) {
-    LimelightDetails[] details = new LimelightDetails[0];
-        m_LimelightDetails = details;
+  public AprilTagLocalization(Supplier<Pose2d> poseSupplier, ResetPose resetPose, VisionConsumer visionConsumer,  LimelightDetails ... details) {
+    m_notifier.startPeriodic(LOCALIZATION_PERIOD.in(Seconds)); // set up a pose estimation loop with a 0.02 second period.
+    m_LimelightDetails = details;
     m_robotPoseSupplier = poseSupplier;
-    m_VisionConsumer = visionConsumer; 
-    PoseReset poseReset = (pose) -> {}; // Initialize with a default implementation
-    m_poseReset = poseReset;
+    m_poseReset = resetPose;
+    m_VisionConsumer = visionConsumer;
   }
 
   /**
@@ -72,20 +76,19 @@ public class AprilTagLocalization extends SubsystemBase{
     m_FullTrust = fullTrust;
   }
 
-  public Command setTrust(boolean fullTrust) {
-    return runOnce(
-      () -> {
-        m_FullTrust = fullTrust;
-      });
+  public Command setTrust(boolean trust) {
+    return Commands.runOnce(
+        () -> {
+          setFullTrust(trust);
+        });
   }
-
 
   /**
    * Checks if the pose is on the field.
    * @param observation
    * @return
    */
-  private boolean isPoseOnfield(Pose2d observation) { 
+  private boolean isPoseOfffield(Pose2d observation) { 
     // Coordinates for where Pose is on the field
     return observation.getX() < 0.0 // What X position robot is on the field.
         || observation.getY() < 0.0 // What Y position robot is on the field.
@@ -110,8 +113,7 @@ public class AprilTagLocalization extends SubsystemBase{
    * Estimates the pose of the robot using the limelight.
    * This function will run in a background thread once per AprilTagLocalizationConstants.LOCALIZATION_PERIOD.
    */
-  @Override
-  public void periodic() {
+  public void poseEstimate() {
     for (LimelightDetails limelightDetail : m_LimelightDetails) {
       m_yaw.mut_replace(Degrees.of(m_robotPoseSupplier.get().getRotation().getDegrees()));
       AngularVelocity yawRate = (m_yaw.minus(m_OldYaw).div(LOCALIZATION_PERIOD));
@@ -119,22 +121,22 @@ public class AprilTagLocalization extends SubsystemBase{
       LimelightHelpers.SetRobotOrientation(limelightDetail.name, m_yaw.in(Degrees), yawRate.in(DegreesPerSecond),0,0,0,0 );  // Set Orientation using LimelightHelpers.SetRobotOrientation and the m_robotPoseSupplier
       // Get the pose from the Limelight
       PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightDetail.name);  // Get the pose from the Limelight 
-      if (poseEstimate != null) {
-        System.out.println("Pose X: " + poseEstimate.pose.getX());
-        System.out.println("Pose Y: " + poseEstimate.pose.getY());
-        double scale = poseEstimate.avgTagDist / MAX_TAG_DISTANCE.in(Meters); 
+      if (poseEstimate != null && poseEstimate.pose.getX()!=0.0 && poseEstimate.pose.getY()!=0.0) {
+        double scale = poseEstimate.avgTagDist / MAX_TAG_DISTANCE.in(Meters); // scale the std deviation by the distance
+        // Validate the pose for sanity reject bad poses  if fullTrust is true accept regarless of sanity
+
         if (m_FullTrust) {
-          m_poseReset.accept(poseEstimate.pose);
-        } else if (isPoseOnfield(poseEstimate.pose) && poseEstimate.avgTagDist < MAX_TAG_DISTANCE.in(Meters)) { // reject poses that are more than max tag distance we trust
+          // set the pose in the pose consumer
+          m_poseReset.accept(new Pose2d(poseEstimate.pose.getX(),poseEstimate.pose.getY(),Rotation2d.fromDegrees(m_yaw.in(Degrees))));
+        } else if (!(isPoseOfffield(poseEstimate.pose)) && poseEstimate.avgTagDist < MAX_TAG_DISTANCE.in(Meters)) { // reject poses that are more than max tag distance we trust
+          // scale std deviation by distance if fullTrust is true set the stdDevs super low.
           Matrix<N3,N1> interpolated = interpolate(limelightDetail.closeStdDevs, limelightDetail.farStdDevs, scale);
+          
+          // set the pose in the pose consumer
           m_VisionConsumer.accept(poseEstimate.pose, poseEstimate.timestampSeconds, interpolated);
-          System.out.println("Pose X: " + poseEstimate.pose.getX());
-          System.out.println("Pose Y: " + poseEstimate.pose.getY());
         }
         m_OldYaw.mut_replace(m_yaw);
-      } else{
-        System.out.println("No readings");
-      }
+      } 
     }
   }
   
@@ -151,8 +153,9 @@ public class AprilTagLocalization extends SubsystemBase{
   }
 
   @FunctionalInterface
-  public interface PoseReset {
-    void accept(
-      Pose2d visionRobotPoseMeters);
+  public interface ResetPose {
+    void accept( 
+      Pose2d pose2d
+    );    
   }
 }
