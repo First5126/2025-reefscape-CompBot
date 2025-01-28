@@ -225,7 +225,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         applySupplyCurrentLimits();
-        configureAutobuilder();
+        configureAutobuilder(); // Configure AutoBuilder last
     }
 
     /**
@@ -243,7 +243,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 .withSupplyCurrentLimit(CurrentLimits.kDriveCurrentLimitMax) 
                 .withSupplyCurrentLowerTime(CurrentLimits.kDriveCurrentDuration) 
                 .withSupplyCurrentLimitEnable(true);
-            configurator.apply(config);
+            configurator.apply(config); // Apply the new current limits
         }
     }
 
@@ -314,7 +314,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @return Command to run
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
+        return m_sysIdRoutineToApply.dynamic(direction); // Runs the SysId Dynamic test in the given direction
     }
 
     @Override

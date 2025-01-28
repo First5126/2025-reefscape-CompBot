@@ -38,7 +38,9 @@ public class AprilTagLocalizationConstants {
   public static final Matrix<N3, N1> LIMELIGHT_CLOSE_STDDEV =  VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV =  VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final LimelightDetails LIMELIGHT_DETAILS = new LimelightDetails(LIMELIGHT_NAME, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_CLOSE_STDDEV);
+  public static final LimelightDetails LIMELIGHT_DETAILS = new LimelightDetails(LIMELIGHT_NAME, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_CLOSE_STDDEV);
   public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
   public static final Distance MAX_TAG_DISTANCE = Meters.of(3.0);
   public static final Time LOCALIZATION_PERIOD = Seconds.of(0.02);
+  public static final double MAX_TAG_DISTANCE = 3.0;
 }

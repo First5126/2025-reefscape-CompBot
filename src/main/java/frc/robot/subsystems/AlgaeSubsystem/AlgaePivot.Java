@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaePiviot extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public Piviot() {}
+  public AlgaePiviot() {}
 
   /**
    * Example command factory method.
