@@ -1,0 +1,45 @@
+package frc.robot.subsystems;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class QuickMovementCommandFactory extends SubsystemBase {
+  
+  private CommandSwerveDrivetrain m_drivetrain;
+
+  public QuickMovementCommandFactory(CommandSwerveDrivetrain drivetrain) {
+    this.m_drivetrain = drivetrain;
+  }
+
+  public Command moveToGamePosition(Pose2d position, Double distance,  Supplier<Pose2d> robotPose, Command ... secondaryCommands) {
+    Command returnCommand = run(m_drivetrain.goTo(position)).until(this::isClose(position,robotPose.get(),distance)).andThen(m_drivetrain.goTo(position));
+
+    for (Command command : secondaryCommands) {
+      returnCommand = returnCommand.alongWith(command);
+
+    }
+
+    return returnCommand;
+  }
+
+  /**
+   * Returns the distance between two poses
+   */
+  public double getDistance(Pose2d pose1, Pose2d pose2) {
+    return Math.sqrt(pose1*pose1+pose2*pose2);
+  }
+
+  public boolean isClose(Pose2d pose1, Pose2d pose2, double minimumDistance) {
+    return getDistance<=minimumDistance;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
+  }
+}
