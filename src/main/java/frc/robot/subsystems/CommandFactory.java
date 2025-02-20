@@ -53,7 +53,7 @@ public class CommandFactory {
   /*
    * Moves the robot to a position and then runs the secondary commands
    */
-  public Command moveToPositionWithDistance(Supplier<Pose2d> position, Distance distance, Supplier<Command> ... secondaryCommands) {
+  public Command moveToPositionWithDistance(Supplier<Pose2d> position, Distance distance, Command ... secondaryCommands) {
     HashSet<Subsystem> requirements = new HashSet<>();
     requirements.add(m_drivetrain);
 
@@ -61,24 +61,16 @@ public class CommandFactory {
 
     Command goToPose = Commands.defer(gotoPoseSupplier,requirements);
     BooleanSupplier isClose = ()-> position.get().getTranslation().getDistance(m_robotPoseSupplier.get().getTranslation()) <= distance.in(Meters);
-    
-    // make a new array of commands since Commands.defferedProxy wont accept an array
-    Command[] deferedSecondaryCommands = new Command[secondaryCommands.length];
-    for (int i = 0; i<secondaryCommands.length;i++) {
-      deferedSecondaryCommands[i] = Commands.deferredProxy(secondaryCommands[i]);
-    }
 
-    Command then = Commands.waitUntil(isClose).andThen(deferedSecondaryCommands);
-    Command returnCommand = Commands.parallel(goToPose,then);
-    
+    Command then = Commands.waitUntil(isClose).andThen(secondaryCommands);
+    Command returnCommand = Commands.deferredProxy(() -> Commands.parallel(goToPose,then));
+
     return returnCommand;
   }
 
   public Command driveAndPlaceCoral(Pose reefPose, CoralLevels level) {
     Command raiseElevator = m_elevator.goToCoralHeightPosition(level);
-    Supplier<Command> rasiseElevatorSupplier = () -> raiseElevator;
-
-    Command driveToReef = moveToPositionWithDistance(reefPose::getPose, level.distance, rasiseElevatorSupplier);
+    Command driveToReef = moveToPositionWithDistance(reefPose::getPose, level.distance, raiseElevator);
     Command placeCoral = m_coralRollers.rollOutCommand();
     Command returnCommand = driveToReef.andThen(placeCoral);
 
