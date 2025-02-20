@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.constants.CANConstants;
+import frc.robot.constants.LEDConstants;
+import frc.robot.constants.LEDConstants.Color;
 
 
 
 public class LedLights extends SubsystemBase {
   private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, Constants.CANIVORE_BUS_NAME);
-
+  private void setLEDs(int start, int count, Color color){
+    m_candle.setLEDs(color.red, color.green, color.blue, 0, start, count);
+  }
   public LedLights() {}
 
   /**
@@ -31,8 +35,16 @@ public class LedLights extends SubsystemBase {
       });
   }
 
+  public Command setLeft(Color color){
+      return runOnce(
+        () -> {
+          setLEDs(LEDConstants.LEFT_START, LEDConstants.LEFT_COUNT, color);
+
+        });
+      }
+
   public Command lightBowCommand() {
-    m_candle.setLEDs(0,255,0,0,2,10);
+    m_candle.setLEDs(0,255,0, 0,0,10);
         return null;
         }
     
