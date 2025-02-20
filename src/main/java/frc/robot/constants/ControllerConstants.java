@@ -10,14 +10,16 @@ import edu.wpi.first.math.MathUtil;
 public class ControllerConstants {
   public static final double DEADBAND = 0.05;
 
-  public static double modifyAxisWithCustomDeadband(double value,double deadband) {
+  public static double modifyAxisWithCustomDeadband(double value, double deadband) {
     value = MathUtil.applyDeadband(value, deadband);
     value = Math.copySign(Math.pow(value, 1), value);
     return value;
   }
-    public static double modifyAxis(double value) {
+
+  public static double modifyAxis(double value) {
     return modifyAxis(value, 1);
   }
+
   public static double modifyAxis(double value, int exponent) {
     // Deadband
     value = MathUtil.applyDeadband(value, ControllerConstants.DEADBAND);
