@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -10,6 +12,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.ElevatorConstants.CoralLevels;
 import frc.robot.constants.PoseConstants.Pose;
 
@@ -50,21 +53,35 @@ public class CommandFactory {
   /*
    * Moves the robot to a position and then runs the secondary commands
    */
-  public Command moveToPositionWithDistance(Pose2d position, Distance distance, Command ... secondaryCommands) { 
-    Command goToPose = m_drivetrain.goToPose(position);
-    BooleanSupplier isClose = ()-> position.getTranslation().getDistance(m_robotPoseSupplier.get().getTranslation()) <= distance.in(Meters);
-    Command then = Commands.waitUntil(isClose).andThen(secondaryCommands);
-    Command returnCommand = Commands.parallel(goToPose,then); 
+  public Command moveToPositionWithDistance(Supplier<Pose2d> position, Distance distance, Supplier<Command> ... secondaryCommands) {
+    HashSet<Subsystem> requirements = new HashSet<>();
+    requirements.add(m_drivetrain);
+
+    Supplier<Command> gotoPoseSupplier = () -> goToPose(position.get());
+
+    Command goToPose = Commands.defer(gotoPoseSupplier,requirements);
+    BooleanSupplier isClose = ()-> position.get().getTranslation().getDistance(m_robotPoseSupplier.get().getTranslation()) <= distance.in(Meters);
+    
+    // make a new array of commands since Commands.defferedProxy wont accept an array
+    Command[] deferedSecondaryCommands = new Command[secondaryCommands.length];
+    for (int i = 0; i<secondaryCommands.length;i++) {
+      deferedSecondaryCommands[i] = Commands.deferredProxy(secondaryCommands[i]);
+    }
+
+    Command then = Commands.waitUntil(isClose).andThen(deferedSecondaryCommands);
+    Command returnCommand = Commands.parallel(goToPose,then);
     
     return returnCommand;
   }
 
   public Command driveAndPlaceCoral(Pose reefPose, CoralLevels level) {
     Command raiseElevator = m_elevator.goToCoralHeightPosition(level);
-    Command driveToReef = moveToPositionWithDistance(reefPose.getPose(), level.distance, raiseElevator);
+    Supplier<Command> rasiseElevatorSupplier = () -> raiseElevator;
+
+    Command driveToReef = moveToPositionWithDistance(reefPose::getPose, level.distance, rasiseElevatorSupplier);
     Command placeCoral = m_coralRollers.rollOutCommand();
     Command returnCommand = driveToReef.andThen(placeCoral);
-    
+
     return returnCommand;
   }
 
