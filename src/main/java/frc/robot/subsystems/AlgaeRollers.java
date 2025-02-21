@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -54,6 +53,6 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public void periodic() {
-    //SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
+    // SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
   }
 }

@@ -17,10 +17,11 @@ public final class ApriltagConstants {
 
     public final int id;
 
-    Blue(final int id){
+    Blue(final int id) {
       this.id = id;
     }
   }
+
   public enum Red {
     LEFT_CORAL_STATION(1),
     RIGHT_CORAL_STATION(2),
@@ -36,7 +37,7 @@ public final class ApriltagConstants {
 
     public final int id;
 
-    Red(final int id){
+    Red(final int id) {
       this.id = id;
     }
   }

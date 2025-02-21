@@ -4,18 +4,18 @@
 
 package frc.robot.constants;
 
-public class CANConstants { 
-  //TODO: make the Id's valid
+public class CANConstants {
+  // TODO: make the Id's valid
   public static final int CANDLE_ID = 0;
 
   public static final int LEFT_CLIMBING_MOTOR = 0;
   public static final int RIGHT_CLIMBING_MOTOR = 0;
 
-  public static final int LEFT_ALGAE_MOTOR = 0; 
+  public static final int LEFT_ALGAE_MOTOR = 0;
   public static final int RIGHT_ALGAE_MOTOR = 0;
   public static final int RIGHT_CORAL_MOTOR = 0;
   public static final int LEFT_CORAL_MOTOR = 0;
-  
+
   public static final int RIGHT_ELAVOTAR_MOTOR = 0;
   public static final int LEFT_ELAVOTAR_MOTOR = 2;
 

@@ -6,8 +6,6 @@ package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 
-import com.ctre.phoenix6.controls.VelocityVoltage;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 
 public class AlgaeConstants {
