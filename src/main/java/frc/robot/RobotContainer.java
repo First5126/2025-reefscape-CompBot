@@ -66,7 +66,7 @@ public class RobotContainer {
           m_drivetrain::addVisionMeasurement,
           AprilTagLocalizationConstants.LIMELIGHT_DETAILS);
 
-  private final LedLights m_ledLights = new LedLights();
+  private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
