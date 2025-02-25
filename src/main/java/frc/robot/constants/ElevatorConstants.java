@@ -1,7 +1,7 @@
 package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.Rotations;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -13,13 +13,13 @@ public class ElevatorConstants {
     L3(2.5, 1),
     L4(4.5, 1);
 
-    // Height of the elevator expressed in Revolutions.
+    // Height of the elevator expressed in Rotations.
     public final Angle heightAngle;
     // Distance for starting the raise of the elevator.
     public final Distance distance;
 
     private CoralLevels(double height, double distance) {
-      this.heightAngle = Revolutions.of(height);
+      this.heightAngle = Rotations.of(height);
       this.distance = Meters.of(distance);
     }
   }
@@ -42,5 +42,5 @@ public class ElevatorConstants {
 
   public static final double GEAR_RATIO = 12.0;
 
-  public static final Angle ELEVATOR_READING_STDV = Revolutions.of(0.05);
+  public static final Angle ELEVATOR_READING_STDV = Rotations.of(0.05);
 }

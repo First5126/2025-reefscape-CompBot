@@ -85,7 +85,7 @@ public class Elevator extends SubsystemBase {
         / 24.0
         * 2.0
         * Math.PI
-        * 0.05; // 24:1 gear ratio, 2" diameter pulley
+        * 0.05; // 24:1 gear ratio, 1" diameter pulley
   }
 
   @Override
@@ -99,13 +99,15 @@ public class Elevator extends SubsystemBase {
 
   private void setControl(ControlRequest control) {
     m_leftMotor.setControl(control);
-  }
+    }
+    public Command openLoopCommand(Supplier<Double> speedSupplier) {
+    return run(
+      () -> {
+        setSpeed(speedSupplier.get());
+      });
+    }
 
-  public Command openLoopCommand(Supplier<Double> speed) {
-    return run(() -> setSpeed(speed.get()));
-  }
-
-  private void changeGoalHeightIndex(int change) {
+    private void changeGoalHeightIndex(int change) {
     m_goalHeightIndex += change;
 
     if (m_goalHeightIndex < 0) m_goalHeightIndex = 0;
