@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Revolutions;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import java.util.function.Supplier;
 
 public class ElevatorConstants {
   public static enum CoralLevels {
@@ -43,4 +44,7 @@ public class ElevatorConstants {
   public static final double GEAR_RATIO = 12.0;
 
   public static final Angle ELEVATOR_READING_STDV = Revolutions.of(0.05);
+
+  public static final Supplier<Double> TRIM_UP_SPEED = () -> Double.valueOf(1);
+  public static final Supplier<Double> TRIM_DOWN_SPEED = () -> Double.valueOf(-1);
 }
