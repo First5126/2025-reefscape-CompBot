@@ -26,6 +26,7 @@ import frc.robot.constants.CANConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.ElevatorConstants.CoralLevels;
 
+import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Rotations;
 
 import java.util.function.Supplier;
@@ -121,6 +122,7 @@ public class Elevator extends SubsystemBase {
   public Command lowerElevator() {
     return runOnce(
         () -> {
+          System.out.println("lower elevor");
           changeGoalHeightIndex(-1);
         });
   }
@@ -128,6 +130,7 @@ public class Elevator extends SubsystemBase {
   public Command raiseElevator() {
     return runOnce(
         () -> {
+          System.out.println("run elevor");
           changeGoalHeightIndex(1);
         });
   }
@@ -149,6 +152,7 @@ public class Elevator extends SubsystemBase {
   // using exesting mPositionVoltage write set position method in meters
   private void setPosition(CoralLevels position) {
     m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
+    SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
   }
 
   public Command goToCoralHeightPosition(CoralLevels position) {
