@@ -49,7 +49,7 @@ public class AprilTagLocalizationConstants {
       new LimelightDetails(
           LIMELIGHT_NAME, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_INVERSE_OFFSET);
   public static final AprilTagFieldLayout FIELD_LAYOUT =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
   public static final Distance MAX_TAG_DISTANCE = Meters.of(3.0);
   public static final Time LOCALIZATION_PERIOD = Seconds.of(0.02);
 }
