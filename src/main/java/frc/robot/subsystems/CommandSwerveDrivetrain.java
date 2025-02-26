@@ -342,14 +342,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     SwerveDriveState state = getState();
 
-    double cur_accel = state.ModuleStates[1].speedMetersPerSecond-m_last_speed;
+    double cur_accel = state.ModuleStates[1].speedMetersPerSecond - m_last_speed;
     SmartDashboard.putNumber("Accel", cur_accel);
-    if (cur_accel > m_max_accel){
-        m_max_accel = cur_accel;
+    if (cur_accel > m_max_accel) {
+      m_max_accel = cur_accel;
     }
 
-    if (state.ModuleStates[1].speedMetersPerSecond > m_max_speed){
-        m_max_speed = state.ModuleStates[1].speedMetersPerSecond;
+    if (state.ModuleStates[1].speedMetersPerSecond > m_max_speed) {
+      m_max_speed = state.ModuleStates[1].speedMetersPerSecond;
     }
 
     SmartDashboard.putNumber("Max Speed", m_max_speed);

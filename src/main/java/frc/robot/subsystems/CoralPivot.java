@@ -72,14 +72,15 @@ public class CoralPivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Coral Pivot Degrees", m_CoralPivotTalon.getPosition().getValue().in(Degrees));
+    SmartDashboard.putNumber(
+        "Coral Pivot Degrees", m_CoralPivotTalon.getPosition().getValue().in(Degrees));
   }
 
   public Command goToLowerSetpoint() {
     return runOnce(
         () -> {
           rotate(CoralPivotConstants.LOWER_ANGLE);
-          });
+        });
   }
 
   public Command goToUpperSetpoint() {

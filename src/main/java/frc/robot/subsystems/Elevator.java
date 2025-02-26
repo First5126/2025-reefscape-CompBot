@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -25,10 +28,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.ElevatorConstants.CoralLevels;
-
-import static edu.wpi.first.units.Units.Revolutions;
-import static edu.wpi.first.units.Units.Rotations;
-
 import java.util.function.Supplier;
 
 public class Elevator extends SubsystemBase {
