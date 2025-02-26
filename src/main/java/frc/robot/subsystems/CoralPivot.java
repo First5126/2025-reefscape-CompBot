@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
@@ -60,7 +61,7 @@ public class CoralPivot extends SubsystemBase {
     m_talonConfiguration.Slot0.kA = CoralPivotConstants.kA;
     m_talonConfiguration.Slot0.kV = CoralPivotConstants.kV;
 
-    m_CoralPivotTalon = new TalonFXS(CANConstants.CORAL_PIVOT);
+    m_CoralPivotTalon = new TalonFXS(CANConstants.CORAL_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_CoralPivotTalon.getConfigurator().apply(m_talonConfiguration);
     m_CoralPivotTalon.setNeutralMode(NeutralModeValue.Brake);
   }
@@ -71,8 +72,8 @@ public class CoralPivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(m_CANcoder.getPosition().getValue().in(Degrees));
-    System.out.println(m_CoralPivotTalon.getPosition().getValue().in(Degrees));
+    SmartDashboard.putNumber(
+        "Coral Pivot Degrees", m_CoralPivotTalon.getPosition().getValue().in(Degrees));
   }
 
   public Command goToLowerSetpoint() {

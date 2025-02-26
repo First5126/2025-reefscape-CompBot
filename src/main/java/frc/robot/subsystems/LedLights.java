@@ -9,11 +9,10 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.constants.CANConstants;
 
 public class LedLights extends SubsystemBase {
-  private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, Constants.CANIVORE_BUS_NAME);
+  private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, CANConstants.ELEVATOR_CANIVORE);
 
   private static final Color8Bit CLEAR = new Color8Bit(0, 0, 0);
   private static final Color8Bit RED = new Color8Bit(255, 0, 0);

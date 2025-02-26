@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -28,10 +31,10 @@ import frc.robot.constants.ElevatorConstants.CoralLevels;
 import java.util.function.Supplier;
 
 public class Elevator extends SubsystemBase {
-  private final TalonFX m_leftMotor = new TalonFX(CANConstants.LEFT_ELAVOTAR_MOTOR);
-  private final TalonFX m_rightMotor = new TalonFX(CANConstants.RIGHT_ELAVOTAR_MOTOR);
+  private final TalonFX m_leftMotor;
+  private final TalonFX m_rightMotor;
 
-  private final CANdi m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI);
+  private final CANdi m_CANdi;
   private final MotionMagicVoltage m_moitonMagicVoltage;
   private final VoltageOut m_VoltageOut = new VoltageOut(0);
   private final Slot0Configs m_slot0Configs = new Slot0Configs();
@@ -41,12 +44,17 @@ public class Elevator extends SubsystemBase {
   private int m_goalHeightIndex = 0;
 
   public Elevator() {
+    m_leftMotor = new TalonFX(CANConstants.LEFT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
+    m_rightMotor = new TalonFX(CANConstants.RIGHT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
+
+    m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI, CANConstants.ELEVATOR_CANIVORE);
+
     TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     TalonFXConfiguration rightConfig = new TalonFXConfiguration();
 
     leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftConfig.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO;
     leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
@@ -80,17 +88,13 @@ public class Elevator extends SubsystemBase {
     m_leftMotor.setControl(m_VoltageOut.withOutput(0));
   }
 
-  public double getElevatorHeight() {
-    return m_leftMotor.getPosition().getValueAsDouble()
-        / 24.0
-        * 2.0
-        * Math.PI
-        * 0.05; // 24:1 gear ratio, 2" diameter pulley
-  }
-
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
+  }
+
+  private double getElevatorHeight() {
+    return m_leftMotor.getPosition().getValue().in(Rotations);
   }
 
   private void setSpeed(double speed) {
@@ -117,6 +121,7 @@ public class Elevator extends SubsystemBase {
   public Command lowerElevator() {
     return runOnce(
         () -> {
+          System.out.println("lower elevor");
           changeGoalHeightIndex(-1);
         });
   }
@@ -124,6 +129,7 @@ public class Elevator extends SubsystemBase {
   public Command raiseElevator() {
     return runOnce(
         () -> {
+          System.out.println("run elevor");
           changeGoalHeightIndex(1);
         });
   }
@@ -142,18 +148,10 @@ public class Elevator extends SubsystemBase {
         });
   }
 
-  private boolean getIsAtPosition() {
-    return m_leftMotor
-        .getPosition()
-        .getValue()
-        .isNear(
-            ElevatorConstants.CoralLevels.values()[m_goalHeightIndex].heightAngle,
-            ElevatorConstants.ELEVATOR_READING_STDV);
-  }
-
   // using exesting mPositionVoltage write set position method in meters
   private void setPosition(CoralLevels position) {
     m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
+    SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
   }
 
   public Command goToCoralHeightPosition(CoralLevels position) {

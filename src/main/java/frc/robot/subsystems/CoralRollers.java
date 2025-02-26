@@ -28,16 +28,18 @@ public class CoralRollers extends SubsystemBase {
   public CoralRollers() {
     m_VelocityVoltage = new VelocityVoltage(0);
 
-    m_coralTalonFXS = new TalonFXS(0);
+    m_coralTalonFXS = new TalonFXS(CANConstants.CORAL_MOTOR, CANConstants.ELEVATOR_CANIVORE);
     m_coralTalonFXS.setControl(new DutyCycleOut(0));
 
     CANrangeConfiguration CANrangeConfiguration = new CANrangeConfiguration();
     CANrangeConfiguration.ProximityParams.ProximityThreshold = CoralConstants.PROXIMITY_THRESHOLD;
 
-    m_LeftCANrange = new CANrange(CANConstants.LEFT_CAN_RANGE_CORAL);
+    m_LeftCANrange =
+        new CANrange(CANConstants.LEFT_CAN_RANGE_CORAL, CANConstants.ELEVATOR_CANIVORE);
     m_LeftCANrange.getConfigurator().apply(CANrangeConfiguration);
 
-    m_RightCANrange = new CANrange(CANConstants.RIGHT_CAN_RANGE_CORAL);
+    m_RightCANrange =
+        new CANrange(CANConstants.RIGHT_CAN_RANGE_CORAL, CANConstants.ELEVATOR_CANIVORE);
     m_RightCANrange.getConfigurator().apply(CANrangeConfiguration);
 
     m_hasGamePiece = new Trigger(this::isDetected).debounce(CoralConstants.DEBOUNCE);
