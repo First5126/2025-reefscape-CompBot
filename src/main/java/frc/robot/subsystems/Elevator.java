@@ -196,7 +196,7 @@ public class Elevator extends SubsystemBase {
   public Command moveMotor(Supplier<Double> power) {
     return run(
         () -> {
-          setControl(new DutyCycleOut(power.get() * -0.1));
+          setControl(new DutyCycleOut(power.get() * 0.1));
         });
   }
 
