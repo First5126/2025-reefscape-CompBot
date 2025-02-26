@@ -99,13 +99,14 @@ public class Elevator extends SubsystemBase {
 
   private void setControl(ControlRequest control) {
     m_leftMotor.setControl(control);
-    }
-    public Command openLoopCommand(Supplier<Double> speedSupplier) {
+  }
+
+  public Command openLoopCommand(Supplier<Double> speedSupplier) {
     return run(
       () -> {
-        setSpeed(speedSupplier.get());
-      });
-    }
+      setSpeed(speedSupplier.get());
+    });
+  }
 
     private void changeGoalHeightIndex(int change) {
     m_goalHeightIndex += change;
