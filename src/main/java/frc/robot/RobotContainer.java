@@ -96,8 +96,12 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
-  private boolean yNotPressed() {
-    return !m_driverController.y().getAsBoolean();
+  private boolean yIsNotPressed() {
+    return !yIsPressed();
+  }
+
+  private boolean yIsPressed() {
+    return m_driverController.y().getAsBoolean();
   }
 
   private void configureBindings() {
@@ -111,8 +115,10 @@ public class RobotContainer {
             m_driverController::getLeftY,
             m_driverController::getLeftX));
 
-    m_driverController.povUp().and(this::yNotPressed).onTrue(m_elevator.raiseElevator());
-    m_driverController.povDown().and(this::yNotPressed).onTrue(m_elevator.lowerElevator());
+    m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
+    m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
+    m_driverController.povUp().and(this::yIsPressed).onTrue(m_elevator.trimUp());
+    m_driverController.povDown().and(this::yIsPressed).onTrue(m_elevator.trimDown());
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
