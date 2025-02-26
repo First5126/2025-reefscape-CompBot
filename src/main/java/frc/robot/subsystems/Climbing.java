@@ -15,8 +15,8 @@ import frc.robot.constants.ClimbingConstants;
 
 public class Climbing extends SubsystemBase {
 
-  private final TalonFX m_leftMotor = new TalonFX(CANConstants.LEFT_CLIMBING_MOTOR);
-  private final TalonFX m_rightMotor = new TalonFX(CANConstants.RIGHT_CLIMBING_MOTOR);
+  private final TalonFX m_leftMotor;
+  private final TalonFX m_rightMotor;
   private final PositionVoltage m_positionVoltage =
       new PositionVoltage(0).withSlot(0).withFeedForward(0);
   private final DigitalInput m_forwardLimit =
@@ -25,7 +25,6 @@ public class Climbing extends SubsystemBase {
       new DigitalInput(ClimbingConstants.REVERSE_DIGITAL_LIMIT);
 
   public Climbing() {
-
     HardwareLimitSwitchConfigs leftConfig = new HardwareLimitSwitchConfigs();
     HardwareLimitSwitchConfigs rightConfig = new HardwareLimitSwitchConfigs();
 
@@ -34,6 +33,9 @@ public class Climbing extends SubsystemBase {
 
     rightConfig.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANcoder;
     rightConfig.ForwardLimitRemoteSensorID = ClimbingConstants.FORWARD_DIGITAL_LIMIT;
+
+    m_leftMotor = new TalonFX(CANConstants.LEFT_CLIMBING_MOTOR, CANConstants.DRIVETRAIN_CANIVORE);
+    m_rightMotor = new TalonFX(CANConstants.RIGHT_CLIMBING_MOTOR, CANConstants.DRIVETRAIN_CANIVORE);
 
     m_rightMotor.setControl(new Follower(m_leftMotor.getDeviceID(), true));
     m_leftMotor.setNeutralMode(NeutralModeValue.Brake);

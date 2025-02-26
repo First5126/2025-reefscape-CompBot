@@ -35,7 +35,7 @@ public class AlgaePivot extends SubsystemBase {
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         AlgaePivotConstants.lowerSupplyCurrentLimit;
 
-    m_AlgaePivotTalon = new TalonFX(CANConstants.ALGAE_PIVOT);
+    m_AlgaePivotTalon = new TalonFX(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);
     m_AlgaePivotTalon.getConfigurator().apply(m_Slot0Configs);
     m_AlgaePivotTalon.getConfigurator().apply(m_TalonConfiguration);

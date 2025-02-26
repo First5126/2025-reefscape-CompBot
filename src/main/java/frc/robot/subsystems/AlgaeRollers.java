@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,8 +9,7 @@ import frc.robot.constants.AlgaeConstants;
 import frc.robot.constants.CANConstants;
 
 public class AlgaeRollers extends SubsystemBase {
-  private TalonFX m_motorOne = new TalonFX(CANConstants.LEFT_ALGAE_MOTOR);
-  private TalonFX m_motorTwo = new TalonFX(CANConstants.RIGHT_ALGAE_MOTOR);
+  private TalonFX m_motorOne;
 
   private Trigger m_hasGamePiece;
 
@@ -19,8 +17,7 @@ public class AlgaeRollers extends SubsystemBase {
 
   public AlgaeRollers() {
     m_hasGamePiece = new Trigger(this::getGamePieceDetected);
-
-    m_motorTwo.setControl(new Follower(m_motorOne.getDeviceID(), true));
+    m_motorOne = new TalonFX(CANConstants.ALGAE_MOTOR, CANConstants.ELEVATOR_CANIVORE);
   }
 
   private boolean getGamePieceDetected() {

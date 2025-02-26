@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -122,6 +123,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
               },
               null,
               this));
+
+  private double m_last_speed = 0.0;
+
+  private double m_max_speed = 0.0;
+  private double m_max_accel = 0.0;
 
   public Pose2d getPose2d() {
     return getState().Pose;
@@ -333,8 +339,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
-    // System.out.println("drivetrain pose X: " + getPose2d().getX());
-    // System.out.println("drivetrain pose Y: " + getPose2d().getY());
+
+    SwerveDriveState state = getState();
+
+    double cur_accel = state.ModuleStates[1].speedMetersPerSecond-m_last_speed;
+    SmartDashboard.putNumber("Accel", cur_accel);
+    if (cur_accel > m_max_accel){
+        m_max_accel = cur_accel;
+    }
+
+    if (state.ModuleStates[1].speedMetersPerSecond > m_max_speed){
+        m_max_speed = state.ModuleStates[1].speedMetersPerSecond;
+    }
+
+    SmartDashboard.putNumber("Max Speed", m_max_speed);
+    SmartDashboard.putNumber("Max Accel", m_max_accel);
+
+    m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
 
   private void startSimThread() {

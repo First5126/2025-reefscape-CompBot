@@ -13,7 +13,7 @@ import frc.robot.Constants;
 import frc.robot.constants.CANConstants;
 
 public class LedLights extends SubsystemBase {
-  private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, Constants.CANIVORE_BUS_NAME);
+  private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, CANConstants.ELEVATOR_CANIVORE);
 
   private static final Color8Bit CLEAR = new Color8Bit(0, 0, 0);
   private static final Color8Bit RED = new Color8Bit(255, 0, 0);
