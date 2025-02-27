@@ -69,7 +69,7 @@ public class Elevator extends SubsystemBase {
     m_moitonMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
     leftConfig.MotionMagic.MotionMagicCruiseVelocity = 40;
     leftConfig.MotionMagic.MotionMagicAcceleration = 80;
-    leftConfig.MotionMagic.MotionMagicJerk = 400;
+    leftConfig.MotionMagic.MotionMagicJerk = 360;
 
     leftConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANdiS1;
     leftConfig.HardwareLimitSwitch.ForwardLimitRemoteSensorID = m_CANdi.getDeviceID();
@@ -196,7 +196,7 @@ public class Elevator extends SubsystemBase {
   public Command moveMotor(Supplier<Double> power) {
     return run(
         () -> {
-          setControl(new DutyCycleOut(power.get() * 0.1));
+          setControl(new DutyCycleOut(power.get()));
         });
   }
 

@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
-import frc.robot.constants.ElevatorConstants.CoralLevels;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -119,11 +118,15 @@ public class RobotContainer {
 
     // m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
     // m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
-    m_driverController.povUp().and(this::yIsPressed).onTrue(m_elevator.trimUp());
-    m_driverController.povDown().and(this::yIsPressed).onTrue(m_elevator.trimDown());
 
     // Elevator commands
-    m_driverController
+    m_driverController.povUp().and(this::yIsPressed).whileTrue(m_elevator.trimUp());
+    m_driverController.povUp().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
+    m_driverController.povDown().and(this::yIsPressed).whileTrue(m_elevator.trimDown());
+    m_driverController.povDown().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
+    /*m_driverController
         .povUp()
         .and(this::yIsNotPressed)
         .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L1));
@@ -135,7 +138,7 @@ public class RobotContainer {
         .and(m_driverController.y().negate())
         .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L3));
 
-    m_driverController.povLeft().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L4));
+    m_driverController.povLeft().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L4));*/
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 

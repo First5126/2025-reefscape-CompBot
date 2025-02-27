@@ -45,6 +45,6 @@ public class ElevatorConstants {
 
   public static final Angle ELEVATOR_READING_STDV = Revolutions.of(0.05);
 
-  public static final Supplier<Double> TRIM_UP_SPEED = () -> Double.valueOf(1);
-  public static final Supplier<Double> TRIM_DOWN_SPEED = () -> Double.valueOf(-1);
+  public static final Supplier<Double> TRIM_UP_SPEED = () -> Double.valueOf(.1);
+  public static final Supplier<Double> TRIM_DOWN_SPEED = () -> Double.valueOf(-.1);
 }
