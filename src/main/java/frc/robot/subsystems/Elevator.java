@@ -118,19 +118,41 @@ public class Elevator extends SubsystemBase {
     setPosition(CoralLevels.values()[m_goalHeightIndex]);
   }
 
-  public Command lowerElevator() {
+  public Command lowerToNextPosition() {
     return runOnce(
         () -> {
-          System.out.println("lower elevor");
           changeGoalHeightIndex(-1);
         });
   }
 
-  public Command raiseElevator() {
+  public Command raiseToNextPosition() {
     return runOnce(
         () -> {
-          System.out.println("run elevor");
           changeGoalHeightIndex(1);
+        });
+  }
+
+  /**
+   * Slowely move the elevator in the up direction
+   *
+   * @return Command indication to move the elevator in the up direction
+   */
+  public Command trimUp() {
+    return run(
+        () -> {
+          moveMotor(ElevatorConstants.TRIM_UP_SPEED);
+        });
+  }
+
+  /**
+   * Slowly move the elevator in the down direction
+   *
+   * @return Command indicating to move the elevator in the down direction
+   */
+  public Command trimDown() {
+    return run(
+        () -> {
+          moveMotor(ElevatorConstants.TRIM_DOWN_SPEED);
         });
   }
 
@@ -165,10 +187,16 @@ public class Elevator extends SubsystemBase {
     return runOnce(() -> m_leftMotor.setControl(m_VoltageOut.withOutput(0)));
   }
 
+  /**
+   * Move the elevator motor in a direction based on the supplied power
+   *
+   * @param power Double supplied indicating the direction to move the motor
+   * @return Command indicating the ability to move the elevator motors in a designated direction
+   */
   public Command moveMotor(Supplier<Double> power) {
     return run(
         () -> {
-          setControl(new DutyCycleOut(power.get() * -0.1));
+          setControl(new DutyCycleOut(power.get() * 0.1));
         });
   }
 
