@@ -119,6 +119,8 @@ public class RobotContainer {
     m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
     // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
     // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
+
+    m_driverController.a().whileTrue(m_coralRollers.rollOutCommand());
   }
 
   private void configureCoDriverControls() {
