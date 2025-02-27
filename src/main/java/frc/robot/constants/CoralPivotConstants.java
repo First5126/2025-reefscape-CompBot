@@ -21,4 +21,9 @@ public final class CoralPivotConstants {
 
   public static final Angle LOWER_ANGLE = Degrees.of(180);
   public static final Angle UPPER_ANGLE = Angle.ofBaseUnits(0, Degrees);
+
+  public static final Angle L1 = Degrees.of(140);
+  public static final Angle L2 = Degrees.of(98.6);
+  public static final Angle L3 = Degrees.of(98.6);
+  public static final Angle L4 = Degrees.of(98.6);
 }
