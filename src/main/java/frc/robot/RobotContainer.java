@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
+import frc.robot.constants.ElevatorConstants.CoralLevels;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -97,6 +98,7 @@ public class RobotContainer {
   }
 
   private boolean yIsNotPressed() {
+    SmartDashboard.putBoolean("Y Pressed", yIsPressed());
     return !yIsPressed();
   }
 
@@ -115,10 +117,25 @@ public class RobotContainer {
             m_driverController::getLeftY,
             m_driverController::getLeftX));
 
-    m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
-    m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
+    // m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
+    // m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
     m_driverController.povUp().and(this::yIsPressed).onTrue(m_elevator.trimUp());
     m_driverController.povDown().and(this::yIsPressed).onTrue(m_elevator.trimDown());
+
+    // Elevator commands
+    m_driverController
+        .povUp()
+        .and(this::yIsNotPressed)
+        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L1));
+
+    m_driverController.povRight().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L2));
+
+    m_driverController
+        .povDown()
+        .and(m_driverController.y().negate())
+        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L3));
+
+    m_driverController.povLeft().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L4));
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -126,7 +143,8 @@ public class RobotContainer {
     // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
     // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
 
-    m_driverController.a().whileTrue(m_coralRollers.rollOutCommand());
+    m_driverController.a().onTrue(m_coralRollers.rollOutCommand());
+    m_driverController.b().onTrue(m_coralRollers.stopCommand());
   }
 
   private void configureCoDriverControls() {
