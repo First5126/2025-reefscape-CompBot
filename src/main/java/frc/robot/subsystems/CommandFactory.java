@@ -69,7 +69,8 @@ public class CommandFactory {
 
   public Command driveAndPlaceCoral(Pose reefPose, CoralLevels level) {
     Command driveToReef =
-        moveToPositionWithDistance(reefPose::getPose, level.distance, elevatorPivotAndOutTake(level));
+        moveToPositionWithDistance(
+            reefPose::getPose, level.distance, elevatorPivotAndOutTake(level));
 
     return driveToReef;
   }
@@ -80,15 +81,14 @@ public class CommandFactory {
     Command returnCommand = raiseElevator.alongWith(placeCoral);
 
     return returnCommand;
-
   }
+
   public Command elevatorPivotAndIntake() {
     Command raiseElevator = m_elevator.goToCoralHeightPosition(CoralLevels.CoralStation);
     Command inTakeCoral = m_coralRollers.rollInCommand();
     Command returnCommand = raiseElevator.alongWith(inTakeCoral);
 
     return returnCommand;
-
   }
 
   public Command coralPivotAndIntake() {

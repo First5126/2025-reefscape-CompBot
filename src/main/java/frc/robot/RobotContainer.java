@@ -14,8 +14,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
-import frc.robot.constants.PoseConstants;
 import frc.robot.constants.ElevatorConstants.CoralLevels;
+import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -96,12 +94,16 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("Raise Elevator to position 1", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L1));
-    NamedCommands.registerCommand("Raise Elevator to position 2", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L2));
-    NamedCommands.registerCommand("Raise Elevator to position 3", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L3));
-    NamedCommands.registerCommand("Raise Elevator to position 4", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L4));
-    NamedCommands.registerCommand("Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());
-
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 1", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L1));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 2", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L2));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 3", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L3));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 4", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L4));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());
 
     configureBindings();
     configureCoDriverControls();
@@ -162,9 +164,22 @@ public class RobotContainer {
 
     m_driverController.a().onTrue(m_coralRollers.rollOutCommand());
     // this is buppers for coral station
-    m_driverController.rightBumper().whileTrue(m_commandFactory.moveToPositionWithDistance(PoseConstants.rightCoralStationPosition2::getPose,Meters.of(1) , m_commandFactory.coralPivotAndIntake()));
-    m_driverController.leftBumper().whileTrue(m_commandFactory.moveToPositionWithDistance(PoseConstants.leftCoralStationPosition2::getPose,Meters.of(1) , m_commandFactory.coralPivotAndIntake()));
+    m_driverController
+        .rightBumper()
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.rightCoralStationPosition2::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake()));
+    m_driverController
+        .leftBumper()
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.leftCoralStationPosition2::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake()));
   }
+
   private void configureCoDriverControls() {
     // Setup codriver's controlls
     m_coDriverController
