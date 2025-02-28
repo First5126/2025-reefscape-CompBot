@@ -47,6 +47,7 @@ public class CoralRollers extends SubsystemBase {
     talonConfiguration.Slot0.kV = CoralConstants.kV;
 
     talonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+    talonConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
 
     m_coralTalonFXS.getConfigurator().apply(talonConfiguration);
 

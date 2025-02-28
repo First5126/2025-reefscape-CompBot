@@ -68,22 +68,38 @@ public class CommandFactory {
   }
 
   public Command driveAndPlaceCoral(Pose reefPose, CoralLevels level) {
-    Command raiseElevator = m_elevator.goToCoralHeightPosition(level);
     Command driveToReef =
-        moveToPositionWithDistance(reefPose::getPose, level.distance, raiseElevator);
+        moveToPositionWithDistance(reefPose::getPose, level.distance, elevatorPivotAndOutTake(level));
+
+    return driveToReef;
+  }
+
+  public Command elevatorPivotAndOutTake(CoralLevels level) {
+    Command raiseElevator = m_elevator.goToCoralHeightPosition(level);
     Command placeCoral = m_coralRollers.rollOutCommand();
-    Command returnCommand = driveToReef.andThen(placeCoral);
+    Command returnCommand = raiseElevator.alongWith(placeCoral);
 
     return returnCommand;
+
+  }
+  public Command elevatorPivotAndIntake() {
+    Command raiseElevator = m_elevator.goToCoralHeightPosition(CoralLevels.CoralStation);
+    Command inTakeCoral = m_coralRollers.rollInCommand();
+    Command returnCommand = raiseElevator.alongWith(inTakeCoral);
+
+    return returnCommand;
+
   }
 
   public Command coralPivotAndIntake() {
     Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
     Command intakeCoral = m_coralRollers.rollInCommand();
     Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
+    Command setElevator = m_elevator.goToCoralHeightPosition(CoralLevels.CoralStation);
 
     return pivotCoralRollers
         .alongWith(intakeCoral)
+        .alongWith(setElevator)
         .until(m_coralRollers.getCoralTrigger())
         .andThen(finishIntake);
   }
