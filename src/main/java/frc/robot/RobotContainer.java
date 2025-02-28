@@ -127,7 +127,7 @@ public class RobotContainer {
     // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
     // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
 
-    m_driverController.a().whileTrue(m_coralRollers.rollOutCommand());
+    m_driverController.a().whileTrue(m_coralRollers.rollOutCommand(CoralLevels.L2));
   }
 
   private void configureCoDriverControls() {
