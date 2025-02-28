@@ -7,7 +7,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.constants.ElevatorConstants.CoralLevels;
+import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants.Pose;
 import java.util.HashSet;
 import java.util.function.BooleanSupplier;
@@ -68,10 +68,10 @@ public class CommandFactory {
   }
 
   public Command driveAndPlaceCoral(Pose reefPose, CoralLevels level) {
-    Command raiseElevator = m_elevator.goToCoralHeightPosition(level);
+    Command raiseElevator = m_elevator.setCoralPosition(level);
     Command driveToReef =
         moveToPositionWithDistance(reefPose::getPose, level.distance, raiseElevator);
-    Command placeCoral = m_coralRollers.rollOutCommand();
+    Command placeCoral = m_coralRollers.rollOutCommand(level);
     Command returnCommand = driveToReef.andThen(placeCoral);
 
     return returnCommand;

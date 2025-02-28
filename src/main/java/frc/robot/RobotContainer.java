@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
+import frc.robot.constants.CoralLevels;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -137,7 +138,9 @@ public class RobotContainer {
         .onFalse(m_coralRollers.stopCommand());
     m_coDriverController
         .b()
-        .whileTrue(m_coralRollers.rollOutCommand())
+        .whileTrue(
+            m_coralRollers.rollOutCommand(
+                CoralLevels.L2)) // TODO: This should be coming from a state of selection.
         .onFalse(m_coralRollers.stopCommand());
     m_coralRollers
         .getCoralTrigger()

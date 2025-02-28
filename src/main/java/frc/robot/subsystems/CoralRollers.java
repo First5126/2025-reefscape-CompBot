@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralConstants;
+import frc.robot.constants.CoralLevels;
 
 public class CoralRollers extends SubsystemBase {
 
@@ -92,13 +93,13 @@ public class CoralRollers extends SubsystemBase {
         .andThen(stopCommand());
   }
 
-  private void rollOut() {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(CoralConstants.OUTTAKE_SPEED));
+  private void rollOut(CoralLevels level) {
+    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
   }
 
-  public Command rollOutCommand() {
+  public Command rollOutCommand(CoralLevels level) {
     return run(() -> {
-          rollOut();
+          rollOut(level);
         })
         .onlyWhile(m_hasGamePiece)
         .andThen(stopCommand());
