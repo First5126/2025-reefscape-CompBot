@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.hardware.core.CoreCANcoder;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -29,7 +30,8 @@ public class CoralPivot extends SubsystemBase {
 
   public CoralPivot() {
     CANcoderConfiguration CANCoderConfiguration = new CANcoderConfiguration();
-    CANCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    CANCoderConfiguration.MagnetSensor.SensorDirection =
+        SensorDirectionValue.CounterClockwise_Positive;
     CANCoderConfiguration.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
 
     m_CANcoder = new CoreCANcoder(CANConstants.CORAL_PIVOT_CANCODER);
@@ -40,6 +42,7 @@ public class CoralPivot extends SubsystemBase {
     m_talonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         CoralPivotConstants.lowerSupplyCurrentLimit;
     m_talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_talonConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     m_talonConfiguration.ExternalFeedback.RotorToSensorRatio = 75.0;
     m_talonConfiguration.ExternalFeedback.SensorToMechanismRatio = 1.0;

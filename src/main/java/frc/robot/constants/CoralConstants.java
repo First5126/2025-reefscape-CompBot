@@ -10,8 +10,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
 public class CoralConstants {
-  public static final AngularVelocity INTAKE_SPEED = RevolutionsPerSecond.of(-80);
-  public static final AngularVelocity OUTTAKE_SPEED = RevolutionsPerSecond.of(110);
+  public static final AngularVelocity INTAKE_SPEED = RevolutionsPerSecond.of(80);
+  public static final AngularVelocity OUTTAKE_SPEED = RevolutionsPerSecond.of(-110);
 
   public static final double PROXIMITY_THRESHOLD = 0.1;
   public static final double DEBOUNCE = 0.00;
