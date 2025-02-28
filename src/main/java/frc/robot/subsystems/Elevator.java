@@ -26,8 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
+import frc.robot.constants.CoralLevels;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.constants.ElevatorConstants.CoralLevels;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Elevator extends SubsystemBase {
@@ -39,9 +40,11 @@ public class Elevator extends SubsystemBase {
   private final VoltageOut m_VoltageOut = new VoltageOut(0);
   private final Slot0Configs m_slot0Configs = new Slot0Configs();
 
-  // These fields are for when the driver taps up or down on the dpad. The elvator will go up or
-  // down a whole coral level
-  private int m_goalHeightIndex = 0;
+  // Keep track of the current coral level designated for the elevator
+  private CoralLevels[] m_corralLevels = {
+    CoralLevels.L1, CoralLevels.L2, CoralLevels.L3, CoralLevels.L4
+  };
+  private CoralLevels m_currentCoralLevel = m_corralLevels[0];
 
   public Elevator() {
     m_leftMotor = new TalonFX(CANConstants.LEFT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
@@ -49,14 +52,14 @@ public class Elevator extends SubsystemBase {
 
     m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI, CANConstants.ELEVATOR_CANIVORE);
 
-    TalonFXConfiguration leftConfig = new TalonFXConfiguration();
-    TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    TalonFXConfiguration m_leftConfig = new TalonFXConfiguration();
+    TalonFXConfiguration m_rightConfig = new TalonFXConfiguration();
 
-    leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftConfig.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO;
-    leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    m_leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    m_leftConfig.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO;
+    m_leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
     m_slot0Configs.kP = ElevatorConstants.kP;
     m_slot0Configs.kI = ElevatorConstants.kI;
@@ -65,25 +68,25 @@ public class Elevator extends SubsystemBase {
     m_slot0Configs.kV = ElevatorConstants.kV;
     m_slot0Configs.kS = ElevatorConstants.kS;
 
-    leftConfig.Slot0 = m_slot0Configs;
+    m_leftConfig.Slot0 = m_slot0Configs;
     m_moitonMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
-    leftConfig.MotionMagic.MotionMagicCruiseVelocity = 40;
-    leftConfig.MotionMagic.MotionMagicAcceleration = 80;
-    leftConfig.MotionMagic.MotionMagicJerk = 400;
+    m_leftConfig.MotionMagic.MotionMagicCruiseVelocity = 40;
+    m_leftConfig.MotionMagic.MotionMagicAcceleration = 80;
+    m_leftConfig.MotionMagic.MotionMagicJerk = 400;
 
-    leftConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANdiS1;
-    leftConfig.HardwareLimitSwitch.ForwardLimitRemoteSensorID = m_CANdi.getDeviceID();
+    m_leftConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANdiS1;
+    m_leftConfig.HardwareLimitSwitch.ForwardLimitRemoteSensorID = m_CANdi.getDeviceID();
 
-    leftConfig.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.RemoteCANdiS2;
-    leftConfig.HardwareLimitSwitch.ReverseLimitRemoteSensorID = m_CANdi.getDeviceID();
-    leftConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0.0;
-    leftConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
+    m_leftConfig.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.RemoteCANdiS2;
+    m_leftConfig.HardwareLimitSwitch.ReverseLimitRemoteSensorID = m_CANdi.getDeviceID();
+    m_leftConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0.0;
+    m_leftConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
 
-    leftConfig.HardwareLimitSwitch.ForwardLimitEnable = true;
-    leftConfig.HardwareLimitSwitch.ReverseLimitEnable = true;
+    m_leftConfig.HardwareLimitSwitch.ForwardLimitEnable = true;
+    m_leftConfig.HardwareLimitSwitch.ReverseLimitEnable = true;
 
-    m_leftMotor.getConfigurator().apply(leftConfig);
-    m_rightMotor.getConfigurator().apply(rightConfig);
+    m_leftMotor.getConfigurator().apply(m_leftConfig);
+    m_rightMotor.getConfigurator().apply(m_rightConfig);
     m_rightMotor.setControl(new Follower(m_leftMotor.getDeviceID(), true));
     m_leftMotor.setControl(m_VoltageOut.withOutput(0));
   }
@@ -93,43 +96,16 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
   }
 
-  private double getElevatorHeight() {
-    return m_leftMotor.getPosition().getValue().in(Rotations);
-  }
-
-  private void setSpeed(double speed) {
-    setControl(m_VoltageOut.withOutput(speed * 12.0));
-  }
-
-  private void setControl(ControlRequest control) {
-    m_leftMotor.setControl(control);
-  }
-
   public Command openLoopCommand(Supplier<Double> speed) {
     return run(() -> setSpeed(speed.get()));
   }
 
-  private void changeGoalHeightIndex(int change) {
-    m_goalHeightIndex += change;
-
-    if (m_goalHeightIndex < 0) m_goalHeightIndex = 0;
-    if (m_goalHeightIndex > CoralLevels.values().length - 1)
-      m_goalHeightIndex = CoralLevels.values().length - 1;
-    setPosition(CoralLevels.values()[m_goalHeightIndex]);
-  }
-
   public Command lowerToNextPosition() {
-    return runOnce(
-        () -> {
-          changeGoalHeightIndex(-1);
-        });
+    return changeLevelIncrement(-1);
   }
 
   public Command raiseToNextPosition() {
-    return runOnce(
-        () -> {
-          changeGoalHeightIndex(1);
-        });
+    return changeLevelIncrement(1);
   }
 
   /**
@@ -138,10 +114,7 @@ public class Elevator extends SubsystemBase {
    * @return Command indication to move the elevator in the up direction
    */
   public Command trimUp() {
-    return run(
-        () -> {
-          moveMotor(ElevatorConstants.TRIM_UP_SPEED);
-        });
+    return moveMotor(ElevatorConstants.TRIM_UP_SPEED);
   }
 
   /**
@@ -150,33 +123,18 @@ public class Elevator extends SubsystemBase {
    * @return Command indicating to move the elevator in the down direction
    */
   public Command trimDown() {
-    return run(
-        () -> {
-          moveMotor(ElevatorConstants.TRIM_DOWN_SPEED);
-        });
+    return moveMotor(ElevatorConstants.TRIM_DOWN_SPEED);
   }
 
   public Command goToTop() {
-    return runOnce(
-        () -> {
-          changeGoalHeightIndex(5);
-        });
+    return setCoralPosition(CoralLevels.L4);
   }
 
   public Command goToBottom() {
-    return runOnce(
-        () -> {
-          changeGoalHeightIndex(-5);
-        });
+    return setCoralPosition(CoralLevels.L1);
   }
 
-  // using exesting mPositionVoltage write set position method in meters
-  private void setPosition(CoralLevels position) {
-    m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
-    SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
-  }
-
-  public Command goToCoralHeightPosition(CoralLevels position) {
+  public Command setCoralPosition(CoralLevels position) {
     return runOnce(
         () -> {
           setPosition(position);
@@ -220,5 +178,41 @@ public class Elevator extends SubsystemBase {
           m_leftMotor.getConfigurator().apply(brake);
           m_rightMotor.getConfigurator().apply(brake);
         });
+  }
+
+  private double getElevatorHeight() {
+    return m_leftMotor.getPosition().getValue().in(Rotations);
+  }
+
+  private void setSpeed(double speed) {
+    setControl(m_VoltageOut.withOutput(speed * 12.0));
+  }
+
+  private void setControl(ControlRequest control) {
+    m_leftMotor.setControl(control);
+  }
+
+  private Command changeLevelIncrement(int change) {
+    int newIndex = currentCoralIndex() + change;
+
+    if (newIndex < 0) {
+      newIndex = 0;
+    } else if (newIndex > m_corralLevels.length - 1) {
+      newIndex = m_corralLevels.length - 1;
+    }
+    return setCoralPosition(m_corralLevels[newIndex]);
+  }
+
+  // using exesting mPositionVoltage write set position method in meters
+  private void setPosition(CoralLevels position) {
+    m_currentCoralLevel = position;
+    m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
+    SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
+  }
+
+  private int currentCoralIndex() {
+    int index = Arrays.binarySearch(m_corralLevels, m_currentCoralLevel);
+    // if not found, make sure return bottom
+    return (index < 0) ? 0 : index;
   }
 }
