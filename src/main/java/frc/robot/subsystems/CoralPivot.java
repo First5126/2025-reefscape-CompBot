@@ -29,8 +29,7 @@ public class CoralPivot extends SubsystemBase {
 
   public CoralPivot() {
     CANcoderConfiguration CANCoderConfiguration = new CANcoderConfiguration();
-    CANCoderConfiguration.MagnetSensor.SensorDirection =
-        SensorDirectionValue.CounterClockwise_Positive;
+    CANCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     CANCoderConfiguration.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
 
     m_CANcoder = new CoreCANcoder(CANConstants.CORAL_PIVOT_CANCODER);
@@ -40,6 +39,7 @@ public class CoralPivot extends SubsystemBase {
     m_talonConfiguration.CurrentLimits.SupplyCurrentLimit = CoralPivotConstants.supplyCurrentLimit;
     m_talonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         CoralPivotConstants.lowerSupplyCurrentLimit;
+    m_talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     m_talonConfiguration.ExternalFeedback.RotorToSensorRatio = 75.0;
     m_talonConfiguration.ExternalFeedback.SensorToMechanismRatio = 1.0;
@@ -87,6 +87,13 @@ public class CoralPivot extends SubsystemBase {
     return runOnce(
         () -> {
           rotate(CoralPivotConstants.UPPER_ANGLE);
+        });
+  }
+
+  public Command goToCoralSetpoint() {
+    return runOnce(
+        () -> {
+          rotate(CoralPivotConstants.CORAL_STATION_ANGLE);
         });
   }
 }

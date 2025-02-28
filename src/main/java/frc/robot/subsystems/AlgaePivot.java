@@ -32,7 +32,9 @@ public class AlgaePivot extends SubsystemBase {
     m_Slot0Configs.kA = AlgaePivotConstants.kA;
 
     m_TalonConfiguration = new TalonFXConfiguration();
-    m_TalonConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiQuadrature;
+    m_TalonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_TalonConfiguration.Feedback.FeedbackSensorSource =
+        FeedbackSensorSourceValue.FusedCANdiQuadrature;
     m_TalonConfiguration.Feedback.SensorToMechanismRatio = 4096;
     m_TalonConfiguration.Feedback.RotorToSensorRatio = 104;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;

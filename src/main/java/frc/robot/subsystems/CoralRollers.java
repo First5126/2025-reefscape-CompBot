@@ -10,7 +10,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,6 +50,8 @@ public class CoralRollers extends SubsystemBase {
 
     talonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
     talonConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
+    talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     m_coralTalonFXS.getConfigurator().apply(talonConfiguration);
 

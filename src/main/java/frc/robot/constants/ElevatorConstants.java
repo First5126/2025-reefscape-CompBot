@@ -13,7 +13,7 @@ public class ElevatorConstants {
     L2(1.35009765625, 1),
     L3(2.8163769531249996, 1),
     L4(4.975830078125, 1),
-    CoralStation(2, 1);
+    CoralStation(0.914795, 1);
 
     // Height of the elevator expressed in Revolutions.
     public final Angle heightAngle;
