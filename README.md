@@ -18,3 +18,6 @@ Welcome to the Parkhill South CompBot robot code for the [2025 ReefScape][1].
 
 * For AprilTagLocalization on the vision consumer you have to use Utils.fpgaToCurrentTime on the timestamp otherwise it wont work
 * When creating new limelight details include the inverse of the offset applied to the config
+* Make motors have PIDs configured
+* When make sure motors have Communication.MotorArrangnet set config
+* When applying a control request to a motor make sure its configured with a PID slot

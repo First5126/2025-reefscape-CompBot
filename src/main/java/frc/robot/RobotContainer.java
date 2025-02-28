@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -12,6 +13,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,7 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
-import frc.robot.constants.CoralLevels;
+import frc.robot.constants.ElevatorConstants.CoralLevels;
+import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -32,6 +35,7 @@ import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
+import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.AprilTagLocalization;
 
 public class RobotContainer {
@@ -76,6 +80,7 @@ public class RobotContainer {
   private final AlgaePivot m_algaePivot = new AlgaePivot();
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
   private final Elevator m_elevator = new Elevator();
+  private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
       new CommandFactory(
           m_drivetrain,
@@ -90,6 +95,18 @@ public class RobotContainer {
       new AprilTagRecognition(m_commandFactory);
 
   public RobotContainer() {
+
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 1", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L1));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 2", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L2));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 3", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L3));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position 4", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L4));
+    NamedCommands.registerCommand(
+        "Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());
+
     configureBindings();
     configureCoDriverControls();
 
@@ -98,6 +115,7 @@ public class RobotContainer {
   }
 
   private boolean yIsNotPressed() {
+    SmartDashboard.putBoolean("Y Pressed", yIsPressed());
     return !yIsPressed();
   }
 
@@ -116,10 +134,29 @@ public class RobotContainer {
             m_driverController::getLeftY,
             m_driverController::getLeftX));
 
-    m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
-    m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
-    m_driverController.povUp().and(this::yIsPressed).onTrue(m_elevator.trimUp());
-    m_driverController.povDown().and(this::yIsPressed).onTrue(m_elevator.trimDown());
+    // m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
+    // m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
+
+    // Elevator commands
+    // m_driverController.povUp().and(this::yIsPressed).whileTrue(m_elevator.trimUp());
+    // m_driverController.povUp().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
+    // m_driverController.povDown().and(this::yIsPressed).whileTrue(m_elevator.trimDown());
+    // m_driverController.povDown().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
+    /*m_driverController
+        .povUp()
+        .and(this::yIsNotPressed)
+        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L1));
+
+    m_driverController.povRight().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L2));
+
+    m_driverController
+        .povDown()
+        .and(m_driverController.y().negate())
+        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L3));
+
+    m_driverController.povLeft().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L4));*/
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -127,7 +164,33 @@ public class RobotContainer {
     // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
     // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
 
-    m_driverController.a().whileTrue(m_coralRollers.rollOutCommand(CoralLevels.L2));
+    m_driverController.a().onTrue(m_coralRollers.rollOutCommand());
+    m_driverController
+        .b()
+        .onTrue(m_coralRollers.rollInCommand().alongWith(m_coralPivot.goToCoralSetpoint()));
+
+    // m_driverController.y().onTrue(m_algaeRollers.feedIn());
+    // m_driverController.y().onFalse(m_algaeRollers.stop());
+
+    // m_driverController.b().onTrue(m_algaeRollers.feedOut());
+    // m_driverController.b().onFalse(m_algaeRollers.stop());
+
+    // this is buppers for coral station
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.rightCoralStationPosition2::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake()));
+    m_driverController
+        .leftBumper()
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.leftCoralStationPosition2::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake()));
   }
 
   private void configureCoDriverControls() {
@@ -138,9 +201,7 @@ public class RobotContainer {
         .onFalse(m_coralRollers.stopCommand());
     m_coDriverController
         .b()
-        .whileTrue(
-            m_coralRollers.rollOutCommand(
-                CoralLevels.L2)) // TODO: This should be coming from a state of selection.
+        .whileTrue(m_coralRollers.rollOutCommand())
         .onFalse(m_coralRollers.stopCommand());
     m_coralRollers
         .getCoralTrigger()

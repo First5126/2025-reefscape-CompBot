@@ -10,14 +10,15 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralConstants;
-import frc.robot.constants.CoralLevels;
 
 public class CoralRollers extends SubsystemBase {
 
@@ -48,6 +49,9 @@ public class CoralRollers extends SubsystemBase {
     talonConfiguration.Slot0.kV = CoralConstants.kV;
 
     talonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+    talonConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
+    talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     m_coralTalonFXS.getConfigurator().apply(talonConfiguration);
 
@@ -93,13 +97,13 @@ public class CoralRollers extends SubsystemBase {
         .andThen(stopCommand());
   }
 
-  private void rollOut(CoralLevels level) {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
+  private void rollOut() {
+    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(CoralConstants.OUTTAKE_SPEED));
   }
 
-  public Command rollOutCommand(CoralLevels level) {
+  public Command rollOutCommand() {
     return run(() -> {
-          rollOut(level);
+          rollOut();
         })
         .onlyWhile(m_hasGamePiece)
         .andThen(stopCommand());

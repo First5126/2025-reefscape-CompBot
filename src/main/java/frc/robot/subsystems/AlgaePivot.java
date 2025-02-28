@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,11 @@ public class AlgaePivot extends SubsystemBase {
     m_Slot0Configs.kA = AlgaePivotConstants.kA;
 
     m_TalonConfiguration = new TalonFXConfiguration();
+    m_TalonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_TalonConfiguration.Feedback.FeedbackSensorSource =
+        FeedbackSensorSourceValue.FusedCANdiQuadrature;
+    m_TalonConfiguration.Feedback.SensorToMechanismRatio = 4096;
+    m_TalonConfiguration.Feedback.RotorToSensorRatio = 104;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         AlgaePivotConstants.lowerSupplyCurrentLimit;
