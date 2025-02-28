@@ -10,10 +10,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Record extends SubsystemBase {
+public class RecordInputs extends SubsystemBase {
 
   private String m_positionSelection = "";
   private boolean positionEnabled = false;
+  private String m_selectedCoralStationSide = "left";
 
   public Command setFar() {
     return Commands.runOnce(
@@ -55,12 +56,40 @@ public class Record extends SubsystemBase {
         });
   }
 
-  public Command SetEnabled() {
+  public Command setEnabled() {
     return Commands.runOnce(
         () -> {
           positionEnabled = !positionEnabled;
           m_positionSelection = "";
         });
+  }
+
+  public Command setLeftSideCoralStation() {
+    return runOnce(
+        () -> {
+          m_selectedCoralStationSide = "left";
+        });
+  }
+
+  public Command setRightSideCoralStation() {
+    return runOnce(
+        () -> {
+          m_selectedCoralStationSide = "right";
+        });
+  }
+
+  public boolean rightCoralStationSelected() {
+    if (m_selectedCoralStationSide.equals("right")) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean leftCoralStationSelected() {
+    if (m_selectedCoralStationSide.equals("left")) {
+      return true;
+    }
+    return false;
   }
 
   @Override

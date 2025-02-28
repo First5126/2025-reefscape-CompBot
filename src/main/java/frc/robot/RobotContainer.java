@@ -35,6 +35,7 @@ import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
+import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.AprilTagLocalization;
 
 public class RobotContainer {
@@ -79,6 +80,7 @@ public class RobotContainer {
   private final AlgaePivot m_algaePivot = new AlgaePivot();
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
   private final Elevator m_elevator = new Elevator();
+  private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
       new CommandFactory(
           m_drivetrain,
@@ -176,6 +178,7 @@ public class RobotContainer {
     // this is buppers for coral station
     m_driverController
         .rightBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
         .whileTrue(
             m_commandFactory.moveToPositionWithDistance(
                 PoseConstants.rightCoralStationPosition2::getPose,
