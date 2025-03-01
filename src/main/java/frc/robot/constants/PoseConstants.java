@@ -15,7 +15,8 @@ public class PoseConstants {
     }
 
     public Pose2d getPose() {
-      if (DriverStation.getAlliance().get().name().equals("red")) {
+      if (DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get().name().equals("red")) {
         return redPose;
       } else {
         return bluePose;

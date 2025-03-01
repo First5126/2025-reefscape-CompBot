@@ -423,6 +423,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return AutoBuilder.pathfindToPose(pose, DrivetrainConstants.pathConstraints);
   }
 
+  public Command goToPose(Supplier<Pose2d> pose) {
+    return AutoBuilder.pathfindToPose(pose.get(), DrivetrainConstants.pathConstraints);
+  }
+
   /**
    * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
    * while still accounting for measurement noise.
