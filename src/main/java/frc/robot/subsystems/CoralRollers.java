@@ -71,47 +71,20 @@ public class CoralRollers extends SubsystemBase {
     return m_hasGamePiece;
   }
 
-  private boolean isDetected() {
-    return m_LeftCANrange.getIsDetected().getValue() || m_RightCANrange.getIsDetected().getValue();
-  }
-
-  private void runRollers(double speed) {
-    m_coralTalonFXS.set(speed);
-  }
-
-  public Command setRollerSpeed(double speed) {
-    return runOnce(
-        () -> {
-          runRollers(speed);
-        });
-  }
-
-  private void rollIn(CoralLevels level) {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
-  }
-
   public Command rollInCommand(CoralLevels level) {
     return run(() -> {
           rollIn(level);
         })
-        .until(m_hasGamePiece)
+        .until(hasCoral())
         .andThen(stopCommand());
-  }
-
-  private void rollOut(CoralLevels level) {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
   }
 
   public Command rollOutCommand(CoralLevels level) {
     return run(() -> {
           rollOut(level);
         })
-        .onlyWhile(m_hasGamePiece)
+        .onlyWhile(hasCoral())
         .andThen(stopCommand());
-  }
-
-  private void stop() {
-    m_coralTalonFXS.setControl(new DutyCycleOut(0));
   }
 
   public Command stopCommand() {
@@ -121,8 +94,35 @@ public class CoralRollers extends SubsystemBase {
         });
   }
 
+  public Command setRollerSpeed(double speed) {
+    return runOnce(
+        () -> {
+          runRollers(speed);
+        });
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("hasGamePeice", isDetected());
+  }
+
+  private boolean isDetected() {
+    return m_LeftCANrange.getIsDetected().getValue() || m_RightCANrange.getIsDetected().getValue();
+  }
+
+  private void runRollers(double speed) {
+    m_coralTalonFXS.set(speed);
+  }
+
+  private void rollIn(CoralLevels level) {
+    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
+  }
+
+  private void rollOut(CoralLevels level) {
+    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
+  }
+
+  private void stop() {
+    m_coralTalonFXS.setControl(new DutyCycleOut(0));
   }
 }
