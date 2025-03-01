@@ -119,10 +119,12 @@ public class AprilTagRecognition extends SubsystemBase {
   }
 
   public Command getAprilTagCommand() {
-    // TODO: make sure this works
-    Command tagCommand = Commands.select(m_AprilTagHashMap, this::getClosestTagId);
-    m_currentAprilID = this.getClosestTagId();
-    return tagCommand;
+    return Commands.deferredProxy(
+        () -> {
+          Command tagCommand = Commands.select(m_AprilTagHashMap, this::getClosestTagId);
+          m_currentAprilID = this.getClosestTagId();
+          return tagCommand;
+        });
   }
 
   public void periodic() {
