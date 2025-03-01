@@ -58,6 +58,13 @@ public class AlgaePivot extends SubsystemBase {
         });
   }
 
+  public Command goToProssesorSetpoint() {
+    return runOnce(
+        () -> {
+          rotate(AlgaePivotConstants.PROSSESSOR_ANGLE);
+        });
+  }
+
   public Command goToUpperSetpoint() {
     return runOnce(
         () -> {

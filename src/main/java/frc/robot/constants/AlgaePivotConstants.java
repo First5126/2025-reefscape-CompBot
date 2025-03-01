@@ -17,4 +17,5 @@ public final class AlgaePivotConstants {
 
   public static final Angle LOWER_ANGLE = Angle.ofBaseUnits(0, Degrees);
   public static final Angle UPPER_ANGLE = Angle.ofBaseUnits(0, Degrees);
+  public static final Angle PROSSESSOR_ANGLE = Angle.ofBaseUnits(0, Degrees);
 }
