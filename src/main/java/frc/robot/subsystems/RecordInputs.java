@@ -96,5 +96,6 @@ public class RecordInputs extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Position enabled", positionEnabled);
     SmartDashboard.putString("Position Selection", m_positionSelection);
+    SmartDashboard.putString("Coral Side Selected", m_selectedCoralStationSide);
   }
 }

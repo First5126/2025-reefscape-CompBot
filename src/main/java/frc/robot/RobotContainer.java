@@ -4,16 +4,13 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
-import frc.robot.constants.ElevatorConstants.CoralLevels;
+import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
@@ -96,7 +93,7 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand(
+    /*NamedCommands.registerCommand(
         "Raise Elevator to position 1", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L1));
     NamedCommands.registerCommand(
         "Raise Elevator to position 2", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L2));
@@ -105,7 +102,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position 4", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L4));
     NamedCommands.registerCommand(
-        "Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());
+        "Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());*/
 
     configureBindings();
     configureCoDriverControls();
@@ -134,78 +131,155 @@ public class RobotContainer {
             m_driverController::getLeftY,
             m_driverController::getLeftX));
 
-    // m_driverController.povUp().and(this::yIsNotPressed).onTrue(m_elevator.raiseToNextPosition());
-    // m_driverController.povDown().and(this::yIsNotPressed).onTrue(m_elevator.lowerToNextPosition());
-
-    // Elevator commands
-    // m_driverController.povUp().and(this::yIsPressed).whileTrue(m_elevator.trimUp());
-    // m_driverController.povUp().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
-
-    // m_driverController.povDown().and(this::yIsPressed).whileTrue(m_elevator.trimDown());
-    // m_driverController.povDown().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
-
-    /*m_driverController
-        .povUp()
-        .and(this::yIsNotPressed)
-        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L1));
-
-    m_driverController.povRight().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L2));
-
-    m_driverController
-        .povDown()
-        .and(m_driverController.y().negate())
-        .onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L3));
-
-    m_driverController.povLeft().onTrue(m_elevator.goToCoralHeightPosition(CoralLevels.L4));*/
-
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
     m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
-    // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
-    // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
 
-    m_driverController.a().onTrue(m_coralRollers.rollOutCommand());
     m_driverController
-        .b()
-        .onTrue(m_coralRollers.rollInCommand().alongWith(m_coralPivot.goToCoralSetpoint()));
+        .a()
+        .onTrue(m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()));
+    m_driverController.b().onTrue(m_drivetrain.goToPose(PoseConstants.ReefPosition1.getPose()));
+    m_driverController.y().onTrue(m_drivetrain.goToPose(PoseConstants.LeftBarge.getPose()));
+    // Bumpers to coral station
 
-    // m_driverController.y().onTrue(m_algaeRollers.feedIn());
-    // m_driverController.y().onFalse(m_algaeRollers.stop());
+    // d-pad for side selection
+    m_driverController.povLeft().onTrue(m_recordInputs.setLeftSideCoralStation());
+    m_driverController.povRight().onTrue(m_recordInputs.setRightSideCoralStation());
 
-    // m_driverController.b().onTrue(m_algaeRollers.feedOut());
-    // m_driverController.b().onFalse(m_algaeRollers.stop());
-
-    // this is buppers for coral station
+    // right bumper left goto
+    /*
     m_driverController
         .rightBumper()
         .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger().negate())
         .whileTrue(
             m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.rightCoralStationPosition2::getPose,
+                PoseConstants.rightCoralStationPosition3::getPose,
                 Meters.of(1),
-                m_commandFactory.coralPivotAndIntake()));
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // right bumper left return
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose, // TODO: add a return position constant
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
+
+    // right bumper right goto
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.rightCoralStationPosition1::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // right bumper right return
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger().negate())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
+
+    // left bumper left side goto
     m_driverController
         .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger().negate())
         .whileTrue(
             m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.leftCoralStationPosition2::getPose,
+                PoseConstants.leftCoralStationPosition3::getPose,
                 Meters.of(1),
-                m_commandFactory.coralPivotAndIntake()));
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // left bumper left side return
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
+
+    // left bumper right side goto
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger().negate())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.leftCoralStationPosition1::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // left bumper right side return
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.getCoralTrigger())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));*/
   }
 
   private void configureCoDriverControls() {
     // Setup codriver's controlls
+
+    // debug
+    // m_coDriverController.a().onTrue(m_coralPivot.)
+
+    // Elevator commands
+    m_coDriverController.povUp().and(this::yIsPressed).whileTrue(m_elevator.trimUp());
+    m_coDriverController.povUp().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
+    m_coDriverController.povDown().and(this::yIsPressed).whileTrue(m_elevator.trimDown());
+    m_coDriverController.povDown().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+
     m_coDriverController
-        .a()
-        .whileTrue(m_coralRollers.rollInCommand())
-        .onFalse(m_coralRollers.stopCommand());
+        .povUp()
+        .and(this::yIsNotPressed)
+        .onTrue(m_elevator.setCoralPosition(CoralLevels.L1));
+
+    m_coDriverController.povRight().onTrue(m_elevator.setCoralPosition(CoralLevels.L2));
+
     m_coDriverController
-        .b()
-        .whileTrue(m_coralRollers.rollOutCommand())
-        .onFalse(m_coralRollers.stopCommand());
-    m_coralRollers
-        .getCoralTrigger()
-        .onTrue(rumbleCommand(m_coDriverController, RumbleType.kBothRumble, 1.0, Seconds.of(0.5)));
+        .povDown()
+        .and(m_coDriverController.y().negate())
+        .onTrue(m_elevator.setCoralPosition(CoralLevels.L3));
+
+    m_coDriverController.povLeft().onTrue(m_elevator.setCoralPosition(CoralLevels.L4));
+
+    // intakes/outtakes
+
+    m_coDriverController.leftBumper().onTrue(m_algaeRollers.feedIn());
+    m_coDriverController.leftBumper().onFalse(m_algaeRollers.stop());
+
+    m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut());
+    m_coDriverController.rightBumper().onFalse(m_algaeRollers.feedOut());
+
+    m_coDriverController
+        .leftTrigger()
+        .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION));
+    m_coDriverController.leftTrigger().onFalse(m_coralRollers.stopCommand());
+
+    m_coDriverController
+        .rightTrigger()
+        .onTrue(m_coralRollers.rollOutCommand(CoralLevels.CORAL_STATION));
+    m_coDriverController.rightTrigger().onFalse(m_coralRollers.stopCommand());
   }
 
   private Command rumbleCommand(

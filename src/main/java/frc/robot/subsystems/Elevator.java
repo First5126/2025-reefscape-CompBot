@@ -71,8 +71,8 @@ public class Elevator extends SubsystemBase {
     m_leftConfig.Slot0 = m_slot0Configs;
     m_moitonMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
     m_leftConfig.MotionMagic.MotionMagicCruiseVelocity = 40;
-    m_leftConfig.MotionMagic.MotionMagicAcceleration = 80;
-    m_leftConfig.MotionMagic.MotionMagicJerk = 400;
+    m_leftConfig.MotionMagic.MotionMagicAcceleration = 60;
+    m_leftConfig.MotionMagic.MotionMagicJerk = 360;
 
     m_leftConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.RemoteCANdiS1;
     m_leftConfig.HardwareLimitSwitch.ForwardLimitRemoteSensorID = m_CANdi.getDeviceID();

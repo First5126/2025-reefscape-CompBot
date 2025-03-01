@@ -96,7 +96,7 @@ public class CoralPivot extends SubsystemBase {
   public Command goToCoralSetpoint() {
     return runOnce(
         () -> {
-          rotate(CoralPivotConstants.CORAL_STATION_ANGLE);
+          rotate(CoralPivotConstants.L1);
         });
   }
 }
