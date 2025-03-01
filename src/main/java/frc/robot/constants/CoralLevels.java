@@ -10,10 +10,11 @@ import edu.wpi.first.units.measure.Distance;
 
 public enum CoralLevels {
   L1(0.0, 1, -100),
-  L2(1.35009765625, 1, -110),
+  L2(1.30, 1, -110),
   L3(2.8163769531249996, 1, -110),
   L4(4.975830078125, 1, -110),
-  CORAL_STATION(0.914795, 1, 80);
+  CORAL_STATION(0.914795, 1, 80),
+  CORAL_STATION_OUT(0.914795, 1, -110);
 
   // Height of the elevator expressed in Revolutions.
   public final Angle heightAngle;
