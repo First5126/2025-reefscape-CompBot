@@ -112,6 +112,7 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
         m_drivetrain.gasPedalCommand(
             m_driverController::getRightTriggerAxis,
+            m_driverController::getLeftTriggerAxis,
             m_driverController::getRightX,
             m_driverController::getLeftY,
             m_driverController::getLeftX));
