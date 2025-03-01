@@ -7,8 +7,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.constants.PoseConstants;
 import frc.robot.constants.ElevatorConstants.CoralLevels;
+import frc.robot.constants.PoseConstants;
 import frc.robot.constants.PoseConstants.Pose;
 import java.util.HashSet;
 import java.util.function.BooleanSupplier;
@@ -116,9 +116,11 @@ public class CommandFactory {
         .andThen(finishIntake);
   }
 
-  public Command algaePivotAndOutake(){
+  public Command algaePivotAndOutake() {
     Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
-    Command goToPosition = moveToPositionWithDistance(PoseConstants.prossesor::getPose, Meters.of(1), pivotAlgaeRollers);
+    Command goToPosition =
+        moveToPositionWithDistance(
+            PoseConstants.prossesor::getPose, Meters.of(1), pivotAlgaeRollers);
     Command finalCommand = goToPosition.andThen(m_algaeRollers.feedOut());
 
     return finalCommand;

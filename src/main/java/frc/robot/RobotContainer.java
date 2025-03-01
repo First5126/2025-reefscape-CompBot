@@ -72,8 +72,7 @@ public class RobotContainer {
           m_drivetrain::addVisionMeasurement,
           AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
           AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
-          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR
-          );
+          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);
 
   private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
@@ -133,6 +132,7 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
         m_drivetrain.gasPedalCommand(
             m_driverController::getRightTriggerAxis,
+            m_driverController::getLeftTriggerAxis,
             m_driverController::getRightX,
             m_driverController::getLeftY,
             m_driverController::getLeftX));
@@ -228,13 +228,7 @@ public class RobotContainer {
         .andThen(stopRumble);
   }
 
-public Command getAutonomousCommand() {
-    return Commands.sequence(
-        m_drivetrain.followTrajectoryCommand(PoseConstants.middleStartPosition, PoseConstants.reefPosition),
-        m_commandFactory.placeCoralCommand(),
-        m_drivetrain.followTrajectoryCommand(PoseConstants.reefPosition, PoseConstants.coralStationPosition),
-        m_commandFactory.getCoralCommand()
-    );
-}
-
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 }
