@@ -39,15 +39,39 @@ public class AprilTagLocalizationConstants {
     }
   }
 
-  public static final String LIMELIGHT_NAME = "limelight-back";
-  public static final Matrix<N3, N1> LIMELIGHT_CLOSE_STDDEV =
+  public static final String LIMELIGHT_NAME_BACKL = "limelight-backl";
+  public static final Matrix<N3, N1> LIMELIGHT_CLOSE_STDDEV_BACKL =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
-  public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV =
+  public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_BACKL =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
-  public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET = VecBuilder.fill(0.38, 0, 0);
-  public static final LimelightDetails LIMELIGHT_DETAILS =
+  public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_BACKL = VecBuilder.fill(0.1651, -0.2921, -0.236982);
+  public static final LimelightDetails LIMELIGHT_DETAILS_BACKL =
       new LimelightDetails(
-          LIMELIGHT_NAME, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_CLOSE_STDDEV, LIMELIGHT_INVERSE_OFFSET);
+        LIMELIGHT_NAME_BACKL, LIMELIGHT_CLOSE_STDDEV_BACKL, LIMELIGHT_FAR_STDDEV_BACKL, LIMELIGHT_INVERSE_OFFSET_BACKL);
+
+  public static final String LIMELIGHT_NAME_ELEVATE = "limelight-elevate";
+  public static final Matrix<N3, N1> LIMELIGHT_CLOSE_STDDEV_ELEVATE =
+      VecBuilder.fill(0.05, 0.05, 999999999.9);
+  public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_ELEVATE =
+      VecBuilder.fill(0.05, 0.05, 999999999.9);
+  public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_ELEVATE = VecBuilder.fill(-0.14605, -0.1143, -0.9525);
+  public static final LimelightDetails LIMELIGHT_DETAILS_ELEVATE =
+      new LimelightDetails(
+
+
+        LIMELIGHT_NAME_ELEVATE, LIMELIGHT_CLOSE_STDDEV_ELEVATE, LIMELIGHT_FAR_STDDEV_ELEVATE, LIMELIGHT_INVERSE_OFFSET_ELEVATE);
+  public static final String LIMELIGHT_NAME_FRONTR = "limelight-frontr";
+  public static final Matrix<N3, N1> LIMELIGHT_CLOSE_STDDEV_FRONTR =
+      VecBuilder.fill(0.05, 0.05, 999999999.9);
+  public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_FRONTR =
+      VecBuilder.fill(0.05, 0.05, 999999999.9);
+  public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_FRONTR = VecBuilder.fill(-0.29845, 0.2667, -0.236982);
+  public static final LimelightDetails LIMELIGHT_DETAILS_FRONTR =
+      new LimelightDetails(
+        LIMELIGHT_NAME_FRONTR, LIMELIGHT_CLOSE_STDDEV_FRONTR, LIMELIGHT_FAR_STDDEV_FRONTR, LIMELIGHT_INVERSE_OFFSET_FRONTR);
+
+
+
   public static final AprilTagFieldLayout FIELD_LAYOUT =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
   public static final Distance MAX_TAG_DISTANCE = Meters.of(3.0);

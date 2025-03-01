@@ -99,7 +99,7 @@ public class AprilTagRecognition extends SubsystemBase {
 
   private int getClosestTagId() {
     RawFiducial[] allTags =
-        LimelightHelpers.getRawFiducials(AprilTagLocalizationConstants.LIMELIGHT_NAME);
+        LimelightHelpers.getRawFiducials(AprilTagLocalizationConstants.LIMELIGHT_NAME_FRONTR);
     RawFiducial closestTag;
     int result = 0;
     if (allTags.length > 0) {
