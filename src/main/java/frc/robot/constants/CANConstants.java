@@ -22,6 +22,8 @@ public class CANConstants {
 
   public static final int ALGAE_PIVOT = 4;
 
+  public static final int ALGAE_CAN_RANGE = 3;
+
   public static final int LEFT_CAN_RANGE_CORAL = 2;
   public static final int RIGHT_CAN_RANGE_CORAL = 1;
 

@@ -24,7 +24,7 @@ public final class CoralPivotConstants {
   public static final Angle CORAL_STATION_ANGLE = Degrees.of(74.5);
 
   public static final Angle L1 = Degrees.of(140);
-  public static final Angle L2 = Degrees.of(98.6);
-  public static final Angle L3 = Degrees.of(98.6);
-  public static final Angle L4 = Degrees.of(98.6);
+  public static final Angle L2 = Degrees.of(3.69);
+  public static final Angle L3 = Degrees.of(3.69);
+  public static final Angle L4 = Degrees.of(3.69);
 }

@@ -91,6 +91,13 @@ public class CommandFactory {
         .andThen(finishIntake);
   }
 
+  public Command coralPivotAndOutake(CoralLevels level) {
+    Command elevator = m_elevator.setCoralPosition(level);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+
+    return elevator.andThen(pivotCoralRollers);
+  }
+
   public Command algaePivotAndIntake() {
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
     Command intakeAlgae = m_algaeRollers.feedIn();
@@ -98,7 +105,7 @@ public class CommandFactory {
     Command finishIntake = m_algaePivot.goToUpperSetpoint().alongWith(m_algaeRollers.stop());
     return pivotAlgaeRollers
         .alongWith(intakeAlgae)
-        .until(m_algaeRollers.hasGamePiece())
+        .until(m_algaeRollers.hasAlgae())
         .andThen(finishIntake);
   }
 

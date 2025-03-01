@@ -139,14 +139,14 @@ public class RobotContainer {
     m_driverController.b().onTrue(m_aprilTagLocalization.setTrust(true));
     m_driverController.b().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    // m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
+    m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
     // Bumpers to coral station
 
     // d-pad for side selection
     m_driverController.povLeft().onTrue(m_recordInputs.setLeftSideCoralStation());
     m_driverController.povRight().onTrue(m_recordInputs.setRightSideCoralStation());
 
-    m_driverController.a().onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+    // m_driverController.a().onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
 
     // right bumper left goto
     /*
@@ -254,16 +254,16 @@ public class RobotContainer {
     m_coDriverController
         .povUp()
         .and(this::yIsNotPressed)
-        .onTrue(m_elevator.setCoralPosition(CoralLevels.L1));
+        .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L1));
 
-    m_coDriverController.povRight().onTrue(m_elevator.setCoralPosition(CoralLevels.L2));
+    m_coDriverController.povRight().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L2));
 
     m_coDriverController
         .povDown()
         .and(m_coDriverController.y().negate())
-        .onTrue(m_elevator.setCoralPosition(CoralLevels.L3));
+        .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L3));
 
-    m_coDriverController.povLeft().onTrue(m_elevator.setCoralPosition(CoralLevels.L4));
+    m_coDriverController.povLeft().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L4));
 
     // intakes/outtakes
 

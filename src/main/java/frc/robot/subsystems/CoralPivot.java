@@ -99,4 +99,11 @@ public class CoralPivot extends SubsystemBase {
           rotate(CoralPivotConstants.CORAL_STATION_ANGLE);
         });
   }
+
+  public Command gotoAngle(Angle angle) {
+    return runOnce(
+        () -> {
+          rotate(angle);
+        });
+  }
 }

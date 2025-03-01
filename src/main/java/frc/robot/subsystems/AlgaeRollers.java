@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -13,6 +16,8 @@ import frc.robot.constants.CANConstants;
 
 public class AlgaeRollers extends SubsystemBase {
   private TalonFXS m_motorOne;
+
+  private CANrange m_algaeCANrange;
 
   private Trigger m_hasGamePiece;
 
@@ -33,35 +38,52 @@ public class AlgaeRollers extends SubsystemBase {
 
     m_motorOne.getConfigurator().apply(talonFXSConfiguration);
 
+    CANrangeConfiguration CANrangeConfiguration = new CANrangeConfiguration();
+    CANrangeConfiguration.ProximityParams.ProximityThreshold = AlgaeConstants.PROXIMITY_THRESHOLD;
+
+    m_algaeCANrange = new CANrange(CANConstants.ALGAE_CAN_RANGE, CANConstants.ELEVATOR_CANIVORE);
+    m_algaeCANrange.getConfigurator().apply(CANrangeConfiguration);
+
     m_hasGamePiece = new Trigger(this::getGamePieceDetected);
   }
 
   private boolean getGamePieceDetected() {
-    return m_motorOne.getFault_ForwardSoftLimit().getValue();
+    return m_algaeCANrange.getIsDetected().getValue();
   }
 
-  public Trigger hasGamePiece() {
+  public Trigger hasAlgae() {
     return m_hasGamePiece;
   }
 
   public Command feedIn() {
     return runOnce(
-        () -> {
-          m_motorOne.setControl(m_velocityVoltage.withVelocity(AlgaeConstants.INTAKE_SPEED));
-        });
+            () -> {
+              m_motorOne.setControl(new VoltageOut(AlgaeConstants.INTAKE_SPEED));
+            })
+        .until(hasAlgae())
+        .andThen(holdAlgae().onlyWhile(hasAlgae()).andThen(stop()));
   }
 
   public Command feedOut() {
     return runOnce(
-        () -> {
-          m_motorOne.setControl(m_velocityVoltage.withVelocity(AlgaeConstants.OUTTAKE_SPEED));
-        });
+            () -> {
+              m_motorOne.setControl(new VoltageOut(AlgaeConstants.OUTTAKE_SPEED));
+            })
+        .onlyWhile(hasAlgae())
+        .andThen(stop());
   }
 
   public Command stop() {
     return runOnce(
         () -> {
           m_motorOne.setControl(m_velocityVoltage.withVelocity(0.0));
+        });
+  }
+
+  public Command holdAlgae() {
+    return runOnce(
+        () -> {
+          m_motorOne.setControl(new VoltageOut(AlgaeConstants.HOLDING_SPEED));
         });
   }
 
