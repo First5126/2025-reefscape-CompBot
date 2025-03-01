@@ -103,7 +103,12 @@ public class AprilTagRecognition extends SubsystemBase {
     RawFiducial closestTag;
     int result = 0;
     if (allTags.length > 0) {
-      closestTag = allTags[0];
+        closestTag = allTags[0];
+        for (RawFiducial tag : allTags) {
+            if (tag.distToCamera < closestTag.distToRobot) {
+                closestTag = tag;
+            }
+        }
       result = closestTag.id;
     } else {
       result = 0;
