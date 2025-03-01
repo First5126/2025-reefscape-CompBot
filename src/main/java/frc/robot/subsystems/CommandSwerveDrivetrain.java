@@ -60,9 +60,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds =
       new SwerveRequest.ApplyRobotSpeeds();
 
-  private final SwerveRequest.FieldCentric m_drive =
+  private final SwerveRequest.FieldCentric m_FieldCentricdrive =
       new SwerveRequest.FieldCentric()
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private final SwerveRequest.RobotCentric m_RobotCentricdrive =
+      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
@@ -376,34 +378,60 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command gasPedalCommand(
-      Supplier<Double> throttleSupplier,
+      Supplier<Double> FieldCentricthrottleSupplier,
+      Supplier<Double> RobotCentricthrottleSupplier,
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
       Supplier<Double> ySupplier) {
     return run(
         () -> {
-          double throttle =
-              ControllerConstants.modifyAxisWithCustomDeadband(-throttleSupplier.get(), 0.15);
+          double FieldCentricthrottle =
+              ControllerConstants.modifyAxisWithCustomDeadband(
+                  FieldCentricthrottleSupplier.get(), 0.15);
+          double RobotCentricThrottle =
+              ControllerConstants.modifyAxis(-RobotCentricthrottleSupplier.get());
+          ControllerConstants.modifyAxis(xSupplier.get());
+          ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
               ControllerConstants.modifyAxisWithCustomDeadband(rotationSupplier.get(), 0.15);
           double x = ControllerConstants.modifyAxis(xSupplier.get());
           double y = ControllerConstants.modifyAxis(ySupplier.get());
+          double activeThrottle;
 
-          // making sure the values arent 0
-          if (!(x == 0 && y == 0)) {
-            double angle = Math.atan2(x, y) + Math.PI / 2;
-            x = Math.cos(angle) * throttle;
-            y = Math.sin(angle) * throttle;
+          if (FieldCentricthrottle != 0) {
+            activeThrottle = FieldCentricthrottle;
+          } else {
+            activeThrottle = RobotCentricThrottle;
           }
 
-          setControl(
-              m_drive
-                  .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
-                  .withDeadband(0.05)
-                  .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
-                  .withDeadband(0.05)
-                  .withRotationalRate(
-                      -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+          if (!(x == 0 && y == 0)) {
+            double angle = Math.atan2(x, y) + Math.PI / 2;
+            x = Math.cos(angle) * activeThrottle;
+            y = Math.sin(angle) * activeThrottle;
+          }
+
+          if (activeThrottle == RobotCentricThrottle) {
+            setControl(
+                m_RobotCentricdrive
+                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                    .withDeadband(0.05)
+                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                    .withDeadband(0.05)
+                    .withRotationalRate(
+                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+          } else {
+            setControl(
+                m_FieldCentricdrive
+                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                    .withDeadband(0.05)
+                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                    .withDeadband(0.05)
+                    .withRotationalRate(
+                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+          }
+
+          SmartDashboard.putNumber("FieldCentricthrottle", FieldCentricthrottle);
+          SmartDashboard.putNumber("RobotCentricThrottle", RobotCentricThrottle);
         });
   }
 
