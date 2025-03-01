@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
-import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -140,16 +139,14 @@ public class RobotContainer {
     m_driverController.b().onTrue(m_aprilTagLocalization.setTrust(true));
     m_driverController.b().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
-
-    // Process algae
-    m_driverController.y().onTrue(m_drivetrain.goToPose(PoseConstants.prossesor::getPose));
-
+    // m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
     // Bumpers to coral station
 
     // d-pad for side selection
     m_driverController.povLeft().onTrue(m_recordInputs.setLeftSideCoralStation());
     m_driverController.povRight().onTrue(m_recordInputs.setRightSideCoralStation());
+
+    m_driverController.a().onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
 
     // right bumper left goto
     /*
@@ -248,11 +245,11 @@ public class RobotContainer {
     // m_coDriverController.a().onTrue(m_coralPivot.)
 
     // Elevator commands
-    m_coDriverController.povUp().and(this::yIsPressed).whileTrue(m_elevator.trimUp());
-    m_coDriverController.povUp().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+    m_coDriverController.povUp().and(m_coDriverController.y()).whileTrue(m_elevator.trimUp());
+    m_coDriverController.povUp().and(m_coDriverController.y()).onFalse(m_elevator.stopMotors());
 
-    m_coDriverController.povDown().and(this::yIsPressed).whileTrue(m_elevator.trimDown());
-    m_coDriverController.povDown().and(this::yIsPressed).onFalse(m_elevator.stopMotors());
+    m_coDriverController.povDown().and(m_coDriverController.y()).whileTrue(m_elevator.trimDown());
+    m_coDriverController.povDown().and(m_coDriverController.y()).onFalse(m_elevator.stopMotors());
 
     m_coDriverController
         .povUp()
@@ -274,7 +271,7 @@ public class RobotContainer {
     m_coDriverController.leftBumper().onFalse(m_algaeRollers.stop());
 
     m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut());
-    m_coDriverController.rightBumper().onFalse(m_algaeRollers.feedOut());
+    m_coDriverController.rightBumper().onFalse(m_algaeRollers.stop());
 
     m_coDriverController
         .leftTrigger()
@@ -283,7 +280,7 @@ public class RobotContainer {
 
     m_coDriverController
         .rightTrigger()
-        .onTrue(m_coralRollers.rollOutCommand(CoralLevels.CORAL_STATION));
+        .onTrue(m_coralRollers.rollOutCommand(CoralLevels.CORAL_STATION_OUT));
     m_coDriverController.rightTrigger().onFalse(m_coralRollers.stopCommand());
   }
 
