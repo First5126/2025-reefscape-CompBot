@@ -228,8 +228,13 @@ public class RobotContainer {
         .andThen(stopRumble);
   }
 
-  public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    return null;
-  }
+public Command getAutonomousCommand() {
+    return Commands.sequence(
+        m_drivetrain.followTrajectoryCommand(PoseConstants.middleStartPosition, PoseConstants.reefPosition),
+        m_commandFactory.placeCoralCommand(),
+        m_drivetrain.followTrajectoryCommand(PoseConstants.reefPosition, PoseConstants.coralStationPosition),
+        m_commandFactory.getCoralCommand()
+    );
+}
+
 }
