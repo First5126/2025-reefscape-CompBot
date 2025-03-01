@@ -25,12 +25,20 @@ public class AprilTagRecognition extends SubsystemBase {
         LimelightHelpers.getRawFiducials(AprilTagLocalizationConstants.LIMELIGHT_NAME);
     RawFiducial closestTag;
     int result = 0;
+    SmartDashboard.putNumber("Tag length", allTags.length);
     if (allTags.length > 0) {
       closestTag = allTags[0];
+      for (RawFiducial tag : allTags) {
+        if (tag.distToRobot < closestTag.distToRobot) {
+          closestTag = tag;
+        }
+      }
       result = closestTag.id;
     } else {
       result = 0;
     }
+
+    SmartDashboard.putNumber("Current April Tag Command ID", result);
 
     return result;
   }
