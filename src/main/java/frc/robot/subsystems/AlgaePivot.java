@@ -6,7 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
@@ -19,7 +20,7 @@ import frc.robot.constants.CANConstants;
 
 public class AlgaePivot extends SubsystemBase {
   private Slot0Configs m_Slot0Configs;
-  private PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
+  private MotionMagicVoltage m_motionMatiVoltage = new MotionMagicVoltage(0).withSlot(0);
   private TalonFXS m_AlgaePivotTalon;
   private TalonFXSConfiguration m_TalonConfiguration;
 
@@ -36,9 +37,10 @@ public class AlgaePivot extends SubsystemBase {
     m_TalonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_TalonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
     m_TalonConfiguration.ExternalFeedback.ExternalFeedbackSensorSource =
-        ExternalFeedbackSensorSourceValue.FusedCANdiQuadrature;
-    m_TalonConfiguration.ExternalFeedback.SensorToMechanismRatio = 4096;
-    m_TalonConfiguration.ExternalFeedback.RotorToSensorRatio = 104;
+        ExternalFeedbackSensorSourceValue.PulseWidth;
+    m_TalonConfiguration.ExternalFeedback.QuadratureEdgesPerRotation = 2048;
+    m_TalonConfiguration.ExternalFeedback.RotorToSensorRatio = 100;
+    m_TalonConfiguration.ExternalFeedback.AbsoluteSensorDiscontinuityPoint = 0.5;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         AlgaePivotConstants.lowerSupplyCurrentLimit;
@@ -47,10 +49,12 @@ public class AlgaePivot extends SubsystemBase {
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);
     m_AlgaePivotTalon.getConfigurator().apply(m_Slot0Configs);
     m_AlgaePivotTalon.getConfigurator().apply(m_TalonConfiguration);
+
+    m_AlgaePivotTalon.setControl(new DutyCycleOut(0));
   }
 
   private void rotate(Angle setpoint) {
-    m_AlgaePivotTalon.setControl(positionVoltage.withPosition(setpoint));
+    m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
   }
 
   public Command goToLowerSetpoint() {

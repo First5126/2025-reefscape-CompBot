@@ -136,10 +136,12 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
 
-    m_driverController.b().onTrue(m_aprilTagLocalization.setTrust(true));
-    m_driverController.b().onFalse(m_aprilTagLocalization.setTrust(false));
+    m_driverController.y().onTrue(m_aprilTagLocalization.setTrust(true));
+    m_driverController.y().onFalse(m_aprilTagLocalization.setTrust(false));
 
     m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
+
+    m_driverController.b().onTrue(m_commandFactory.moveBack());
     // Bumpers to coral station
 
     // d-pad for side selection
@@ -242,7 +244,14 @@ public class RobotContainer {
     // Setup codriver's controlls
 
     // debug
-    // m_coDriverController.a().onTrue(m_coralPivot.)
+    m_coDriverController
+        .x()
+        .onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+
+    m_coDriverController
+        .leftTrigger()
+        .and(m_coDriverController.leftStick())
+        .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L1));
 
     // Elevator commands
     m_coDriverController.povUp().and(m_coDriverController.y()).whileTrue(m_elevator.trimUp());
@@ -268,10 +277,8 @@ public class RobotContainer {
     // intakes/outtakes
 
     m_coDriverController.leftBumper().onTrue(m_algaeRollers.feedIn());
-    m_coDriverController.leftBumper().onFalse(m_algaeRollers.stop());
 
     m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut());
-    m_coDriverController.rightBumper().onFalse(m_algaeRollers.stop());
 
     m_coDriverController
         .leftTrigger()

@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -44,7 +45,7 @@ public class AlgaeRollers extends SubsystemBase {
     m_algaeCANrange = new CANrange(CANConstants.ALGAE_CAN_RANGE, CANConstants.ELEVATOR_CANIVORE);
     m_algaeCANrange.getConfigurator().apply(CANrangeConfiguration);
 
-    m_hasGamePiece = new Trigger(this::getGamePieceDetected);
+    m_hasGamePiece = new Trigger(this::getGamePieceDetected).debounce(AlgaeConstants.DEBOUNCE);
   }
 
   private boolean getGamePieceDetected() {
@@ -56,38 +57,38 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedIn() {
-    return runOnce(
-            () -> {
-              m_motorOne.setControl(new VoltageOut(AlgaeConstants.INTAKE_SPEED));
-            })
-        .until(hasAlgae())
-        .andThen(holdAlgae().onlyWhile(hasAlgae()).andThen(stop()));
+    return run(() -> {
+          m_motorOne.setControl(new VoltageOut(AlgaeConstants.INTAKE_SPEED));
+        })
+        .until(m_hasGamePiece)
+        .andThen(holdAlgae());
   }
 
   public Command feedOut() {
-    return runOnce(
-            () -> {
-              m_motorOne.setControl(new VoltageOut(AlgaeConstants.OUTTAKE_SPEED));
-            })
-        .onlyWhile(hasAlgae())
+    return run(() -> {
+          m_motorOne.setControl(new VoltageOut(AlgaeConstants.OUTTAKE_SPEED));
+        })
+        .onlyWhile(m_hasGamePiece)
         .andThen(stop());
   }
 
   public Command stop() {
     return runOnce(
         () -> {
-          m_motorOne.setControl(m_velocityVoltage.withVelocity(0.0));
+          m_motorOne.setControl(new VoltageOut(0));
         });
   }
 
   public Command holdAlgae() {
-    return runOnce(
-        () -> {
+    return run(() -> {
           m_motorOne.setControl(new VoltageOut(AlgaeConstants.HOLDING_SPEED));
-        });
+        })
+        .onlyWhile(m_hasGamePiece)
+        .andThen(stop());
   }
 
   public void periodic() {
+    SmartDashboard.putBoolean("Has Algae", getGamePieceDetected());
     // SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
   }
 }
