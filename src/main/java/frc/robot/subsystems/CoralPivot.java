@@ -93,10 +93,10 @@ public class CoralPivot extends SubsystemBase {
         });
   }
 
-  public Command goToCoralSetpoint() {
+  public Command gotoCoralStationSetpoint() {
     return runOnce(
         () -> {
-          rotate(CoralPivotConstants.L1);
+          rotate(CoralPivotConstants.CORAL_STATION_ANGLE);
         });
   }
 }

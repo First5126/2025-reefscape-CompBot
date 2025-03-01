@@ -79,14 +79,14 @@ public class CommandFactory {
   }
 
   public Command coralPivotAndIntake(CoralLevels level) {
-    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command pivotCoralRollers = m_coralPivot.gotoCoralStationSetpoint();
     Command intakeCoral = m_coralRollers.rollInCommand(level);
     Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
 
-    return pivotCoralRollers;
-    // .alongWith(intakeCoral)
-    // .until(m_coralRollers.getCoralTrigger())
-    // .andThen(finishIntake);
+    return pivotCoralRollers
+        .alongWith(intakeCoral)
+        .until(m_coralRollers.getCoralTrigger())
+        .andThen(finishIntake);
   }
 
   public Command algaePivotAndIntake() {
