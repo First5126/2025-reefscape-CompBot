@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
-import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -137,11 +136,10 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
 
-    m_driverController
-        .a()
-        .onTrue(m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()));
-    m_driverController.b().onTrue(m_drivetrain.goToPose(PoseConstants.ReefPosition1.getPose()));
-    m_driverController.y().onTrue(m_drivetrain.goToPose(PoseConstants.LeftBarge.getPose()));
+    m_driverController.y().onTrue(m_aprilTagLocalization.setTrust(true));
+    m_driverController.y().onFalse(m_aprilTagLocalization.setTrust(false));
+
+    m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
     // Bumpers to coral station
 
     // d-pad for side selection
