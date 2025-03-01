@@ -5,10 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,8 +20,8 @@ import frc.robot.constants.CANConstants;
 public class AlgaePivot extends SubsystemBase {
   private Slot0Configs m_Slot0Configs;
   private PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
-  private TalonFX m_AlgaePivotTalon;
-  private TalonFXConfiguration m_TalonConfiguration;
+  private TalonFXS m_AlgaePivotTalon;
+  private TalonFXSConfiguration m_TalonConfiguration;
 
   public AlgaePivot() {
     m_Slot0Configs = new Slot0Configs();
@@ -31,17 +32,18 @@ public class AlgaePivot extends SubsystemBase {
     m_Slot0Configs.kV = AlgaePivotConstants.kV;
     m_Slot0Configs.kA = AlgaePivotConstants.kA;
 
-    m_TalonConfiguration = new TalonFXConfiguration();
+    m_TalonConfiguration = new TalonFXSConfiguration();
     m_TalonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    m_TalonConfiguration.Feedback.FeedbackSensorSource =
-        FeedbackSensorSourceValue.FusedCANdiQuadrature;
-    m_TalonConfiguration.Feedback.SensorToMechanismRatio = 4096;
-    m_TalonConfiguration.Feedback.RotorToSensorRatio = 104;
+    m_TalonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+    m_TalonConfiguration.ExternalFeedback.ExternalFeedbackSensorSource =
+        ExternalFeedbackSensorSourceValue.FusedCANdiQuadrature;
+    m_TalonConfiguration.ExternalFeedback.SensorToMechanismRatio = 4096;
+    m_TalonConfiguration.ExternalFeedback.RotorToSensorRatio = 104;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;
     m_TalonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         AlgaePivotConstants.lowerSupplyCurrentLimit;
 
-    m_AlgaePivotTalon = new TalonFX(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
+    m_AlgaePivotTalon = new TalonFXS(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);
     m_AlgaePivotTalon.getConfigurator().apply(m_Slot0Configs);
     m_AlgaePivotTalon.getConfigurator().apply(m_TalonConfiguration);

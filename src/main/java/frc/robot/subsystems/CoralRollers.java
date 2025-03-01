@@ -67,7 +67,7 @@ public class CoralRollers extends SubsystemBase {
     m_hasGamePiece = new Trigger(this::isDetected).debounce(CoralConstants.DEBOUNCE);
   }
 
-  public Trigger getCoralTrigger() {
+  public Trigger hasCoral() {
     return m_hasGamePiece;
   }
 
