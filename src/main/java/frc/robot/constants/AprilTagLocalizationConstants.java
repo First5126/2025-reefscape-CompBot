@@ -45,7 +45,7 @@ public class AprilTagLocalizationConstants {
   public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_BACKL =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_BACKL =
-      VecBuilder.fill(0.1651, -0.2921, -0.236982);
+      VecBuilder.fill(-0.31, 0.24, -0.229);
   public static final LimelightDetails LIMELIGHT_DETAILS_BACKL =
       new LimelightDetails(
           LIMELIGHT_NAME_BACKL,
@@ -59,7 +59,7 @@ public class AprilTagLocalizationConstants {
   public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_ELEVATE =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_ELEVATE =
-      VecBuilder.fill(-0.14605, -0.1143, -0.9525);
+      VecBuilder.fill(-0.17, -0.251, -0.949);
   public static final LimelightDetails LIMELIGHT_DETAILS_ELEVATE =
       new LimelightDetails(
           LIMELIGHT_NAME_ELEVATE,
@@ -72,7 +72,7 @@ public class AprilTagLocalizationConstants {
   public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_FRONTR =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_FRONTR =
-      VecBuilder.fill(-0.29845, 0.2667, -0.236982);
+      VecBuilder.fill(0.294, -0.303, -0.199);
   public static final LimelightDetails LIMELIGHT_DETAILS_FRONTR =
       new LimelightDetails(
           LIMELIGHT_NAME_FRONTR,
