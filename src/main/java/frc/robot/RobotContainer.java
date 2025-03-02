@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
@@ -133,6 +134,8 @@ public class RobotContainer {
     configureBindings();
     configureCoDriverControls();
 
+    new Trigger(DriverStation::isDisabled).onTrue(disableRobot());
+
     // Adds a auto chooser to Shuffle Board to choose autos
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -141,6 +144,10 @@ public class RobotContainer {
     DataLogManager.start();
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
+  }
+
+  private Command disableRobot() {
+    return m_elevator.disable();
   }
 
   private boolean yIsNotPressed() {
