@@ -101,6 +101,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Place Coral at L3", m_elevator.setCoralPosition(CoralLevels.L3).asProxy());
     NamedCommands.registerCommand("Place Coral at L2", m_elevator.setCoralPosition(CoralLevels.L2).asProxy());
     NamedCommands.registerCommand("Place Coral at L1", m_elevator.setCoralPosition(CoralLevels.L1).asProxy());
+    NamedCommands.registerCommand("Get Coral From Station 1", m_coralRollers.rollInCommand().asProxy());
 
     new EventTrigger("L4").onTrue(Commands.run(() -> System.out.println("L4")));
     new EventTrigger("L3").onTrue(Commands.run(() -> System.out.println("L3")));
