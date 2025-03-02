@@ -12,12 +12,15 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
@@ -96,16 +99,28 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    /*NamedCommands.registerCommand(
-        "Raise Elevator to position 1", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L1));
+    NamedCommands.registerCommand
+        ("Go To ReefPose1", m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose()).asProxy());
+    NamedCommands.registerCommand
+        ("Go To ReefPose2", m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose()).asProxy());
+    NamedCommands.registerCommand
+        ("Go To ReefPose3", m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose()).asProxy());
+    NamedCommands.registerCommand
+        ("Go To ReefPose4", m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose()).asProxy());
+    NamedCommands.registerCommand
+        ("Go To ReefPose5", m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose()).asProxy());
+    NamedCommands.registerCommand
+        ("Go To ReefPose6", m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 2", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L2));
+        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1().asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 3", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L3));
+        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2().asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 4", m_commandFactory.elevatorPivotAndOutTake(CoralLevels.L4));
+        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3().asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position Coral Station", m_commandFactory.elevatorPivotAndIntake());*/
+        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator to position Coral Station", m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     configureBindings();
     configureCoDriverControls();
@@ -315,7 +330,15 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    return null;
+    return new SequentialCommandGroup(
+        m_drivetrain.goToPose(PoseConstants.ReefPosition6.getPose()),
+        m_commandFactory.elevatorOutTakeL4(),
+        m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()),
+        m_commandFactory.elevatorInTakeCoralStation(),
+        m_drivetrain.goToPose(PoseConstants.ReefPosition2.getPose()),
+        m_commandFactory.elevatorOutTakeL3()
+
+    );
   }
+
 }

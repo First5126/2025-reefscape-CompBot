@@ -140,4 +140,51 @@ public class CommandFactory {
 
     return goToPose(new Pose2d(x, y, rotation));
   }
+
+  public Command elevatorOutTakeL1(){
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L1);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L1);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+
+  }
+
+  public Command elevatorOutTakeL2(){
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+
+  }
+
+  public Command elevatorOutTakeL3(){
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L3);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+
+  }
+
+  public Command elevatorOutTakeL4(){
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+
+  }
+
+  public Command elevatorInTakeCoralStation(){
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
+    Command pivotCoralRollers = m_coralPivot.goToUpperSetpoint();
+    Command inTakeCoral = m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(inTakeCoral);
+
+  }
+
+
 }
