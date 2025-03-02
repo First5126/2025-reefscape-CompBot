@@ -98,7 +98,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Place Coral at L4", m_elevator.setCoralPosition(CoralLevels.L4).asProxy());// These commands are registared to Shuffleboard.
     NamedCommands.registerCommand("Place Coral at L3", m_elevator.setCoralPosition(CoralLevels.L3).asProxy());
     NamedCommands.registerCommand("Place Coral at L2", m_elevator.setCoralPosition(CoralLevels.L2).asProxy());
-    NamedCommands.registerCommand("Place Coral at L1", m_elevat508xd6or.setCoralPosition(CoralLevels.L1).asProxy());
+    NamedCommands.registerCommand("Place Coral at L1", m_elevator.setCoralPosition(CoralLevels.L1).asProxy());
 
     configureBindings();
     configureCoDriverControls();
