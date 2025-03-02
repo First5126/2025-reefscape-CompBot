@@ -20,6 +20,15 @@ public final class ApriltagConstants {
     Blue(final int id) {
       this.id = id;
     }
+
+    public static Blue fromId(final int id) {
+      for (final Blue blue : Blue.values()) {
+        if (blue.id == id) {
+          return blue;
+        }
+      }
+      return null;
+    }
   }
 
   public enum Red {
@@ -39,6 +48,15 @@ public final class ApriltagConstants {
 
     Red(final int id) {
       this.id = id;
+    }
+
+    public static final Red fromId(final int id) {
+      for (final Red red : Red.values()) {
+        if (red.id == id) {
+          return red;
+        }
+      }
+      return null;
     }
   }
 }
