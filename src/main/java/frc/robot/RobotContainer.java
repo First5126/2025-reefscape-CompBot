@@ -66,7 +66,9 @@ public class RobotContainer {
           m_drivetrain::getPose2d,
           m_drivetrain::resetPose,
           m_drivetrain::addVisionMeasurement,
-          AprilTagLocalizationConstants.LIMELIGHT_DETAILS);
+          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
+          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
+          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);
 
   private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
@@ -125,8 +127,11 @@ public class RobotContainer {
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
     m_driverController.x().whileTrue(m_aprilTagRecognition.getPosition());
-    // m_driverController.x().onTrue(m_coralPivot.goToLowerSetpoint());
-    // m_driverController.y().onTrue(m_coralPivot.goToUpperSetpoint());
+
+    m_driverController.y().onTrue(m_aprilTagLocalization.setTrust(true));
+    m_driverController.y().onFalse(m_aprilTagLocalization.setTrust(false));
+
+    m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
   }
 
   private void configureCoDriverControls() {

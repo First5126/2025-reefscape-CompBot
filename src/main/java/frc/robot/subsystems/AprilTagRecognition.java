@@ -22,7 +22,7 @@ public class AprilTagRecognition extends SubsystemBase {
 
   private int getClosestTagId() {
     RawFiducial[] allTags =
-        LimelightHelpers.getRawFiducials(AprilTagLocalizationConstants.LIMELIGHT_NAME);
+        LimelightHelpers.getRawFiducials(AprilTagLocalizationConstants.LIMELIGHT_NAME_FRONTR);
     RawFiducial closestTag;
     int result = 0;
     SmartDashboard.putNumber("Tag length", allTags.length);
@@ -43,12 +43,12 @@ public class AprilTagRecognition extends SubsystemBase {
     return result;
   }
 
-  public Command getAprilTagCommand() {
-    // TODO: make sure this works
-    Command tagCommand = Commands.select(m_AprilTagHashMap, this::getClosestTagId);
-    m_currentAprilID = this.getClosestTagId();
-    return tagCommand;
-  }
+  // public Command getAprilTagCommand() {
+  //   // TODO: make sure this works
+  //   // Command tagCommand = Commands.select(m_AprilTagHashMap, this::getClosestTagId);
+  //   m_currentAprilID = this.getClosestTagId();
+  //   return tagCommand;
+  // }
 
   public void periodic() {
     SmartDashboard.putNumber("Current April Tag Command ID", m_currentAprilID);
