@@ -14,6 +14,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.events.TriggerEvent;
 
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -99,6 +101,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Place Coral at L3", m_elevator.setCoralPosition(CoralLevels.L3).asProxy());
     NamedCommands.registerCommand("Place Coral at L2", m_elevator.setCoralPosition(CoralLevels.L2).asProxy());
     NamedCommands.registerCommand("Place Coral at L1", m_elevator.setCoralPosition(CoralLevels.L1).asProxy());
+
+    new EventTrigger("L4").onTrue(Commands.run(() -> System.out.println("L4")));
+    new EventTrigger("L3").onTrue(Commands.run(() -> System.out.println("L3")));
+    new EventTrigger("L2").onTrue(Commands.run(() -> System.out.println("L2")));
+    new EventTrigger("L1").onTrue(Commands.run(() -> System.out.println("L1")));
 
     configureBindings();
     configureCoDriverControls();
