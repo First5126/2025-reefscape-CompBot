@@ -19,11 +19,14 @@ import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
@@ -94,6 +97,8 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
+    SmartDashboard.putBoolean("Elevator Lower Limit Switch Status: ", isLowerLimitReached());
+    SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
   }
 
   public Command openLoopCommand(Supplier<Double> speed) {
@@ -180,6 +185,12 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  public Command zeroElevator() {
+    // TODO: add logic for zero elevator
+
+    return Commands.none();
+  }
+
   private double getElevatorHeight() {
     return m_leftMotor.getPosition().getValue().in(Rotations);
   }
@@ -214,5 +225,13 @@ public class Elevator extends SubsystemBase {
     int index = Arrays.binarySearch(m_corralLevels, m_currentCoralLevel);
     // if not found, make sure return bottom
     return (index < 0) ? 0 : index;
+  }
+
+  private boolean isLowerLimitReached() {
+    return m_leftMotor.getReverseLimit().getValue().equals(ReverseLimitValue.ClosedToGround);
+  }
+
+  private boolean isUpperLimitReached() {
+    return m_leftMotor.getForwardLimit().getValue().equals(ForwardLimitValue.ClosedToGround);
   }
 }
