@@ -187,4 +187,9 @@ public class CommandFactory {
   }
 
 
+
+public Command coralOutakeAndFlipUp(CoralLevels level) {
+    return m_coralRollers.rollOutCommand(level).andThen(m_coralPivot.goToUpperSetpoint());
+  }
+
 }

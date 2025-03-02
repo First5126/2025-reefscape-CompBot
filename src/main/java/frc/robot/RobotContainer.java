@@ -305,7 +305,7 @@ public class RobotContainer {
 
     m_coDriverController
         .rightTrigger()
-        .onTrue(m_coralRollers.rollOutCommand(CoralLevels.CORAL_STATION_OUT));
+        .onTrue(m_commandFactory.coralOutakeAndFlipUp(CoralLevels.CORAL_STATION));
     m_coDriverController.rightTrigger().onFalse(m_coralRollers.stopCommand());
   }
 
