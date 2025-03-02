@@ -20,6 +20,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,6 +69,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
+  private PIDController m_xController = new PIDController(0.2, 0, 0);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
@@ -378,30 +380,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command gasPedalCommand(
-      Supplier<Double> FieldCentricthrottleSupplier,
-      Supplier<Double> RobotCentricthrottleSupplier,
+      Supplier<Double> fieldCentricthrottleSupplier,
+      Supplier<Double> robotCentricthrottleSupplier,
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
       Supplier<Double> ySupplier) {
     return run(
         () -> {
-          double FieldCentricthrottle =
+          double fieldCentricthrottle =
               ControllerConstants.modifyAxisWithCustomDeadband(
-                  FieldCentricthrottleSupplier.get(), 0.15);
-          double RobotCentricThrottle =
-              ControllerConstants.modifyAxis(-RobotCentricthrottleSupplier.get());
+                  fieldCentricthrottleSupplier.get(), 0.15);
+          double robotCentricThrottle =
+              ControllerConstants.modifyAxis(robotCentricthrottleSupplier.get()) / 2;
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
-              ControllerConstants.modifyAxisWithCustomDeadband(rotationSupplier.get(), 0.15);
+              ControllerConstants.modifyAxisWithCustomDeadband(rotationSupplier.get(), 0.15) / 2;
           double x = ControllerConstants.modifyAxis(-xSupplier.get());
           double y = ControllerConstants.modifyAxis(-ySupplier.get());
           double activeThrottle;
 
-          if (FieldCentricthrottle != 0) {
-            activeThrottle = FieldCentricthrottle;
+          if (fieldCentricthrottle != 0) {
+            activeThrottle = fieldCentricthrottle;
           } else {
-            activeThrottle = RobotCentricThrottle;
+            activeThrottle = robotCentricThrottle;
           }
 
           if (!(x == 0 && y == 0)) {
@@ -410,7 +412,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             y = Math.sin(angle) * activeThrottle;
           }
 
-          if (activeThrottle == RobotCentricThrottle) {
+          if (activeThrottle == robotCentricThrottle) {
             setControl(
                 m_RobotCentricdrive
                     .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
@@ -430,8 +432,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
           }
 
-          SmartDashboard.putNumber("FieldCentricthrottle", FieldCentricthrottle);
-          SmartDashboard.putNumber("RobotCentricThrottle", RobotCentricThrottle);
+          SmartDashboard.putNumber("FieldCentricthrottle", fieldCentricthrottle);
+          SmartDashboard.putNumber("RobotCentricThrottle", robotCentricThrottle);
         });
   }
 
@@ -487,5 +489,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Matrix<N3, N1> visionMeasurementStdDevs) {
     super.addVisionMeasurement(
         visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+  }
+
+  // -18.5
+  private void horizontalDrive(Supplier<Double> horizontalError, double skew) {
+    double xError = horizontalError.get() + skew;
+    m_RobotCentricdrive
+        .withVelocityX(m_xController.calculate(xError))
+        .withVelocityY(0)
+        .withRotationalRate(0);
+  }
+
+  private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
+    run(() -> horizontalDrive(horizontalError, skew));
   }
 }
