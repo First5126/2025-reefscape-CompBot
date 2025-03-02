@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -115,11 +116,11 @@ public class CoralRollers extends SubsystemBase {
   }
 
   private void rollIn(CoralLevels level) {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
+    m_coralTalonFXS.setControl(new VoltageOut(level.volts));
   }
 
   private void rollOut(CoralLevels level) {
-    m_coralTalonFXS.setControl(m_VelocityVoltage.withVelocity(level.velocity));
+    m_coralTalonFXS.setControl(new VoltageOut(level.volts));
   }
 
   private void stop() {
