@@ -14,6 +14,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -133,6 +135,12 @@ public class RobotContainer {
 
     // Adds a auto chooser to Shuffle Board to choose autos
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    // https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html
+    // Starts recording to data log
+    DataLogManager.start();
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   private boolean yIsNotPressed() {
