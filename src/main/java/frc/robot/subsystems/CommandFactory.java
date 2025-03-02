@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -127,15 +126,18 @@ public class CommandFactory {
   }
 
   public Command moveBack() {
-    SmartDashboard.putNumber(
-        "Move Back PoseX",
-        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))).getX());
+    Rotation2d rotation = m_robotPoseSupplier.get().getRotation();
+    double x = m_robotPoseSupplier.get().getX() - (0.3 * Math.cos(rotation.getDegrees()));
+    double y = m_robotPoseSupplier.get().getY() - (0.3 * Math.sin(rotation.getDegrees()));
+    double[] debugArray = {x, y};
 
-    SmartDashboard.putNumber(
-        "Move Back PoseY",
-        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))).getY());
+    SmartDashboard.putNumberArray("Move Back Position", debugArray);
 
-    return m_drivetrain.goToPose(
-        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))));
+    double[] debugArray2 = {
+      0.3 * Math.cos(rotation.getDegrees()), 0.3 * Math.sin(rotation.getDegrees())
+    };
+    SmartDashboard.putNumberArray("Signs", debugArray2);
+
+    return goToPose(new Pose2d(x, y, rotation));
   }
 }

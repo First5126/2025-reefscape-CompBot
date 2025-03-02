@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
+import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -137,12 +139,14 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
 
-    m_driverController.y().onTrue(m_aprilTagLocalization.setTrust(true));
-    m_driverController.y().onFalse(m_aprilTagLocalization.setTrust(false));
+    m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
+    m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    m_driverController.a().onTrue(m_drivetrain.zero_pidgeon());
+    m_driverController.y().whileTrue(m_drivetrain.goToPose(PoseConstants.prossesor.getPose()));
 
-    m_driverController.b().onTrue(m_commandFactory.moveBack());
+    m_driverController.start().onTrue(m_drivetrain.zero_pidgeon());
+
+    m_driverController.b().whileTrue(m_commandFactory.moveBack());
     // Bumpers to coral station
 
     // d-pad for side selection
@@ -156,23 +160,21 @@ public class RobotContainer {
     m_driverController
         .rightBumper()
         .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger().negate())
+        .and(m_coralRollers.hasCoral().negate())
         .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.rightCoralStationPosition3::getPose,
-                Meters.of(1),
-                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+            m_commandFactory
+                .moveToPositionWithDistance(
+                    PoseConstants.rightCoralStationPositionLeft::getPose,
+                    Meters.of(1),
+                    m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION))
+                .andThen(m_commandFactory.moveBack()));
 
     // right bumper left return
     m_driverController
         .rightBumper()
         .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.ReefPosition1::getPose, // TODO: add a return position constant
-                Meters.of(1),
-                m_coralPivot.goToUpperSetpoint()));
+        .and(m_coralRollers.hasCoral())
+        .onTrue(m_commandFactory.moveBack());
 
     // right bumper right goto
     m_driverController
@@ -217,18 +219,18 @@ public class RobotContainer {
                 PoseConstants.ReefPosition1::getPose,
                 Meters.of(1),
                 m_coralPivot.goToUpperSetpoint()));
-
+    */
     // left bumper right side goto
     m_driverController
         .leftBumper()
         .and(m_recordInputs::rightCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger().negate())
+        .and(m_coralRollers.hasCoral().negate())
         .whileTrue(
             m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.leftCoralStationPosition1::getPose,
+                PoseConstants.leftCoralStationPositionRight::getPose,
                 Meters.of(1),
                 m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
-
+    /*
     // left bumper right side return
     m_driverController
         .leftBumper()
