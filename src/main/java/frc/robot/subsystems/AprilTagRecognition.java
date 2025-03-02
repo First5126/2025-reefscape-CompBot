@@ -1,15 +1,13 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AprilTagLocalizationConstants;
-import frc.robot.constants.ApriltagConstants;
-import frc.robot.constants.PoseConstants;
 import frc.robot.constants.ApriltagConstants.Blue;
 import frc.robot.constants.ApriltagConstants.Red;
+import frc.robot.constants.PoseConstants;
 import frc.robot.vision.LimelightHelpers;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
 import java.util.HashMap;
@@ -49,86 +47,86 @@ public class AprilTagRecognition extends SubsystemBase {
   public Command getAprilTagCommand() {
     return Commands.deferredProxy(
         () -> {
-            final int tagId = getClosestTagId();
-            Blue blueOption = Blue.fromId(tagId);
-            Red redOption = Red.fromId(tagId);
+          final int tagId = getClosestTagId();
+          Blue blueOption = Blue.fromId(tagId);
+          Red redOption = Red.fromId(tagId);
 
-            if (blueOption != null) {
-                switch (blueOption) {
-                    case LEFT_CORAL_STATION:
-                        return m_commandFactory.goToPose(PoseConstants.leftCoralStationPosition2.getPose());
-                    case RIGHT_CORAL_STATION:
-                        return m_commandFactory.goToPose(PoseConstants.rightCoralStationPosition2.getPose());
-                    case LEFT_BARGE:
-                        return m_commandFactory.goToPose(PoseConstants.LeftBarge.getPose());
-                    case RIGHT_BARGE:
-                        return m_commandFactory.goToPose(PoseConstants.rightBarge.getPose());
-                    case PROCESSOR:
-                        return m_commandFactory.goToPose(PoseConstants.prossesor.getPose());
-                    case REEF_6:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose());
-                    case REEF_1:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose());
-                    case REEF_2:
-                        Command cmd = m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose());
-                        if (cmd == null) {
-                            System.out.println("NO COMMAND FOUND");
-                        } else {
-                            System.out.println("COMMAND FOUND");
-                        }
-                        return cmd;
-                    case REEF_3:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose());
-                    case REEF_4:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose());
-                    case REEF_5:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose());
-
-                    default:
-                        System.out.println("I did not find a value blue");
-                        break;
+          if (blueOption != null) {
+            switch (blueOption) {
+              case LEFT_CORAL_STATION:
+                return m_commandFactory.goToPose(PoseConstants.leftCoralStationPosition2.getPose());
+              case RIGHT_CORAL_STATION:
+                return m_commandFactory.goToPose(
+                    PoseConstants.rightCoralStationPosition2.getPose());
+              case LEFT_BARGE:
+                return m_commandFactory.goToPose(PoseConstants.LeftBarge.getPose());
+              case RIGHT_BARGE:
+                return m_commandFactory.goToPose(PoseConstants.rightBarge.getPose());
+              case PROCESSOR:
+                return m_commandFactory.goToPose(PoseConstants.prossesor.getPose());
+              case REEF_6:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose());
+              case REEF_1:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose());
+              case REEF_2:
+                Command cmd = m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose());
+                if (cmd == null) {
+                  System.out.println("NO COMMAND FOUND");
+                } else {
+                  System.out.println("COMMAND FOUND");
                 }
-            } else if (redOption != null) {
-                switch (redOption) {
-                    case LEFT_CORAL_STATION:
-                        return m_commandFactory.goToPose(PoseConstants.leftCoralStationPosition2.getPose());
-                    case RIGHT_CORAL_STATION:
-                        return m_commandFactory.goToPose(PoseConstants.rightCoralStationPosition2.getPose());
-                    case PROCESSOR:
-                        return m_commandFactory.goToPose(PoseConstants.prossesor.getPose());
-                    case LEFT_BARGE:
-                        return m_commandFactory.goToPose(PoseConstants.LeftBarge.getPose());
-                    case RIGHT_BARGE:
-                        return m_commandFactory.goToPose(PoseConstants.rightBarge.getPose());
-                    case REEF_2:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose());
-                    case REEF_1:
-                        Command cmd = m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose());
-                        if (cmd == null) {
-                            System.out.println("COMMAND NOT FOUND RED");
-                        } else {
-                            System.out.println("COMMAND FOUND RED");
-                        }
-                        return cmd;
-                    case REEF_6:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose());
-                    case REEF_5:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose());
-                    case REEF_4:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose());
-                    case REEF_3:
-                        return m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose());
+                return cmd;
+              case REEF_3:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose());
+              case REEF_4:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose());
+              case REEF_5:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose());
 
-                    default:
-                        System.out.println("I did not find a value Red");
-                        break;
-                }
+              default:
+                System.out.println("I did not find a value blue");
+                break;
             }
-            return Commands.none();
+          } else if (redOption != null) {
+            switch (redOption) {
+              case LEFT_CORAL_STATION:
+                return m_commandFactory.goToPose(PoseConstants.leftCoralStationPosition2.getPose());
+              case RIGHT_CORAL_STATION:
+                return m_commandFactory.goToPose(
+                    PoseConstants.rightCoralStationPosition2.getPose());
+              case PROCESSOR:
+                return m_commandFactory.goToPose(PoseConstants.prossesor.getPose());
+              case LEFT_BARGE:
+                return m_commandFactory.goToPose(PoseConstants.LeftBarge.getPose());
+              case RIGHT_BARGE:
+                return m_commandFactory.goToPose(PoseConstants.rightBarge.getPose());
+              case REEF_2:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose());
+              case REEF_1:
+                Command cmd = m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose());
+                if (cmd == null) {
+                  System.out.println("COMMAND NOT FOUND RED");
+                } else {
+                  System.out.println("COMMAND FOUND RED");
+                }
+                return cmd;
+              case REEF_6:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose());
+              case REEF_5:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose());
+              case REEF_4:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose());
+              case REEF_3:
+                return m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose());
+
+              default:
+                System.out.println("I did not find a value Red");
+                break;
+            }
+          }
+          return Commands.none();
         });
   }
 
-  public void periodic() {
-
-  }
+  public void periodic() {}
 }
