@@ -9,7 +9,7 @@ public final class CoralPivotConstants {
   public static final double MotionMagicCruiseVelocity = 4;
   public static final double MotionMagicJerk = 320;
 
-  public static final double kP = 45;
+  public static final double kP = 50;
   public static final double kI = 0;
   public static final double kD = 0;
   public static final double kG = 0;

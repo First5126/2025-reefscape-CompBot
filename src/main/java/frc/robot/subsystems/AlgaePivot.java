@@ -1,18 +1,20 @@
-// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
+// Copyright (c) FIRST and other WPILib contributors.
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorPhaseValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AlgaePivotConstants;
@@ -20,36 +22,41 @@ import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
 
 public class AlgaePivot extends SubsystemBase {
-  private Slot0Configs m_Slot0Configs;
   private MotionMagicVoltage m_motionMatiVoltage = new MotionMagicVoltage(0).withSlot(0);
   private TalonFXS m_AlgaePivotTalon;
-  private TalonFXSConfiguration m_TalonConfiguration;
 
   public AlgaePivot() {
-    m_Slot0Configs = new Slot0Configs();
-    m_Slot0Configs.kP = AlgaePivotConstants.kP;
-    m_Slot0Configs.kI = AlgaePivotConstants.kI;
-    m_Slot0Configs.kD = AlgaePivotConstants.kD;
-    m_Slot0Configs.kG = AlgaePivotConstants.kG;
-    m_Slot0Configs.kV = AlgaePivotConstants.kV;
-    m_Slot0Configs.kA = AlgaePivotConstants.kA;
+    TalonFXSConfiguration talonFXSConfiguration = new TalonFXSConfiguration();
 
-    m_TalonConfiguration = new TalonFXSConfiguration();
-    m_TalonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    m_TalonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
-    m_TalonConfiguration.ExternalFeedback.ExternalFeedbackSensorSource =
+    talonFXSConfiguration.Slot0.kP = AlgaePivotConstants.kP;
+    talonFXSConfiguration.Slot0.kI = AlgaePivotConstants.kI;
+    talonFXSConfiguration.Slot0.kD = AlgaePivotConstants.kD;
+    talonFXSConfiguration.Slot0.kG = AlgaePivotConstants.kG;
+    talonFXSConfiguration.Slot0.kV = AlgaePivotConstants.kV;
+    talonFXSConfiguration.Slot0.kA = AlgaePivotConstants.kA;
+
+    talonFXSConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXSConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
+    talonFXSConfiguration.ExternalFeedback.ExternalFeedbackSensorSource =
         ExternalFeedbackSensorSourceValue.PulseWidth;
-    m_TalonConfiguration.ExternalFeedback.QuadratureEdgesPerRotation = 2048;
-    m_TalonConfiguration.ExternalFeedback.RotorToSensorRatio = 100;
-    m_TalonConfiguration.ExternalFeedback.AbsoluteSensorDiscontinuityPoint = 0.5;
-    m_TalonConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;
-    m_TalonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
+    talonFXSConfiguration.ExternalFeedback.QuadratureEdgesPerRotation = 2048;
+    talonFXSConfiguration.ExternalFeedback.RotorToSensorRatio = 100;
+    talonFXSConfiguration.ExternalFeedback.AbsoluteSensorDiscontinuityPoint = 0.5;
+    talonFXSConfiguration.ExternalFeedback.AbsoluteSensorOffset = 0.375372;
+    talonFXSConfiguration.CurrentLimits.SupplyCurrentLimit = AlgaePivotConstants.supplyCurrentLimit;
+    talonFXSConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         AlgaePivotConstants.lowerSupplyCurrentLimit;
+    talonFXSConfiguration.MotionMagic.MotionMagicAcceleration =
+        AlgaePivotConstants.MotionMagicAcceleration;
+    talonFXSConfiguration.MotionMagic.MotionMagicCruiseVelocity =
+        AlgaePivotConstants.MotionMagicCruiseVelocity;
+    talonFXSConfiguration.MotionMagic.MotionMagicJerk = AlgaePivotConstants.MotionMagicJerk;
+    talonFXSConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    talonFXSConfiguration.ExternalFeedback.SensorPhase = SensorPhaseValue.Opposed;
 
     m_AlgaePivotTalon = new TalonFXS(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);
-    m_AlgaePivotTalon.getConfigurator().apply(m_Slot0Configs);
-    m_AlgaePivotTalon.getConfigurator().apply(m_TalonConfiguration);
+    m_AlgaePivotTalon.getConfigurator().apply(talonFXSConfiguration);
 
     m_AlgaePivotTalon.setControl(new DutyCycleOut(0));
   }
@@ -79,10 +86,30 @@ public class AlgaePivot extends SubsystemBase {
         });
   }
 
+  /*public Command goToLevel(CoralLevels level, Trigger hasAlgae) {
+    SmartDashboard.putString("Current Level", level.name());
+
+    if (hasAlgae.getAsBoolean() || level.name().equals("L3") || level.name().equals("L4")) {
+      return goToLowerSetpoint();
+    }
+    return goToUpperSetpoint();
+  }*/
   public Command goToLevel(CoralLevels level) {
     return runOnce(
         () -> {
           rotate(level.algaeAngle);
         });
+  }
+
+  public Command goToMidPoint() {
+    return runOnce(
+        () -> {
+          rotate(AlgaePivotConstants.MIDPOINT);
+        });
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Algae Pivot", m_AlgaePivotTalon.getPosition().getValueAsDouble());
   }
 }

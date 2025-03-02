@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
@@ -25,7 +24,6 @@ import frc.robot.constants.CoralLevels;
 public class CoralRollers extends SubsystemBase {
 
   private TalonFXS m_coralTalonFXS;
-  private VelocityVoltage m_VelocityVoltage;
 
   private CANrange m_LeftCANrange;
   private CANrange m_RightCANrange;
@@ -33,8 +31,6 @@ public class CoralRollers extends SubsystemBase {
   private Trigger m_hasGamePiece;
 
   public CoralRollers() {
-    m_VelocityVoltage = new VelocityVoltage(0).withSlot(0);
-
     m_coralTalonFXS = new TalonFXS(CANConstants.CORAL_MOTOR, CANConstants.ELEVATOR_CANIVORE);
     m_coralTalonFXS.setControl(new DutyCycleOut(0));
 
