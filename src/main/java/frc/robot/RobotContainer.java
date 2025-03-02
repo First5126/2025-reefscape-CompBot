@@ -12,6 +12,9 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,6 +36,7 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.vision.AprilTagLocalization;
+
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -90,11 +94,18 @@ public class RobotContainer {
       new AprilTagRecognition(m_commandFactory);
 
   public RobotContainer() {
+// as Proxy
+    NamedCommands.registerCommand("Place Coral at L4", m_elevator.setCoralPosition(CoralLevels.L4).asProxy());// These commands are registared to Shuffleboard.
+    NamedCommands.registerCommand("Place Coral at L3", m_elevator.setCoralPosition(CoralLevels.L3).asProxy());
+    NamedCommands.registerCommand("Place Coral at L2", m_elevator.setCoralPosition(CoralLevels.L2).asProxy());
+    NamedCommands.registerCommand("Place Coral at L1", m_elevat508xd6or.setCoralPosition(CoralLevels.L1).asProxy());
+
     configureBindings();
     configureCoDriverControls();
 
     // Adds a auto chooser to Shuffle Board to choose autos
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Place Coral at L4", m_elevator.setCoralPosition(CoralLevels.L4));
   }
 
   private boolean yIsNotPressed() {
@@ -168,6 +179,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
-    return null;
+    return autoChooser.getSelected();
   }
 }

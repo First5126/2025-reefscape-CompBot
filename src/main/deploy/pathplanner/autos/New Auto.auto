@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 2m"
+            "pathName": "BlueRightStartingPath"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueRightReeftoStation"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueRightToReef"
           }
         }
       ]
