@@ -13,7 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -99,18 +98,24 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand
-        ("Go To ReefPose1", m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose()).asProxy());
-    NamedCommands.registerCommand
-        ("Go To ReefPose2", m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose()).asProxy());
-    NamedCommands.registerCommand
-        ("Go To ReefPose3", m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose()).asProxy());
-    NamedCommands.registerCommand
-        ("Go To ReefPose4", m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose()).asProxy());
-    NamedCommands.registerCommand
-        ("Go To ReefPose5", m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose()).asProxy());
-    NamedCommands.registerCommand
-        ("Go To ReefPose6", m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose1",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose2",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose3",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose4",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose5",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose()).asProxy());
+    NamedCommands.registerCommand(
+        "Go To ReefPose6",
+        m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
     NamedCommands.registerCommand(
         "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1().asProxy());
     NamedCommands.registerCommand(
@@ -120,7 +125,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4().asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position Coral Station", m_commandFactory.elevatorInTakeCoralStation().asProxy());
+        "Raise Elevator to position Coral Station",
+        m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     configureBindings();
     configureCoDriverControls();
@@ -159,7 +165,7 @@ public class RobotContainer {
 
     m_driverController.y().whileTrue(m_drivetrain.goToPose(PoseConstants.prossesor.getPose()));
 
-    m_driverController.start().onTrue(m_drivetrain.zero_pidgeon());
+    m_driverController.start().onTrue(m_commandFactory.zeroRobot());
 
     m_driverController.b().whileTrue(m_commandFactory.moveBack());
     // Bumpers to coral station
@@ -336,9 +342,6 @@ public class RobotContainer {
         m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()),
         m_commandFactory.elevatorInTakeCoralStation(),
         m_drivetrain.goToPose(PoseConstants.ReefPosition2.getPose()),
-        m_commandFactory.elevatorOutTakeL3()
-
-    );
+        m_commandFactory.elevatorOutTakeL3());
   }
-
 }

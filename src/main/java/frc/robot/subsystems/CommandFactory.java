@@ -187,4 +187,8 @@ public class CommandFactory {
         .andThen(Commands.waitSeconds(0.1))
         .andThen(m_coralPivot.goToUpperSetpoint());
   }
+
+  public Command zeroRobot() {
+    return m_drivetrain.zero_pidgeon().alongWith(m_elevator.zeroElevator());
+  }
 }
