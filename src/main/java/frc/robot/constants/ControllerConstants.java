@@ -10,9 +10,9 @@ import edu.wpi.first.math.MathUtil;
 public class ControllerConstants {
   public static final double DEADBAND = 0.05;
 
-  public static double modifyAxisWithCustomDeadband(double value, double deadband) {
+  public static double modifyAxisWithCustomDeadband(double value, double deadband, int power) {
     value = MathUtil.applyDeadband(value, deadband);
-    value = Math.copySign(Math.pow(value, 1), value);
+    value = Math.copySign(Math.pow(value, power), value);
     return value;
   }
 
