@@ -166,7 +166,7 @@ public class RobotContainer {
     // m_driverController.y().whileTrue(m_drivetrain.goToPose(PoseConstants.prossesor.getPose()));
     m_driverController.y().onTrue(m_algaePivot.goToMidPoint());
 
-    m_driverController.start().onTrue(m_drivetrain.zero_pidgeon());
+    m_driverController.start().onTrue(m_commandFactory.zeroRobot());
 
     m_driverController.b().whileTrue(m_commandFactory.moveBack());
     // Bumpers to coral station
