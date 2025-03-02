@@ -140,4 +140,9 @@ public class CommandFactory {
 
     return goToPose(new Pose2d(x, y, rotation));
   }
+
+public Command coralOutakeAndFlipUp(CoralLevels level) {
+    return m_coralRollers.rollOutCommand(level).andThen(m_coralPivot.goToUpperSetpoint());
+  }
+
 }
