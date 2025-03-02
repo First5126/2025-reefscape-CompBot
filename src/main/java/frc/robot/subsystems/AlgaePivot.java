@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AlgaePivotConstants;
 import frc.robot.constants.CANConstants;
+import frc.robot.constants.CoralLevels;
 
 public class AlgaePivot extends SubsystemBase {
   private Slot0Configs m_Slot0Configs;
@@ -75,6 +76,13 @@ public class AlgaePivot extends SubsystemBase {
     return runOnce(
         () -> {
           rotate(AlgaePivotConstants.UPPER_ANGLE);
+        });
+  }
+
+  public Command goToLevel(CoralLevels level) {
+    return runOnce(
+        () -> {
+          rotate(level.algaeAngle);
         });
   }
 }

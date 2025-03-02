@@ -448,11 +448,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command goToPose(Pose2d pose) {
+    double[] debugArray = {pose.getX(), pose.getY()};
+    SmartDashboard.putNumberArray("Going to Pose", debugArray);
+
     return AutoBuilder.pathfindToPose(pose, DrivetrainConstants.pathConstraints);
   }
 
   public Command goToPose(Supplier<Pose2d> pose) {
-    return AutoBuilder.pathfindToPose(pose.get(), DrivetrainConstants.pathConstraints);
+    return goToPose(pose.get());
   }
 
   /**
