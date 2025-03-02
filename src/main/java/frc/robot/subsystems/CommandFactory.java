@@ -103,16 +103,12 @@ public class CommandFactory {
     return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
   }
 
-  public Command algaePivotAndIntake() {
-    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
-    Command intakeAlgae = m_algaeRollers.feedIn();
-    Command pivotAlgae = m_algaePivot.goToLevel(CoralLevels.L3);
+  public Command algaePivotAndIntake(CoralLevels level) {
+    Command elevator = m_elevator.setCoralPosition(level);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command pivotAlgaeRolllers = m_algaePivot.goToLevel(level);
 
-    Command finishIntake = m_algaePivot.goToUpperSetpoint().alongWith(m_algaeRollers.stop());
-    return pivotAlgaeRollers
-        .alongWith(intakeAlgae)
-        .until(m_algaeRollers.hasAlgae())
-        .andThen(finishIntake);
+    return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
   }
 
   public Command algaePivotAndOutake() {

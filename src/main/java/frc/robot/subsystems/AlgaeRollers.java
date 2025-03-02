@@ -56,20 +56,26 @@ public class AlgaeRollers extends SubsystemBase {
     return m_hasGamePiece;
   }
 
-  public Command feedIn() {
-    return run(() -> {
+  public Command startFeedIn() {
+    return run(
+        () -> {
           m_motorOne.setControl(new VoltageOut(AlgaeConstants.INTAKE_SPEED));
-        })
-        .until(m_hasGamePiece)
-        .andThen(holdAlgae());
+        });
+  }
+
+  public Command feedIn() {
+    return startFeedIn().until(m_hasGamePiece).andThen(holdAlgae());
+  }
+
+  public Command startFeedOut() {
+    return run(
+        () -> {
+          m_motorOne.setControl(new VoltageOut(AlgaeConstants.OUTTAKE_SPEED));
+        });
   }
 
   public Command feedOut() {
-    return run(() -> {
-          m_motorOne.setControl(new VoltageOut(AlgaeConstants.OUTTAKE_SPEED));
-        })
-        .onlyWhile(m_hasGamePiece)
-        .andThen(stop());
+    return startFeedOut().onlyWhile(m_hasGamePiece).andThen(stop());
   }
 
   public Command stop() {

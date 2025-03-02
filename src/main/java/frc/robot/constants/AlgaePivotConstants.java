@@ -17,9 +17,9 @@ public final class AlgaePivotConstants {
   // public static final double MotionMagicCruiseVelocity = 4;
   // public static final double MotionMagicJerk = 320;
   // Slow for test theoritical numbers above
-  public static final double MotionMagicAcceleration = 4;
-  public static final double MotionMagicCruiseVelocity = 0.54;
-  public static final double MotionMagicJerk = 80;
+  public static final double MotionMagicAcceleration = 24;
+  public static final double MotionMagicCruiseVelocity = 3;
+  public static final double MotionMagicJerk = 240;
 
   public static final double supplyCurrentLimit = 70.0;
   public static final double lowerSupplyCurrentLimit = 10;

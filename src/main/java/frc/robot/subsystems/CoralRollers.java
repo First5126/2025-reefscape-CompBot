@@ -111,7 +111,7 @@ public class CoralRollers extends SubsystemBase {
     m_coralTalonFXS.set(speed);
   }
 
-  private void rollIn(CoralLevels level) {
+  public void rollIn(CoralLevels level) {
     m_coralTalonFXS.setControl(new VoltageOut(level.volts));
   }
 

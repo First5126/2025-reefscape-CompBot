@@ -274,6 +274,8 @@ public class RobotContainer {
         .onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
 
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
+    m_coDriverController.a().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.PROCESSER));
 
     m_coDriverController
         .leftTrigger()
@@ -303,19 +305,48 @@ public class RobotContainer {
 
     // intakes/outtakes
 
-    m_coDriverController.leftBumper().onTrue(m_algaeRollers.feedIn());
+    // algae intake
+    m_coDriverController.leftBumper().onTrue(m_algaeRollers.feedIn()); // standard
+    m_coDriverController
+        .leftBumper()
+        .and(m_coDriverController.y())
+        .onTrue(m_algaeRollers.startFeedIn()); // panic start
+    m_coDriverController
+        .leftBumper()
+        .and(m_coDriverController.y())
+        .onTrue(m_algaeRollers.stop()); // panic end
 
-    m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut());
+    // algae outake
+    m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut()); // standard
+    m_coDriverController
+        .rightBumper()
+        .and(m_coDriverController.y())
+        .onTrue(m_algaeRollers.startFeedOut()); // panic start
+    m_coDriverController
+        .rightBumper()
+        .and(m_coDriverController.y())
+        .onTrue(m_algaeRollers.stop()); // panic end
 
+    // coral intake
     m_coDriverController
         .leftTrigger()
-        .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION));
+        .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION)); // standard
     m_coDriverController.leftTrigger().onFalse(m_coralRollers.stopCommand());
 
     m_coDriverController
+        .leftTrigger()
+        .and(m_coDriverController.y())
+        .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION)); // panic
+
+    m_coDriverController // standard coral outake
         .rightTrigger()
         .whileTrue(m_commandFactory.coralOutakeAndFlipUp(CoralLevels.CORAL_STATION_OUT));
     m_coDriverController.rightTrigger().onFalse(m_coralRollers.stopCommand());
+
+    m_coDriverController
+        .leftTrigger()
+        .and(m_coDriverController.y())
+        .onTrue(m_coralRollers.rollOutCommand(CoralLevels.L4)); // panic
   }
 
   private Command rumbleCommand(
