@@ -77,6 +77,10 @@ public class CoralPivot extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber(
         "Coral Pivot Degrees", m_CoralPivotTalon.getPosition().getValue().in(Degrees));
+
+    SmartDashboard.putNumber(
+        "Coral Pivot Motor Temperature",
+        m_CoralPivotTalon.getExternalMotorTemp().getValueAsDouble());
   }
 
   public Command goToLowerSetpoint() {
