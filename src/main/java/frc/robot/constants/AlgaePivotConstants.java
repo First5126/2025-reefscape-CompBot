@@ -5,12 +5,20 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 
 public final class AlgaePivotConstants {
-  public static final double kP = 0;
+  public static final double kP = 10;
   public static final double kI = 0;
   public static final double kD = 0;
   public static final double kG = 0;
   public static final double kV = 0;
   public static final double kA = 0;
+
+  // public static final double MotionMagicAcceleration = 32;
+  // public static final double MotionMagicCruiseVelocity = 4;
+  // public static final double MotionMagicJerk = 320;
+  // Slow for test theoritical numbers above
+  public static final double MotionMagicAcceleration = 4;
+  public static final double MotionMagicCruiseVelocity = 0.54;
+  public static final double MotionMagicJerk = 80;
 
   public static final double supplyCurrentLimit = 70.0;
   public static final double lowerSupplyCurrentLimit = 10;

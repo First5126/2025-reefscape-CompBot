@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -121,5 +124,18 @@ public class CommandFactory {
 
   public Command goToPose(Pose2d pose) {
     return m_drivetrain.goToPose(pose);
+  }
+
+  public Command moveBack() {
+    SmartDashboard.putNumber(
+        "Move Back PoseX",
+        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))).getX());
+
+    SmartDashboard.putNumber(
+        "Move Back PoseY",
+        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))).getY());
+
+    return m_drivetrain.goToPose(
+        m_robotPoseSupplier.get().transformBy(new Transform2d(0, -0.3, new Rotation2d(0))));
   }
 }
