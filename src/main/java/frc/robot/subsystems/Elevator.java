@@ -191,11 +191,8 @@ public class Elevator extends SubsystemBase {
     return Commands.none();
   }
 
-  public Command disable() {
-    return run(
-        () -> {
-          setControl(new DutyCycleOut(0));
-        });
+  public void disable() {
+    setControl(new DutyCycleOut(0));
   }
 
   private double getElevatorHeight() {

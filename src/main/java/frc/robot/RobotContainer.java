@@ -134,7 +134,16 @@ public class RobotContainer {
     configureBindings();
     configureCoDriverControls();
 
-    new Trigger(DriverStation::isDisabled).onTrue(disableRobot());
+    // !!! IMPORTANT !!!
+    // Add states disabled to assure state is not going to be destructive when reinabled
+    new Trigger(DriverStation::isDisabled)
+        .onTrue(
+            Commands.runOnce(
+                    () -> {
+                      System.out.println("DISABLING ROBOT");
+                      m_elevator.disable();
+                    })
+                .ignoringDisable(true));
 
     // Adds a auto chooser to Shuffle Board to choose autos
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -144,10 +153,6 @@ public class RobotContainer {
     DataLogManager.start();
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
-  }
-
-  private Command disableRobot() {
-    return m_elevator.disable();
   }
 
   private boolean yIsNotPressed() {
