@@ -142,6 +142,10 @@ public class RobotContainer {
                     () -> {
                       System.out.println("DISABLING ROBOT");
                       m_elevator.disable();
+                      m_coralPivot.disable();
+                      m_algaePivot.disable();
+                      m_coralRollers.disable();
+                      m_algaeRollers.disable();
                     })
                 .ignoringDisable(true));
 
@@ -194,8 +198,8 @@ public class RobotContainer {
     m_driverController.povLeft().whileTrue(m_drivetrain.cardinalMovement(0.05, 0.1));
     m_driverController.povRight().whileTrue(m_drivetrain.cardinalMovement(0.05, -0.1));
 
-    m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
-    m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
+    m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
+    m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
 
     // configureDriverAutoCommands();
   }
