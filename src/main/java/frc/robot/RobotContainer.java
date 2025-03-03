@@ -201,9 +201,8 @@ public class RobotContainer {
   }
 
   private void configureCoDriverControls() {
-    // Setup codriver's controlls
+    // Setup codriver's controls
 
-    // debug
     m_coDriverController
         .x()
         .onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
