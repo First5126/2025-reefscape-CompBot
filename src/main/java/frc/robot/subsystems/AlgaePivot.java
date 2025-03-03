@@ -16,7 +16,9 @@ import com.ctre.phoenix6.signals.SensorPhaseValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AlgaePivotConstants;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
@@ -24,8 +26,10 @@ import frc.robot.constants.CoralLevels;
 public class AlgaePivot extends SubsystemBase {
   private MotionMagicVoltage m_motionMatiVoltage = new MotionMagicVoltage(0).withSlot(0);
   private TalonFXS m_AlgaePivotTalon;
+  private Trigger hasAlgae;
 
-  public AlgaePivot() {
+  public AlgaePivot(Trigger hasAlgae) {
+    this.hasAlgae = hasAlgae;
     TalonFXSConfiguration talonFXSConfiguration = new TalonFXSConfiguration();
 
     talonFXSConfiguration.Slot0.kP = AlgaePivotConstants.kP;
@@ -94,11 +98,18 @@ public class AlgaePivot extends SubsystemBase {
     }
     return goToUpperSetpoint();
   }*/
-  public Command goToLevel(CoralLevels level) {
+  private Command rotateToLevel(CoralLevels level) {
     return runOnce(
         () -> {
           rotate(level.algaeAngle);
         });
+  }
+
+  public Command goToLevel(CoralLevels level) {
+    ConditionalCommand command =
+        new ConditionalCommand(goToMidPoint(), rotateToLevel(level), hasAlgae);
+
+    return command;
   }
 
   public Command goToMidPoint() {

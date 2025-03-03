@@ -508,4 +508,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
     run(() -> horizontalDrive(horizontalError, skew));
   }
+
+  public Command cardinalMovement(double velocityX, double velocityY) {
+    return run(
+        () -> {
+          setControl(
+              m_RobotCentricdrive
+                  .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
+                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
+        });
+  }
 }

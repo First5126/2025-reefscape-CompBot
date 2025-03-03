@@ -79,7 +79,7 @@ public class RobotContainer {
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
   private final CoralPivot m_coralPivot = new CoralPivot();
-  private final AlgaePivot m_algaePivot = new AlgaePivot();
+  private final AlgaePivot m_algaePivot = new AlgaePivot(m_algaeRollers.hasAlgae());
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
   private final Elevator m_elevator = new Elevator();
   private final RecordInputs m_recordInputs = new RecordInputs();
@@ -171,9 +171,12 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_commandFactory.moveBack());
     // Bumpers to coral station
 
-    // d-pad for side selection
-    m_driverController.povLeft().onTrue(m_recordInputs.setLeftSideCoralStation());
-    m_driverController.povRight().onTrue(m_recordInputs.setRightSideCoralStation());
+    // d-pad for cardinal movement
+    m_driverController.povLeft().whileTrue(m_drivetrain.cardinalMovement(0.05, 0.1));
+    m_driverController.povRight().whileTrue(m_drivetrain.cardinalMovement(0.05, -0.1));
+
+    m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
+    m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
 
     // m_driverController.a().onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
 
@@ -283,11 +286,11 @@ public class RobotContainer {
         .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L1));
 
     // Elevator commands
-    m_coDriverController.povUp().and(m_coDriverController.y()).whileTrue(m_elevator.trimUp());
-    m_coDriverController.povUp().and(m_coDriverController.y()).onFalse(m_elevator.stopMotors());
+    m_coDriverController.povUp().and(m_coDriverController.b()).whileTrue(m_elevator.trimUp());
+    m_coDriverController.povUp().and(m_coDriverController.b()).onFalse(m_elevator.stopMotors());
 
-    m_coDriverController.povDown().and(m_coDriverController.y()).whileTrue(m_elevator.trimDown());
-    m_coDriverController.povDown().and(m_coDriverController.y()).onFalse(m_elevator.stopMotors());
+    m_coDriverController.povDown().and(m_coDriverController.b()).whileTrue(m_elevator.trimDown());
+    m_coDriverController.povDown().and(m_coDriverController.b()).onFalse(m_elevator.stopMotors());
 
     m_coDriverController
         .povUp()
@@ -298,7 +301,7 @@ public class RobotContainer {
 
     m_coDriverController
         .povDown()
-        .and(m_coDriverController.y().negate())
+        .and(m_coDriverController.b().negate())
         .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L3));
 
     m_coDriverController.povLeft().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L4));
@@ -306,46 +309,54 @@ public class RobotContainer {
     // intakes/outtakes
 
     // algae intake
-    m_coDriverController.leftBumper().onTrue(m_algaeRollers.feedIn()); // standard
     m_coDriverController
         .leftBumper()
-        .and(m_coDriverController.y())
+        .and(m_coDriverController.b().negate())
+        .onTrue(m_algaeRollers.feedIn()); // standard
+    m_coDriverController
+        .leftBumper()
+        .and(m_coDriverController.b())
         .onTrue(m_algaeRollers.startFeedIn()); // panic start
     m_coDriverController
         .leftBumper()
-        .and(m_coDriverController.y())
-        .onTrue(m_algaeRollers.stop()); // panic end
+        .and(m_coDriverController.b())
+        .onFalse(m_algaeRollers.stop()); // panic end
 
     // algae outake
-    m_coDriverController.rightBumper().onTrue(m_algaeRollers.feedOut()); // standard
     m_coDriverController
         .rightBumper()
-        .and(m_coDriverController.y())
+        .and(m_coDriverController.b().negate())
+        .onTrue(m_algaeRollers.feedOut()); // standard
+    m_coDriverController
+        .rightBumper()
+        .and(m_coDriverController.b())
         .onTrue(m_algaeRollers.startFeedOut()); // panic start
     m_coDriverController
         .rightBumper()
-        .and(m_coDriverController.y())
-        .onTrue(m_algaeRollers.stop()); // panic end
+        .and(m_coDriverController.b())
+        .onFalse(m_algaeRollers.stop()); // panic end
 
     // coral intake
     m_coDriverController
         .leftTrigger()
+        .and(m_coDriverController.b().negate())
         .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION)); // standard
     m_coDriverController.leftTrigger().onFalse(m_coralRollers.stopCommand());
 
     m_coDriverController
         .leftTrigger()
-        .and(m_coDriverController.y())
+        .and(m_coDriverController.b())
         .onTrue(m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION)); // panic
 
     m_coDriverController // standard coral outake
         .rightTrigger()
+        .and(m_coDriverController.b().negate())
         .whileTrue(m_commandFactory.coralOutakeAndFlipUp(CoralLevels.CORAL_STATION_OUT));
     m_coDriverController.rightTrigger().onFalse(m_coralRollers.stopCommand());
 
     m_coDriverController
         .leftTrigger()
-        .and(m_coDriverController.y())
+        .and(m_coDriverController.b())
         .onTrue(m_coralRollers.rollOutCommand(CoralLevels.L4)); // panic
   }
 

@@ -24,7 +24,6 @@ public class PoseConstants {
     }
   }
 
-
   // tag numbers 1 and 13
   public static final Pose leftCoralStationPositionRight =
       new Pose(
