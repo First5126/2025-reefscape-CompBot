@@ -122,4 +122,8 @@ public class CoralRollers extends SubsystemBase {
   private void stop() {
     m_coralTalonFXS.setControl(new DutyCycleOut(0));
   }
+
+  public void disable() {
+    m_coralTalonFXS.setControl(new DutyCycleOut(0));
+  }
 }

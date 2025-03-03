@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.hardware.core.CoreCANcoder;
@@ -109,5 +110,9 @@ public class CoralPivot extends SubsystemBase {
         () -> {
           rotate(angle);
         });
+  }
+
+  public void disable() {
+    m_CoralPivotTalon.setControl(new DutyCycleOut(0));
   }
 }
