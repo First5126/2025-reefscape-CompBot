@@ -115,4 +115,8 @@ public class AlgaePivot extends SubsystemBase {
           rotate(level.algaeAngle);
         });
   }
+
+  public void disable() {
+    m_AlgaePivotTalon.setControl(new DutyCycleOut(0));
+  }
 }

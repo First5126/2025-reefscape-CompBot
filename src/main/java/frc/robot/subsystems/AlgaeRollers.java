@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
@@ -96,5 +97,9 @@ public class AlgaeRollers extends SubsystemBase {
 
   private boolean isAlgaeLoaded() {
     return m_algaeCANrange.getIsDetected().getValue();
+  }
+
+  public void disable() {
+    m_motorOne.setControl(new DutyCycleOut(0));
   }
 }
