@@ -45,11 +45,7 @@ public class AlgaeRollers extends SubsystemBase {
     m_algaeCANrange = new CANrange(CANConstants.ALGAE_CAN_RANGE, CANConstants.ELEVATOR_CANIVORE);
     m_algaeCANrange.getConfigurator().apply(CANrangeConfiguration);
 
-    m_hasGamePiece = new Trigger(this::getGamePieceDetected).debounce(AlgaeConstants.DEBOUNCE);
-  }
-
-  private boolean getGamePieceDetected() {
-    return m_algaeCANrange.getIsDetected().getValue();
+    m_hasGamePiece = new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE);
   }
 
   public Trigger hasAlgae() {
@@ -94,7 +90,11 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean("Has Algae", getGamePieceDetected());
+    SmartDashboard.putBoolean("Has Algae", isAlgaeLoaded());
     // SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
+  }
+
+  private boolean isAlgaeLoaded() {
+    return m_algaeCANrange.getIsDetected().getValue();
   }
 }
