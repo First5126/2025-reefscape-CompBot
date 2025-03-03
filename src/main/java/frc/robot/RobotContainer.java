@@ -183,7 +183,6 @@ public class RobotContainer {
     m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
     m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    // m_driverController.y().whileTrue(m_drivetrain.goToPose(PoseConstants.prossesor.getPose()));
     m_driverController.y().onTrue(m_algaePivot.goToMidPoint());
 
     m_driverController.start().onTrue(m_commandFactory.zeroRobot());
@@ -198,94 +197,7 @@ public class RobotContainer {
     m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
     m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
 
-    // m_driverController.a().onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
-
-    // right bumper left goto
-    /*
-    m_driverController
-        .rightBumper()
-        .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.hasCoral().negate())
-        .whileTrue(
-            m_commandFactory
-                .moveToPositionWithDistance(
-                    PoseConstants.rightCoralStationPositionLeft::getPose,
-                    Meters.of(1),
-                    m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION))
-                .andThen(m_commandFactory.moveBack()));
-
-    // right bumper left return
-    m_driverController
-        .rightBumper()
-        .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.hasCoral())
-        .onTrue(m_commandFactory.moveBack());
-
-    // right bumper right goto
-    m_driverController
-        .rightBumper()
-        .and(m_recordInputs::rightCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.rightCoralStationPosition1::getPose,
-                Meters.of(1),
-                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
-
-    // right bumper right return
-    m_driverController
-        .rightBumper()
-        .and(m_recordInputs::rightCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger().negate())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.ReefPosition1::getPose,
-                Meters.of(1),
-                m_coralPivot.goToUpperSetpoint()));
-
-    // left bumper left side goto
-    m_driverController
-        .leftBumper()
-        .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger().negate())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.leftCoralStationPosition3::getPose,
-                Meters.of(1),
-                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
-
-    // left bumper left side return
-    m_driverController
-        .leftBumper()
-        .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.ReefPosition1::getPose,
-                Meters.of(1),
-                m_coralPivot.goToUpperSetpoint()));
-    */
-    // left bumper right side goto
-    m_driverController
-        .leftBumper()
-        .and(m_recordInputs::rightCoralStationSelected)
-        .and(m_coralRollers.hasCoral().negate())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.leftCoralStationPositionRight::getPose,
-                Meters.of(1),
-                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
-    /*
-    // left bumper right side return
-    m_driverController
-        .leftBumper()
-        .and(m_recordInputs::leftCoralStationSelected)
-        .and(m_coralRollers.getCoralTrigger())
-        .whileTrue(
-            m_commandFactory.moveToPositionWithDistance(
-                PoseConstants.ReefPosition1::getPose,
-                Meters.of(1),
-                m_coralPivot.goToUpperSetpoint()));*/
+    // configureDriverAutoCommands();
   }
 
   private void configureCoDriverControls() {
@@ -408,5 +320,94 @@ public class RobotContainer {
         m_commandFactory.elevatorInTakeCoralStation(),
         m_drivetrain.goToPose(PoseConstants.ReefPosition2.getPose()),
         m_commandFactory.elevatorOutTakeL3());
+  }
+
+  public void configureDriverAutoCommands() {
+    // right bumper left goto
+
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.hasCoral().negate())
+        .whileTrue(
+            m_commandFactory
+                .moveToPositionWithDistance(
+                    PoseConstants.rightCoralStationPositionLeft::getPose,
+                    Meters.of(1),
+                    m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION))
+                .andThen(m_commandFactory.moveBack()));
+
+    // right bumper left return
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.hasCoral())
+        .onTrue(m_commandFactory.moveBack());
+
+    // right bumper right goto
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.hasCoral())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.rightCoralStationPositionRight::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // right bumper right return
+    m_driverController
+        .rightBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.hasCoral().negate())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
+
+    // left bumper left side goto
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.hasCoral().negate())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.leftCoralStationPositionLeft::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // left bumper left side return
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.hasCoral())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
+
+    // left bumper right side goto
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::rightCoralStationSelected)
+        .and(m_coralRollers.hasCoral().negate())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.leftCoralStationPositionRight::getPose,
+                Meters.of(1),
+                m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION)));
+
+    // left bumper right side return
+    m_driverController
+        .leftBumper()
+        .and(m_recordInputs::leftCoralStationSelected)
+        .and(m_coralRollers.hasCoral())
+        .whileTrue(
+            m_commandFactory.moveToPositionWithDistance(
+                PoseConstants.ReefPosition1::getPose,
+                Meters.of(1),
+                m_coralPivot.goToUpperSetpoint()));
   }
 }
