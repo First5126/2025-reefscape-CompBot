@@ -103,16 +103,16 @@ public class CoralRollers extends SubsystemBase {
     SmartDashboard.putBoolean("hasGamePeice", isDetected());
   }
 
+  public void rollIn(CoralLevels level) {
+    m_coralTalonFXS.setControl(new VoltageOut(level.volts));
+  }
+
   private boolean isDetected() {
     return m_LeftCANrange.getIsDetected().getValue() || m_RightCANrange.getIsDetected().getValue();
   }
 
   private void runRollers(double speed) {
     m_coralTalonFXS.set(speed);
-  }
-
-  public void rollIn(CoralLevels level) {
-    m_coralTalonFXS.setControl(new VoltageOut(level.volts));
   }
 
   private void rollOut(CoralLevels level) {

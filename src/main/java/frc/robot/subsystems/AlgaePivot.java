@@ -65,10 +65,6 @@ public class AlgaePivot extends SubsystemBase {
     m_AlgaePivotTalon.setControl(new DutyCycleOut(0));
   }
 
-  private void rotate(Angle setpoint) {
-    m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
-  }
-
   public Command goToLowerSetpoint() {
     return runOnce(
         () -> {
@@ -98,12 +94,6 @@ public class AlgaePivot extends SubsystemBase {
     }
     return goToUpperSetpoint();
   }*/
-  private Command rotateToLevel(CoralLevels level) {
-    return runOnce(
-        () -> {
-          rotate(level.algaeAngle);
-        });
-  }
 
   public Command goToLevel(CoralLevels level) {
     ConditionalCommand command =
@@ -122,5 +112,16 @@ public class AlgaePivot extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Algae Pivot", m_AlgaePivotTalon.getPosition().getValueAsDouble());
+  }
+
+  private void rotate(Angle setpoint) {
+    m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
+  }
+
+  private Command rotateToLevel(CoralLevels level) {
+    return runOnce(
+        () -> {
+          rotate(level.algaeAngle);
+        });
   }
 }
