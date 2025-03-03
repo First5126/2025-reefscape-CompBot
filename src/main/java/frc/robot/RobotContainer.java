@@ -14,6 +14,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
@@ -131,8 +134,25 @@ public class RobotContainer {
     configureBindings();
     configureCoDriverControls();
 
+    // !!! IMPORTANT !!!
+    // Add states disabled to assure state is not going to be destructive when reinabled
+    new Trigger(DriverStation::isDisabled)
+        .onTrue(
+            Commands.runOnce(
+                    () -> {
+                      System.out.println("DISABLING ROBOT");
+                      m_elevator.disable();
+                    })
+                .ignoringDisable(true));
+
     // Adds a auto chooser to Shuffle Board to choose autos
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    // https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html
+    // Starts recording to data log
+    DataLogManager.start();
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   private boolean yIsNotPressed() {
