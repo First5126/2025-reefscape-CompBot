@@ -12,7 +12,7 @@ public class ElevatorConstants {
   public static final double ELEVATOR_MIN_HEIGHT = 0.0; // in meters
   public static final double ELEVATOR_TOLERANCE = 0.01; // in meters
 
-  public static final double kP = 60;
+  public static final double kP = 15;
   public static final double kI = 0;
   public static final double kD = 0;
   public static final double kV = 0;

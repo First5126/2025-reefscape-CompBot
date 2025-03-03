@@ -3,11 +3,14 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.CoralLevels;
+import frc.robot.constants.PoseConstants;
 import frc.robot.constants.PoseConstants.Pose;
 import java.util.HashSet;
 import java.util.function.BooleanSupplier;
@@ -77,29 +80,115 @@ public class CommandFactory {
     return returnCommand;
   }
 
-  public Command coralPivotAndIntake() {
-    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
-    Command intakeCoral = m_coralRollers.rollInCommand();
+  public Command coralPivotAndIntake(CoralLevels level) {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
+    Command pivotCoralRollers = m_coralPivot.gotoCoralStationSetpoint();
+    Command pivotAlgaeRollers = m_algaePivot.goToLevel(level);
+    Command intakeCoral = m_coralRollers.rollInCommand(level);
     Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
 
-    return pivotCoralRollers
+    return elevator
+        .andThen(pivotCoralRollers)
         .alongWith(intakeCoral)
-        .until(m_coralRollers.getCoralTrigger())
+        .alongWith(pivotAlgaeRollers)
+        .until(m_coralRollers.hasCoral())
         .andThen(finishIntake);
   }
 
-  public Command algaePivotAndIntake() {
-    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
-    Command intakeAlgae = m_algaeRollers.feedIn();
+  public Command coralPivotAndOutake(CoralLevels level) {
+    Command elevator = m_elevator.setCoralPosition(level);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command pivotAlgaeRolllers = m_algaePivot.goToLevel(level);
 
-    Command finishIntake = m_algaePivot.goToUpperSetpoint().alongWith(m_algaeRollers.stop());
-    return pivotAlgaeRollers
-        .alongWith(intakeAlgae)
-        .until(m_algaeRollers.hasGamePiece())
-        .andThen(finishIntake);
+    return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
+  }
+
+  public Command algaePivotAndIntake(CoralLevels level) {
+    Command elevator = m_elevator.setCoralPosition(level);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command pivotAlgaeRolllers = m_algaePivot.goToLevel(level);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
+  }
+
+  public Command algaePivotAndOutake() {
+    Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
+    Command goToPosition =
+        moveToPositionWithDistance(
+            PoseConstants.prossesor::getPose, Meters.of(1), pivotAlgaeRollers);
+    Command finalCommand = goToPosition.andThen(m_algaeRollers.feedOut());
+
+    return finalCommand;
   }
 
   public Command goToPose(Pose2d pose) {
     return m_drivetrain.goToPose(pose);
+  }
+
+  public Command moveBack() {
+    Rotation2d rotation = m_robotPoseSupplier.get().getRotation();
+    double x = m_robotPoseSupplier.get().getX() - (0.3 * Math.cos(rotation.getDegrees()));
+    double y = m_robotPoseSupplier.get().getY() - (0.3 * Math.sin(rotation.getDegrees()));
+    double[] debugArray = {x, y};
+
+    SmartDashboard.putNumberArray("Move Back Position", debugArray);
+
+    double[] debugArray2 = {
+      0.3 * Math.cos(rotation.getDegrees()), 0.3 * Math.sin(rotation.getDegrees())
+    };
+    SmartDashboard.putNumberArray("Signs", debugArray2);
+
+    return goToPose(new Pose2d(x, y, rotation));
+  }
+
+  public Command elevatorOutTakeL1() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L1);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L1);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+  }
+
+  public Command elevatorOutTakeL2() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+  }
+
+  public Command elevatorOutTakeL3() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L3);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+  }
+
+  public Command elevatorOutTakeL4() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
+    Command pivotCoralRollers = m_coralPivot.goToLowerSetpoint();
+    Command outTakeCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(outTakeCoral);
+  }
+
+  public Command elevatorInTakeCoralStation() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
+    Command pivotCoralRollers = m_coralPivot.goToUpperSetpoint();
+    Command inTakeCoral = m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION);
+
+    return elevator.andThen(pivotCoralRollers).alongWith(inTakeCoral);
+  }
+
+  public Command coralOutakeAndFlipUp(CoralLevels level) {
+    return m_coralRollers
+        .rollOutCommand(level)
+        .andThen(Commands.waitSeconds(0.1))
+        .andThen(m_coralPivot.goToUpperSetpoint());
+  }
+
+  public Command zeroRobot() {
+    return m_drivetrain.zero_pidgeon().alongWith(m_elevator.zeroElevator());
   }
 }

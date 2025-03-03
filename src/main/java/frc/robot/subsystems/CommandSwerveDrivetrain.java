@@ -20,6 +20,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,6 +69,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
+  private PIDController m_xController = new PIDController(0.2, 0, 0);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
@@ -133,14 +135,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public Pose2d getPose2d() {
     return getState().Pose;
-  }
-
-  private ChassisSpeeds getSpeeds() {
-    return getState().Speeds;
-  }
-
-  private Rotation2d getRotation2d() {
-    return getState().RawHeading;
   }
 
   /* The SysId routine to test */
@@ -222,73 +216,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     configureAutobuilder();
   }
 
-  /** Sets Supply Current Limits for the drive motors based on the values in DrivetrainConstants. */
-  private void applySupplyCurrentLimits() {
-    // Set current limits for the drive motors
-    for (SwerveModule<TalonFX, TalonFX, CANcoder> module : getModules()) {
-      TalonFXConfigurator configurator = module.getDriveMotor().getConfigurator();
-      TalonFXConfiguration config = new TalonFXConfiguration();
-      // Get the current limits from the constants to avoid wipe out of existing values we don't set
-      module.getDriveMotor().getConfigurator().refresh(config);
-      CurrentLimitsConfigs currentLimitConfigs = config.CurrentLimits;
-      currentLimitConfigs
-          .withSupplyCurrentLowerLimit(CurrentLimits.kDriveCurrentLimitMin)
-          .withSupplyCurrentLimit(CurrentLimits.kDriveCurrentLimitMax)
-          .withSupplyCurrentLowerTime(CurrentLimits.kDriveCurrentDuration)
-          .withSupplyCurrentLimitEnable(true);
-      configurator.apply(config);
-    }
-  }
-
-  private void configureAutobuilder() {
-    // Load the RobotConfig from the GUI settings. You should probably
-    // store this in your Constants file
-    try {
-      RobotConfig config = RobotConfig.fromGUISettings();
-
-      // Configure AutoBuilder last
-      AutoBuilder.configure(
-          this::getPose2d, // Robot pose supplier
-          this::resetPose, // Method to reset odometry (will be called if your auto has a starting
-          // pose)
-          this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) ->
-              setControl(
-                  m_pathApplyRobotSpeeds
-                      .withSpeeds(speeds)
-                      .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                      .withWheelForceFeedforwardsY(
-                          feedforwards
-                              .robotRelativeForcesYNewtons())), // Method that will drive the robot
-          // given ROBOT RELATIVE
-          // ChassisSpeeds. Also optionally
-          // outputs individual module
-          // feedforwards
-          new PPHolonomicDriveController( // PPHolonomicController is the built in path following
-              // controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-              ),
-          config, // The robot configuration
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
-  }
-
   /**
    * Returns a command that applies the specified control request to this swerve drivetrain.
    *
@@ -360,48 +287,33 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
 
-  private void startSimThread() {
-    m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-    /* Run simulation at a faster rate so PID gains behave more reasonably */
-    m_simNotifier =
-        new Notifier(
-            () -> {
-              final double currentTime = Utils.getCurrentTimeSeconds();
-              double deltaTime = currentTime - m_lastSimTime;
-              m_lastSimTime = currentTime;
-
-              /* use the measured time delta, get battery voltage from WPILib */
-              updateSimState(deltaTime, RobotController.getBatteryVoltage());
-            });
-    m_simNotifier.startPeriodic(kSimLoopPeriod);
-  }
-
   public Command gasPedalCommand(
-      Supplier<Double> FieldCentricthrottleSupplier,
-      Supplier<Double> RobotCentricthrottleSupplier,
+      Supplier<Double> fieldCentricthrottleSupplier,
+      Supplier<Double> robotCentricthrottleSupplier,
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
       Supplier<Double> ySupplier) {
     return run(
         () -> {
-          double FieldCentricthrottle =
+          double fieldCentricthrottle =
               ControllerConstants.modifyAxisWithCustomDeadband(
-                  FieldCentricthrottleSupplier.get(), 0.15);
-          double RobotCentricThrottle =
-              ControllerConstants.modifyAxis(-RobotCentricthrottleSupplier.get());
+                  fieldCentricthrottleSupplier.get(), 0.06, 1);
+          double robotCentricThrottle =
+              ControllerConstants.modifyAxisWithCustomDeadband(
+                      robotCentricthrottleSupplier.get(), 0.06, 2)
+                  / 2;
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
-              ControllerConstants.modifyAxisWithCustomDeadband(rotationSupplier.get(), 0.15);
-          double x = ControllerConstants.modifyAxis(xSupplier.get());
-          double y = ControllerConstants.modifyAxis(ySupplier.get());
+              ControllerConstants.modifyAxisWithCustomDeadband(rotationSupplier.get(), 0.06, 1) / 2;
+          double x = ControllerConstants.modifyAxis(-xSupplier.get());
+          double y = ControllerConstants.modifyAxis(-ySupplier.get());
           double activeThrottle;
 
-          if (FieldCentricthrottle != 0) {
-            activeThrottle = FieldCentricthrottle;
+          if (fieldCentricthrottle != 0) {
+            activeThrottle = fieldCentricthrottle;
           } else {
-            activeThrottle = RobotCentricThrottle;
+            activeThrottle = robotCentricThrottle;
           }
 
           if (!(x == 0 && y == 0)) {
@@ -410,7 +322,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             y = Math.sin(angle) * activeThrottle;
           }
 
-          if (activeThrottle == RobotCentricThrottle) {
+          if (activeThrottle == robotCentricThrottle) {
             setControl(
                 m_RobotCentricdrive
                     .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
@@ -430,8 +342,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
           }
 
-          SmartDashboard.putNumber("FieldCentricthrottle", FieldCentricthrottle);
-          SmartDashboard.putNumber("RobotCentricThrottle", RobotCentricThrottle);
+          SmartDashboard.putNumber("FieldCentricthrottle", fieldCentricthrottle);
+          SmartDashboard.putNumber("RobotCentricThrottle", robotCentricThrottle);
         });
   }
 
@@ -448,7 +360,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command goToPose(Pose2d pose) {
+    double[] debugArray = {pose.getX(), pose.getY()};
+    SmartDashboard.putNumberArray("Going to Pose", debugArray);
+
     return AutoBuilder.pathfindToPose(pose, DrivetrainConstants.pathConstraints);
+  }
+
+  public Command goToPose(Supplier<Pose2d> pose) {
+    return goToPose(pose.get());
   }
 
   /**
@@ -483,5 +402,119 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Matrix<N3, N1> visionMeasurementStdDevs) {
     super.addVisionMeasurement(
         visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+  }
+
+  public Command cardinalMovement(double velocityX, double velocityY) {
+    return run(
+        () -> {
+          setControl(
+              m_RobotCentricdrive
+                  .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
+                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
+        });
+  }
+
+  private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
+    run(() -> horizontalDrive(horizontalError, skew));
+  }
+
+  private void horizontalDrive(Supplier<Double> horizontalError, double skew) {
+    double xError = horizontalError.get() + skew;
+    m_RobotCentricdrive
+        .withVelocityX(m_xController.calculate(xError))
+        .withVelocityY(0)
+        .withRotationalRate(0);
+  }
+
+  private void startSimThread() {
+    m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    m_simNotifier =
+        new Notifier(
+            () -> {
+              final double currentTime = Utils.getCurrentTimeSeconds();
+              double deltaTime = currentTime - m_lastSimTime;
+              m_lastSimTime = currentTime;
+
+              /* use the measured time delta, get battery voltage from WPILib */
+              updateSimState(deltaTime, RobotController.getBatteryVoltage());
+            });
+    m_simNotifier.startPeriodic(kSimLoopPeriod);
+  }
+
+  /** Sets Supply Current Limits for the drive motors based on the values in DrivetrainConstants. */
+  private void applySupplyCurrentLimits() {
+    // Set current limits for the drive motors
+    for (SwerveModule<TalonFX, TalonFX, CANcoder> module : getModules()) {
+      TalonFXConfigurator configurator = module.getDriveMotor().getConfigurator();
+      TalonFXConfiguration config = new TalonFXConfiguration();
+      // Get the current limits from the constants to avoid wipe out of existing values we don't set
+      module.getDriveMotor().getConfigurator().refresh(config);
+      CurrentLimitsConfigs currentLimitConfigs = config.CurrentLimits;
+      currentLimitConfigs
+          .withSupplyCurrentLowerLimit(CurrentLimits.kDriveCurrentLimitMin)
+          .withSupplyCurrentLimit(CurrentLimits.kDriveCurrentLimitMax)
+          .withSupplyCurrentLowerTime(CurrentLimits.kDriveCurrentDuration)
+          .withSupplyCurrentLimitEnable(true);
+      configurator.apply(config);
+    }
+  }
+
+  private void configureAutobuilder() {
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    try {
+      RobotConfig config = RobotConfig.fromGUISettings();
+
+      // Configure AutoBuilder last
+      AutoBuilder.configure(
+          this::getPose2d, // Robot pose supplier
+          this::resetPose, // Method to reset odometry (will be called if your auto has a starting
+          // pose)
+          this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards) ->
+              setControl(
+                  m_pathApplyRobotSpeeds
+                      .withSpeeds(speeds)
+                      .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                      .withWheelForceFeedforwardsY(
+                          feedforwards
+                              .robotRelativeForcesYNewtons())), // Method that will drive the robot
+          // given ROBOT RELATIVE
+          // ChassisSpeeds. Also optionally
+          // outputs individual module
+          // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following
+              // controller for holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+              ),
+          config, // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+          );
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+  }
+
+  private ChassisSpeeds getSpeeds() {
+    return getState().Speeds;
+  }
+
+  private Rotation2d getRotation2d() {
+    return getState().RawHeading;
   }
 }

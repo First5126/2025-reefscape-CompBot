@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.hardware.core.CoreCANcoder;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -40,6 +41,8 @@ public class CoralPivot extends SubsystemBase {
     m_talonConfiguration.CurrentLimits.SupplyCurrentLimit = CoralPivotConstants.supplyCurrentLimit;
     m_talonConfiguration.CurrentLimits.SupplyCurrentLowerLimit =
         CoralPivotConstants.lowerSupplyCurrentLimit;
+    m_talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_talonConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     m_talonConfiguration.ExternalFeedback.RotorToSensorRatio = 75.0;
     m_talonConfiguration.ExternalFeedback.SensorToMechanismRatio = 1.0;
@@ -74,6 +77,10 @@ public class CoralPivot extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber(
         "Coral Pivot Degrees", m_CoralPivotTalon.getPosition().getValue().in(Degrees));
+
+    SmartDashboard.putNumber(
+        "Coral Pivot Motor Temperature",
+        m_CoralPivotTalon.getExternalMotorTemp().getValueAsDouble());
   }
 
   public Command goToLowerSetpoint() {
@@ -87,6 +94,20 @@ public class CoralPivot extends SubsystemBase {
     return runOnce(
         () -> {
           rotate(CoralPivotConstants.UPPER_ANGLE);
+        });
+  }
+
+  public Command gotoCoralStationSetpoint() {
+    return runOnce(
+        () -> {
+          rotate(CoralPivotConstants.CORAL_STATION_ANGLE);
+        });
+  }
+
+  public Command gotoAngle(Angle angle) {
+    return runOnce(
+        () -> {
+          rotate(angle);
         });
   }
 }
