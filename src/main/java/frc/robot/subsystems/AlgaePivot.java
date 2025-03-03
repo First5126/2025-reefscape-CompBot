@@ -86,15 +86,6 @@ public class AlgaePivot extends SubsystemBase {
         });
   }
 
-  /*public Command goToLevel(CoralLevels level, Trigger hasAlgae) {
-    SmartDashboard.putString("Current Level", level.name());
-
-    if (hasAlgae.getAsBoolean() || level.name().equals("L3") || level.name().equals("L4")) {
-      return goToLowerSetpoint();
-    }
-    return goToUpperSetpoint();
-  }*/
-
   public Command goToLevel(CoralLevels level) {
     ConditionalCommand command =
         new ConditionalCommand(goToMidPoint(), rotateToLevel(level), hasAlgae);

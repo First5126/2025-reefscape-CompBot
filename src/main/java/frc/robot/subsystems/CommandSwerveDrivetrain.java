@@ -418,7 +418,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     run(() -> horizontalDrive(horizontalError, skew));
   }
 
-  // -18.5
   private void horizontalDrive(Supplier<Double> horizontalError, double skew) {
     double xError = horizontalError.get() + skew;
     m_RobotCentricdrive

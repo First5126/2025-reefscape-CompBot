@@ -238,8 +238,6 @@ public class RobotContainer {
 
     m_coDriverController.povLeft().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L4));
 
-    // intakes/outtakes
-
     // algae intake
     m_coDriverController
         .leftBumper()
