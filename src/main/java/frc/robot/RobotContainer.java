@@ -142,14 +142,6 @@ public class RobotContainer {
     configureBindings();
     configureCoDriverControls();
 
-    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
-    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
-
-
-
-
-
     // !!! IMPORTANT !!!
     // Add states disabled to assure state is not going to be destructive when reinabled
     new Trigger(DriverStation::isDisabled)
