@@ -92,13 +92,8 @@ public class Elevator extends SubsystemBase {
     m_rightMotor.getConfigurator().apply(m_rightConfig);
     m_rightMotor.setControl(new Follower(m_leftMotor.getDeviceID(), true));
     m_leftMotor.setControl(m_VoltageOut.withOutput(0));
-  }
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
-    SmartDashboard.putBoolean("Elevator Lower Limit Switch Status: ", isLowerLimitReached());
-    SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
+    SmartDashboard.putBoolean("Elevator Brake", true);
   }
 
   public Command openLoopCommand(Supplier<Double> speed) {
@@ -163,26 +158,28 @@ public class Elevator extends SubsystemBase {
         });
   }
 
-  public Command unBrake() {
-    return run(
-        () -> {
-          MotorOutputConfigs unbrake = new MotorOutputConfigs();
-          unbrake.NeutralMode = NeutralModeValue.Coast;
+  public void unBrake() {
+    MotorOutputConfigs unbrake = new MotorOutputConfigs();
+    unbrake.NeutralMode = NeutralModeValue.Coast;
 
-          m_leftMotor.getConfigurator().apply(unbrake);
-          m_rightMotor.getConfigurator().apply(unbrake);
-        });
+    m_leftMotor.getConfigurator().apply(unbrake);
+    m_rightMotor.getConfigurator().apply(unbrake);
   }
 
-  public Command brake() {
-    return run(
-        () -> {
-          MotorOutputConfigs brake = new MotorOutputConfigs();
-          brake.NeutralMode = NeutralModeValue.Brake;
+  public Command unBrakeCommand() {
+    return run(() -> unBrake()).ignoringDisable(true);
+  }
 
-          m_leftMotor.getConfigurator().apply(brake);
-          m_rightMotor.getConfigurator().apply(brake);
-        });
+  public void brake() {
+    MotorOutputConfigs brake = new MotorOutputConfigs();
+    brake.NeutralMode = NeutralModeValue.Brake;
+
+    m_leftMotor.getConfigurator().apply(brake);
+    m_rightMotor.getConfigurator().apply(brake);
+  }
+
+  public Command brakeCommand() {
+    return run(() -> brake()).ignoringDisable(true);
   }
 
   public Command zeroElevator() {
@@ -237,5 +234,26 @@ public class Elevator extends SubsystemBase {
 
   private boolean isUpperLimitReached() {
     return m_leftMotor.getForwardLimit().getValue().equals(ForwardLimitValue.ClosedToGround);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
+    SmartDashboard.putBoolean("Elevator Lower Limit Switch Status: ", isLowerLimitReached());
+    SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
+
+    if (SmartDashboard.getBoolean("Elevator Brake", true)) {
+      MotorOutputConfigs brake = new MotorOutputConfigs();
+      brake.NeutralMode = NeutralModeValue.Brake;
+
+      m_leftMotor.getConfigurator().apply(brake);
+      m_rightMotor.getConfigurator().apply(brake);
+    } else {
+      MotorOutputConfigs unbrake = new MotorOutputConfigs();
+      unbrake.NeutralMode = NeutralModeValue.Coast;
+
+      m_leftMotor.getConfigurator().apply(unbrake);
+      m_rightMotor.getConfigurator().apply(unbrake);
+    }
   }
 }
