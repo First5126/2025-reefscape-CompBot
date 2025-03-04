@@ -13,6 +13,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -130,6 +132,10 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+    NamedCommands.registerCommand("Simple Elevator L3", m_elevator.setCoralPosition(CoralLevels.L3));
 
     configureBindings();
     configureCoDriverControls();
@@ -155,6 +161,7 @@ public class RobotContainer {
     // https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html
     // Starts recording to data log
     DataLogManager.start();
+
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
   }
@@ -214,6 +221,9 @@ public class RobotContainer {
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
     m_coDriverController.a().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.PROCESSER));
+
+
+    m_coDriverController.b().onTrue(m_commandFactory.goToPose(PoseConstants.StartPositon.getPose()));
 
     m_coDriverController
         .leftTrigger()
@@ -314,13 +324,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-        m_drivetrain.goToPose(PoseConstants.ReefPosition6.getPose()),
-        m_commandFactory.elevatorOutTakeL4(),
-        m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()),
-        m_commandFactory.elevatorInTakeCoralStation(),
-        m_drivetrain.goToPose(PoseConstants.ReefPosition2.getPose()),
-        m_commandFactory.elevatorOutTakeL3());
+    return autoChooser.getSelected();
   }
 
   public void configureDriverAutoCommands() {

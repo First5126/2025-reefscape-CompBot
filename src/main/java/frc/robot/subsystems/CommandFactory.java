@@ -197,4 +197,27 @@ public class CommandFactory {
   public Command zeroRobot() {
     return m_drivetrain.zero_pidgeon().alongWith(m_elevator.zeroElevator());
   }
+
+  public Command algaeGoToL3() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L3);
+    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
+    Command IntakeAlgae = m_algaeRollers.feedIn();
+
+    return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
+  }
+
+  public Command algaeGoToL4() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
+    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
+    Command IntakeAlgae = m_algaeRollers.feedIn();
+
+    return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
+  }
+
+  public Command putBallInProcesser() {
+    Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
+    Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.feedOut());
+
+    return finalCommand;
+  }
 }
