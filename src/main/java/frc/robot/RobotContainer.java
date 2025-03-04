@@ -132,13 +132,17 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3());
-    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser());
-    NamedCommands.registerCommand("Simple Elevator L3", m_elevator.setCoralPosition(CoralLevels.L3));
 
     configureBindings();
     configureCoDriverControls();
+
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+
+
+
+
 
     // !!! IMPORTANT !!!
     // Add states disabled to assure state is not going to be destructive when reinabled
@@ -319,15 +323,20 @@ public class RobotContainer {
             () -> {
               xboxController.setRumble(rumbleType, rumbleStrength);
             })
-        .andThen(wait)
-        .andThen(stopRumble);
-  }
+        .andThen(wait);
 
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-  }
+            }
 
-  public void configureDriverAutoCommands() {
+    public Command getAutonomousCommand() {
+        return new SequentialCommandGroup(
+            m_commandFactory.algaeGoToL3(),
+            m_commandFactory.algaeGoToL4(),
+            m_commandFactory.putBallInProcesser(),
+            autoChooser.getSelected()
+            );
+     }
+
+public void configureDriverAutoCommands() {
     // right bumper left goto
 
     m_driverController
