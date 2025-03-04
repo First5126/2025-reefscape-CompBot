@@ -122,19 +122,19 @@ public class RobotContainer {
         "Go To ReefPose6",
         m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1().asProxy());
+        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2().asProxy());
+        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3().asProxy());
+        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4().asProxy());
+        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4());
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
-    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4());
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3());
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser());
     NamedCommands.registerCommand("Simple Elevator L3", m_elevator.setCoralPosition(CoralLevels.L3));
 
     configureBindings();

@@ -200,10 +200,16 @@ public class CommandFactory {
 
   public Command algaeGoToL3() {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.L3);
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
+    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
     Command IntakeAlgae = m_algaeRollers.feedIn();
 
-    return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
+    return elevator
+        .andThen(pivotCoralRollersCommand)
+        .alongWith(ReleaseCoral)
+        .alongWith(pivotAlgaeRollers)
+        .alongWith(IntakeAlgae);
   }
 
   public Command algaeGoToL4() {

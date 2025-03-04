@@ -138,7 +138,11 @@ public class Elevator extends SubsystemBase {
     return runOnce(
         () -> {
           setPosition(position);
-        });
+        }).until(this::elevatorAtPosition);
+  }
+
+  public boolean elevatorAtPosition() {
+    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble()) < ElevatorConstants.ELEVATOR_TOLERANCE;
   }
 
   public Command stopMotors() {
