@@ -85,7 +85,7 @@ public class RobotContainer {
   private final CoralRollers m_coralRollers = new CoralRollers();
   private final CoralPivot m_coralPivot = new CoralPivot();
   private final AlgaePivot m_algaePivot = new AlgaePivot(m_algaeRollers.hasAlgae());
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private final SendableChooser<Command> autoChooser;
   private final Elevator m_elevator = new Elevator();
   private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
@@ -132,6 +132,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
+
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+
+    autoChooser = AutoBuilder.buildAutoChooser();
 
     configureBindings();
     configureCoDriverControls();
@@ -327,14 +333,9 @@ public class RobotContainer {
 
             }
 
-    public Command getAutonomousCommand() {
-        return new SequentialCommandGroup(
-            m_commandFactory.algaeGoToL3(),
-            m_commandFactory.algaeGoToL4(),
-            m_commandFactory.putBallInProcesser(),
-            autoChooser.getSelected()
-            );
-     }
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 
 public void configureDriverAutoCommands() {
     // right bumper left goto
