@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -292,16 +293,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Supplier<Double> robotCentricthrottleSupplier,
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
-      Supplier<Double> ySupplier) {
+      Supplier<Double> ySupplier,
+      Supplier<CoralLevels> level) {
     return run(
         () -> {
+          double speedMultiplier = level.get().maxSpeed;
           double fieldCentricthrottle =
-              ControllerConstants.modifyAxisWithCustomDeadband(
-                  fieldCentricthrottleSupplier.get(), 0.06, 1);
+              (ControllerConstants.modifyAxisWithCustomDeadband(
+                      fieldCentricthrottleSupplier.get(), 0.06, 1))
+                  * speedMultiplier;
           double robotCentricThrottle =
-              ControllerConstants.modifyAxisWithCustomDeadband(
-                      robotCentricthrottleSupplier.get(), 0.06, 2)
-                  / 2;
+              (ControllerConstants.modifyAxisWithCustomDeadband(
+                          robotCentricthrottleSupplier.get(), 0.06, 2)
+                      / 2)
+                  * speedMultiplier;
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
