@@ -178,7 +178,8 @@ public class RobotContainer {
             m_driverController::getLeftTriggerAxis,
             m_driverController::getRightX,
             m_driverController::getLeftY,
-            m_driverController::getLeftX));
+            m_driverController::getLeftX,
+            m_elevator::getCoralLevel));
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
