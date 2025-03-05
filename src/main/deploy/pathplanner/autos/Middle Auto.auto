@@ -40,18 +40,18 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Lower Elevator"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "Middle-GoToProcesser"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Elevator"
           }
         },
         {

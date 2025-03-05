@@ -5,21 +5,53 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Right-GoToReef"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right-GoToReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator to L3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Raise Elevator to L3"
+            "name": "Place Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Right GoBackToReef"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right GoBackToReef"
+                }
+              }
+            ]
           }
         },
         {
@@ -29,21 +61,47 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Right-GoToReefL4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Real Right-GoToProcesserL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator to L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Raise Elevator to L4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of Real Right-GoToProcesserL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Copy of Right-GoToReefL4"
+            "waitTime": 0.5
           }
         },
         {
