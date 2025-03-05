@@ -80,6 +80,10 @@ public class CommandFactory {
     return returnCommand;
   }
 
+  public Command stopRollers() {
+    return m_coralRollers.stopCommand();
+  }
+
   public Command coralPivotAndIntake(CoralLevels level) {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
     Command pivotCoralRollers = m_coralPivot.gotoCoralStationSetpoint();

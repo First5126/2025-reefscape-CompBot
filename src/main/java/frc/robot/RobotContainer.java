@@ -211,7 +211,9 @@ public class RobotContainer {
 
     m_coDriverController
         .x()
-        .onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+        .whileTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+
+    m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
