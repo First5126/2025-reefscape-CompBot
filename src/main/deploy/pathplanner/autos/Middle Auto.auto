@@ -5,21 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Copy of Middle-GoToReef"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle-GoToReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator to L3"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Raise Elevator to L3"
+            "name": "Place Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Right-GoToProcesser"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle-GoToProcesser"
+                }
+              }
+            ]
           }
         },
         {
@@ -38,6 +64,18 @@
           "type": "named",
           "data": {
             "name": "Raise Elevator to L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right GoBackToReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae"
           }
         }
       ]

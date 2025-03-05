@@ -200,16 +200,13 @@ public class CommandFactory {
 
   public Command algaeGoToL3() {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.L3);
-    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
-    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
     Command IntakeAlgae = m_algaeRollers.feedIn();
 
     return elevator
-        .andThen(pivotCoralRollersCommand)
-        .alongWith(ReleaseCoral)
-        .alongWith(pivotAlgaeRollers)
-        .alongWith(IntakeAlgae);
+        .andThen(pivotAlgaeRollers)
+        .alongWith(IntakeAlgae)
+        .until(m_algaeRollers.hasAlgae());
   }
 
   public Command algaeGoToL4() {
@@ -222,8 +219,21 @@ public class CommandFactory {
 
   public Command putBallInProcesser() {
     Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
-    Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.feedOut());
+    Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.startFeedOut());
 
     return finalCommand;
+  }
+
+  public Command placeCoral() {
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
+    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
+
+    return pivotCoralRollersCommand.andThen(ReleaseCoral);
+  }
+
+  public Command lowerElevator() {
+    Command lowerL3Elevator = m_elevator.goToBottom();
+
+    return lowerL3Elevator;
   }
 }

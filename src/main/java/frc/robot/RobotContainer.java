@@ -134,8 +134,10 @@ public class RobotContainer {
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+    NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoral().asProxy());
+    NamedCommands.registerCommand("Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
