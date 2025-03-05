@@ -26,7 +26,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 import com.ctre.phoenix6.signals.S2CloseStateValue;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -143,13 +142,15 @@ public class Elevator extends SubsystemBase {
 
   public Command setCoralPosition(CoralLevels position) {
     return runOnce(
-        () -> {
-          setPosition(position);
-        }).until(this::elevatorAtPosition);
+            () -> {
+              setPosition(position);
+            })
+        .until(this::elevatorAtPosition);
   }
 
   public boolean elevatorAtPosition() {
-    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble()) < ElevatorConstants.ELEVATOR_TOLERANCE;
+    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble())
+        < ElevatorConstants.ELEVATOR_TOLERANCE;
   }
 
   public Command stopMotors() {

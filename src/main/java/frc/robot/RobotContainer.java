@@ -13,8 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AprilTagLocalizationConstants;
@@ -135,11 +132,14 @@ public class RobotContainer {
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
+    NamedCommands.registerCommand(
+        "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoral().asProxy());
-    NamedCommands.registerCommand("Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
-    NamedCommands.registerCommand("Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
+    NamedCommands.registerCommand(
+        "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -326,14 +326,13 @@ public class RobotContainer {
               xboxController.setRumble(rumbleType, rumbleStrength);
             })
         .andThen(wait);
-
-            }
+  }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
 
-public void configureDriverAutoCommands() {
+  public void configureDriverAutoCommands() {
     // right bumper left goto
 
     m_driverController
