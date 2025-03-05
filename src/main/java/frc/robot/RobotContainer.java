@@ -81,10 +81,11 @@ public class RobotContainer {
   private final Climbing m_climbing = new Climbing();
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
-  private final CoralPivot m_coralPivot = new CoralPivot();
-  private final AlgaePivot m_algaePivot = new AlgaePivot(m_algaeRollers.hasAlgae());
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
   private final Elevator m_elevator = new Elevator();
+  private final CoralPivot m_coralPivot = new CoralPivot();
+  private final AlgaePivot m_algaePivot =
+      new AlgaePivot(m_algaeRollers.hasAlgae(), m_elevator::getCoralLevel);
+  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
   private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
       new CommandFactory(
