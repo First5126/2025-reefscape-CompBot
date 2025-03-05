@@ -28,6 +28,7 @@ public class CANConstants {
   public static final int RIGHT_CAN_RANGE_CORAL = 1;
 
   public static final int ELEVATOR_CANDI = 1;
+  public static final int ALGAE_INTAKE_CANDI = 0;
 
   public static final String ELEVATOR_CANIVORE = "Elevator";
   public static final String DRIVETRAIN_CANIVORE = "DriveBase";

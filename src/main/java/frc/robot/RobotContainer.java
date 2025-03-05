@@ -196,8 +196,8 @@ public class RobotContainer {
     // Bumpers to coral station
 
     // d-pad for cardinal movement
-    m_driverController.povLeft().whileTrue(m_drivetrain.cardinalMovement(0.05, 0.1));
-    m_driverController.povRight().whileTrue(m_drivetrain.cardinalMovement(0.05, -0.1));
+    m_driverController.povLeft().whileTrue(m_drivetrain.cardinalMovement(0.025, 0.1));
+    m_driverController.povRight().whileTrue(m_drivetrain.cardinalMovement(0.025, -0.1));
 
     m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
     m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
