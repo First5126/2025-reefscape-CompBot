@@ -227,9 +227,6 @@ public class RobotContainer {
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
     m_coDriverController.a().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.PROCESSER));
 
-
-    m_coDriverController.b().onTrue(m_commandFactory.goToPose(PoseConstants.StartPositon.getPose()));
-
     m_coDriverController
         .leftTrigger()
         .and(m_coDriverController.leftStick())

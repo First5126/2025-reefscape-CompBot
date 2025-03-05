@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle-GoToReef"
+            "pathName": "Right-GoToReef"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle-GoToProcesser"
+            "pathName": "Right GoBackToReef"
           }
         },
         {
