@@ -83,10 +83,11 @@ public class RobotContainer {
   private final Climbing m_climbing = new Climbing();
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
-  private final CoralPivot m_coralPivot = new CoralPivot();
-  private final AlgaePivot m_algaePivot = new AlgaePivot(m_algaeRollers.hasAlgae());
-  private final SendableChooser<Command> autoChooser;
   private final Elevator m_elevator = new Elevator();
+  private final CoralPivot m_coralPivot = new CoralPivot();
+  private final AlgaePivot m_algaePivot =
+      new AlgaePivot(m_algaeRollers.hasAlgae(), m_elevator::getCoralLevel);
+  private final SendableChooser<Command> autoChooser;
   private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
       new CommandFactory(
@@ -222,7 +223,9 @@ public class RobotContainer {
 
     m_coDriverController
         .x()
-        .onTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+        .whileTrue(m_commandFactory.coralPivotAndIntake(CoralLevels.CORAL_STATION));
+
+    m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
