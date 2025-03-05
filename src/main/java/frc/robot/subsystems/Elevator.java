@@ -45,6 +45,7 @@ public class Elevator extends SubsystemBase {
   private final MotionMagicVoltage m_moitonMagicVoltage;
   private final VoltageOut m_VoltageOut = new VoltageOut(0);
   private final Slot0Configs m_slot0Configs = new Slot0Configs();
+  private CoralLevels m_level = CoralLevels.TRAVEL;
 
   // Keep track of the current coral level designated for the elevator
   private CoralLevels[] m_corralLevels = {
@@ -228,6 +229,7 @@ public class Elevator extends SubsystemBase {
   // using exesting mPositionVoltage write set position method in meters
   private void setPosition(CoralLevels position) {
     m_currentCoralLevel = position;
+    m_level = m_currentCoralLevel;
     m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
     SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
   }
@@ -244,6 +246,10 @@ public class Elevator extends SubsystemBase {
 
   private boolean isUpperLimitReached() {
     return m_leftMotor.getForwardLimit().getValue().equals(ForwardLimitValue.ClosedToGround);
+  }
+
+  public CoralLevels getCoralLevel() {
+    return m_level;
   }
 
   @Override

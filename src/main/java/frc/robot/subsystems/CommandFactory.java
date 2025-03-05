@@ -94,7 +94,8 @@ public class CommandFactory {
         .until(m_coralRollers.hasCoral())
         .andThen(finishIntake)
         .andThen(
-            Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
+            Commands.deadline(
+                Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
         .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
