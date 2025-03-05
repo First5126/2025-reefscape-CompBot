@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AprilTagLocalizationConstants;
@@ -85,7 +84,7 @@ public class RobotContainer {
   private final CoralPivot m_coralPivot = new CoralPivot();
   private final AlgaePivot m_algaePivot =
       new AlgaePivot(m_algaeRollers.hasAlgae(), m_elevator::getCoralLevel);
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private final SendableChooser<Command> autoChooser;
   private final RecordInputs m_recordInputs = new RecordInputs();
   private final CommandFactory m_commandFactory =
       new CommandFactory(
@@ -121,16 +120,28 @@ public class RobotContainer {
         "Go To ReefPose6",
         m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1().asProxy());
+        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2().asProxy());
+        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3().asProxy());
+        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3());
     NamedCommands.registerCommand(
-        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4().asProxy());
+        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4());
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
+
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+    NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoral().asProxy());
+    NamedCommands.registerCommand(
+        "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
+
+    autoChooser = AutoBuilder.buildAutoChooser();
 
     configureBindings();
     configureCoDriverControls();
@@ -156,6 +167,7 @@ public class RobotContainer {
     // https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html
     // Starts recording to data log
     DataLogManager.start();
+
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
   }
@@ -313,18 +325,11 @@ public class RobotContainer {
             () -> {
               xboxController.setRumble(rumbleType, rumbleStrength);
             })
-        .andThen(wait)
-        .andThen(stopRumble);
+        .andThen(wait);
   }
 
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-        m_drivetrain.goToPose(PoseConstants.ReefPosition6.getPose()),
-        m_commandFactory.elevatorOutTakeL4(),
-        m_drivetrain.goToPose(PoseConstants.leftCoralStationPosition2.getPose()),
-        m_commandFactory.elevatorInTakeCoralStation(),
-        m_drivetrain.goToPose(PoseConstants.ReefPosition2.getPose()),
-        m_commandFactory.elevatorOutTakeL3());
+    return autoChooser.getSelected();
   }
 
   public void configureDriverAutoCommands() {

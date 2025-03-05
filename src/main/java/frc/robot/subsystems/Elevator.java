@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Rotations;
 
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -24,6 +25,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import com.ctre.phoenix6.signals.S2CloseStateValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -55,6 +57,9 @@ public class Elevator extends SubsystemBase {
     m_rightMotor = new TalonFX(CANConstants.RIGHT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
 
     m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI, CANConstants.ELEVATOR_CANIVORE);
+    CANdiConfiguration candiConfig = new CANdiConfiguration();
+    candiConfig.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenNotHigh;
+    m_CANdi.getConfigurator().apply(candiConfig);
 
     TalonFXConfiguration m_leftConfig = new TalonFXConfiguration();
     TalonFXConfiguration m_rightConfig = new TalonFXConfiguration();
@@ -137,9 +142,15 @@ public class Elevator extends SubsystemBase {
 
   public Command setCoralPosition(CoralLevels position) {
     return runOnce(
-        () -> {
-          setPosition(position);
-        });
+            () -> {
+              setPosition(position);
+            })
+        .until(this::elevatorAtPosition);
+  }
+
+  public boolean elevatorAtPosition() {
+    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble())
+        < ElevatorConstants.ELEVATOR_TOLERANCE;
   }
 
   public Command stopMotors() {
@@ -247,6 +258,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
     SmartDashboard.putBoolean("Elevator Lower Limit Switch Status: ", isLowerLimitReached());
     SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
+    SmartDashboard.putBoolean("S2 Reverse Limit Source:", isLowerLimitReached());
 
     if (SmartDashboard.getBoolean("Elevator Brake", true)) {
       MotorOutputConfigs brake = new MotorOutputConfigs();

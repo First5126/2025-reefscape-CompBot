@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 2m"
+            "pathName": "Right GoBackToReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae"
           }
         }
       ]

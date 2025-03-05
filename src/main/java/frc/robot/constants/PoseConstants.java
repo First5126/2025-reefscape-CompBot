@@ -111,4 +111,9 @@ public class PoseConstants {
       new Pose(
           new Pose2d(3.839, 2.836, Rotation2d.fromDegrees(60)),
           new Pose2d(13.745, 5.209, Rotation2d.fromDegrees(-120)));
+
+  public static final Pose StartPositon =
+      new Pose(
+          new Pose2d(7.543, 1.042, Rotation2d.fromDegrees(-176.590)),
+          new Pose2d(7.543, 1.042, Rotation2d.fromDegrees(-176.590)));
 }
