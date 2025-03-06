@@ -223,15 +223,22 @@ public class CommandFactory {
   }
 
   public Command putBallInProcesser() {
-    Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
+    Command pivotAlgaeRollers = m_algaePivot.goToMidPoint();
     Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.startFeedOut());
 
     return finalCommand;
   }
 
-  public Command placeCoral() {
+    public Command placeCoralL3() {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
+
+    return pivotCoralRollersCommand.andThen(ReleaseCoral);
+  }
+
+  public Command placeCoralL2() {
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
+    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
 
     return pivotCoralRollersCommand.andThen(ReleaseCoral);
   }
@@ -240,5 +247,11 @@ public class CommandFactory {
     Command lowerL3Elevator = m_elevator.goToBottom();
 
     return lowerL3Elevator;
+  }
+
+  public Command moveElevatorUpToL2() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2);
+
+    return elevator;
   }
 }

@@ -131,15 +131,17 @@ NamedCommands.registerCommand(
     "Raise Elevator to position Coral Station",
     m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
-NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
-NamedCommands.registerCommand(
-    "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
-NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
-NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoral().asProxy());
-NamedCommands.registerCommand(
-    "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
-NamedCommands.registerCommand(
-    " ", m_commandFactory.elevatorOutTakeL2().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to L4", m_commandFactory.algaeGoToL4().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
+    NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
+    NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());
+    NamedCommands.registerCommand(
+        "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
+    NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2());
+    NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL3().asProxy());
 
 autoChooser = AutoBuilder.buildAutoChooser();
 
