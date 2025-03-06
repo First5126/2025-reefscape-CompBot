@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right-GoToReef"
+                  "pathName": "Right to Reef Barge Right"
                 }
               },
               {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right GoBackToReef"
+                  "pathName": "Reef Barge Right to Processer"
                 }
               }
             ]
@@ -67,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Real Right-GoToProcesserL4"
+                  "pathName": "Processer to Reef Driver Right"
                 }
               },
               {
@@ -86,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of Real Right-GoToProcesserL4"
+                  "pathName": "Reef Driver Right to Processer"
                 }
               },
               {

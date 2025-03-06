@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle-GoToReef"
+                  "pathName": "Middle to Reef Barge Center"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle-GoToProcesser"
+                  "pathName": "Reef Barge Center to Processer"
                 }
               }
             ]
@@ -63,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right-GoToReefL4"
+            "pathName": "Processer to Reef Barge Right"
           }
         },
         {
@@ -75,7 +75,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right GoBackToReef"
+            "pathName": "Reef Barge Right to Processer"
           }
         },
         {
