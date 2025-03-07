@@ -89,15 +89,13 @@ public class CommandFactory {
     Command coralPivot = m_coralPivot.gotoCoralStationSetpoint();
     Command algaePivot = m_algaePivot.goToLevel(level);
     Command intakeCoral = m_coralRollers.rollInCommand(level);
-    Command stopIntake = m_coralRollers.stopCommand();
-    Command finishIntake = m_coralPivot.goToUpperSetpoint();
+    Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
 
     return elevator
         .andThen(coralPivot)
         .alongWith(intakeCoral)
         .alongWith(algaePivot)
         .until(m_coralRollers.hasCoral())
-        .andThen(stopIntake)
         .alongWith(
             Commands.deadline(
                 Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
