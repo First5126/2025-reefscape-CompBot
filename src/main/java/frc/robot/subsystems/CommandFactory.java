@@ -223,10 +223,7 @@ public class CommandFactory {
   }
 
   public Command placeCoralL4() {
-    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
-    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
-
-    return pivotCoralRollersCommand.andThen(ReleaseCoral);
+    return raiseAndPlaceCoral(CoralLevels.L4);
   }
 
   public Command putBallInProcesser() {
@@ -237,23 +234,25 @@ public class CommandFactory {
   }
 
   public Command placeCoralL3() {
-    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
-    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
-
-    return pivotCoralRollersCommand.andThen(ReleaseCoral);
+    return raiseAndPlaceCoral(CoralLevels.L3);
   }
 
   public Command placeCoralL2() {
-    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
-    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
-
-    return pivotCoralRollersCommand.andThen(ReleaseCoral);
+    return raiseAndPlaceCoral(CoralLevels.L2);
   }
 
   public Command lowerElevator() {
     Command lowerL3Elevator = m_elevator.goToBottom();
 
     return lowerL3Elevator;
+  }
+
+  private Command raiseAndPlaceCoral(CoralLevels level){
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
+    Command ReleaseCoral = m_coralRollers.rollOutCommand(level);
+    Command raiseElevator = m_elevator.setCoralPosition(level);
+
+    return raiseElevator.alongWith(pivotCoralRollersCommand).andThen(ReleaseCoral);
   }
 
   public Command moveElevatorUpToL2() {
