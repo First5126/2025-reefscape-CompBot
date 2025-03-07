@@ -301,11 +301,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                      fieldCentricthrottleSupplier.get(), 0.06, 1));
+                  fieldCentricthrottleSupplier.get(), 0.06, 1));
           double robotCentricThrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                          robotCentricthrottleSupplier.get(), 0.06, 2)
-                      / 2);
+                      robotCentricthrottleSupplier.get(), 0.06, 2)
+                  / 2);
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =

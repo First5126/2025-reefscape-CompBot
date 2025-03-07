@@ -8,7 +8,7 @@ spotless {
     java {
         target fileTree('.') {
             include '**/*.java'
-            exclude '**/build/**', '**/build-*/**', '**/bin/**', '**/*/CommandSwerveDrivetrain.java', '**/*/TunerConstants.java'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**'
         }
         toggleOffOn()
         googleJavaFormat()
