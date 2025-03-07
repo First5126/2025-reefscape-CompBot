@@ -104,6 +104,10 @@ public class AlgaePivot extends SubsystemBase {
     return command;
   }
 
+  public Command setAngle(CoralLevels level) {
+    return runOnce(() -> rotate(level.algaeAngle));
+  }
+
   public Command goToMidPoint() {
     return runOnce(
         () -> {
@@ -118,6 +122,24 @@ public class AlgaePivot extends SubsystemBase {
 
   private void rotate(Angle setpoint) {
     m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
+  }
+
+  public Command openLoopCommandUp() {
+    return runOnce(
+        () -> {
+          openLoop(0.1);
+        });
+  }
+
+  public Command openLoopCommandDown() {
+    return runOnce(
+        () -> {
+          openLoop(-0.1);
+        });
+  }
+
+  private void openLoop(double power) {
+    m_AlgaePivotTalon.setControl(new DutyCycleOut(power));
   }
 
   private Command rotateToLevel(CoralLevels level) {

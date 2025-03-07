@@ -5,34 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Right-GoToReef"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Raise Elevator to L3"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Right to Reef Barge Right"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Place Coral"
+            "name": "Place Coral L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L3"
           }
         },
         {
@@ -48,7 +35,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right GoBackToReef"
+                  "pathName": "Reef Barge Right to Processer"
                 }
               }
             ]
@@ -67,13 +54,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Real Right-GoToProcesserL4"
+                  "pathName": "Processer to Reef Driver Right"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Raise Elevator to L4"
+                  "name": "Dealgefy L3"
                 }
               }
             ]
@@ -86,7 +73,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of Real Right-GoToProcesserL4"
+                  "pathName": "Reef Driver Right to Processer"
                 }
               },
               {
