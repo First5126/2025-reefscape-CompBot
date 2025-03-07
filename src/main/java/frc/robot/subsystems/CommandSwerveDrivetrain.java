@@ -298,15 +298,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(
         () -> {
           double speedMultiplier = level.get().maxSpeed;
+          SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                      fieldCentricthrottleSupplier.get(), 0.06, 1))
-                  * speedMultiplier;
+                      fieldCentricthrottleSupplier.get(), 0.06, 1));
           double robotCentricThrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
                           robotCentricthrottleSupplier.get(), 0.06, 2)
-                      / 2)
-                  * speedMultiplier;
+                      / 2);
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =

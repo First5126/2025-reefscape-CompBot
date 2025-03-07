@@ -9,23 +9,23 @@
       "prevControl": null,
       "nextControl": {
         "x": 6.0691421896604245,
-        "y": 1.9325435202286871
+        "y": 1.9325435202286876
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.0,
+        "x": 6.031,
         "y": 1.091
       },
       "prevControl": {
-        "x": 6.051672588973068,
+        "x": 6.082672588973067,
         "y": 2.2352760455335563
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Processer"
     }
   ],
   "rotationTargets": [],

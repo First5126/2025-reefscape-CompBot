@@ -247,7 +247,7 @@ public class CommandFactory {
     return lowerL3Elevator;
   }
 
-  private Command raiseAndPlaceCoral(CoralLevels level){
+  private Command raiseAndPlaceCoral(CoralLevels level) {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(level);
     Command raiseElevator = m_elevator.setCoralPosition(level);

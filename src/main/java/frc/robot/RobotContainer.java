@@ -23,13 +23,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.AprilTagLocalizationConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
-import frc.robot.subsystems.AprilTagRecognition;
 import frc.robot.subsystems.Climbing;
 import frc.robot.subsystems.CommandFactory;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -38,7 +36,6 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
-import frc.robot.vision.AprilTagLocalization;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -68,13 +65,13 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   /*private AprilTagLocalization m_aprilTagLocalization =
-      new AprilTagLocalization(
-          m_drivetrain::getPose2d,
-          m_drivetrain::resetPose,
-          m_drivetrain::addVisionMeasurement,
-          // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
-          // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
-          AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);*/
+  new AprilTagLocalization(
+      m_drivetrain::getPose2d,
+      m_drivetrain::resetPose,
+      m_drivetrain::addVisionMeasurement,
+      // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
+      // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
+      AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);*/
 
   private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
@@ -96,8 +93,9 @@ public class RobotContainer {
           m_ledLights,
           m_coralPivot,
           m_algaePivot);
+
   /*private final AprilTagRecognition m_aprilTagRecognition =
-      new AprilTagRecognition(m_commandFactory);*/
+  new AprilTagRecognition(m_commandFactory);*/
 
   public RobotContainer() {
 
@@ -199,10 +197,10 @@ public class RobotContainer {
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    //m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
+    // m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
 
-    //m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
-    //m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
+    // m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
+    // m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
     m_driverController.y().onTrue(m_algaePivot.goToMidPoint());
 

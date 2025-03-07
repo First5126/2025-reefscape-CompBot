@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.26,
-        "y": 2.636
+        "x": 5.349143835616438,
+        "y": 2.6200984589041094
       },
       "prevControl": {
-        "x": 6.36238858281615,
-        "y": 0.8811336802512493
+        "x": 6.451532418432588,
+        "y": 0.8652321391553586
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef Barge Right"
     }
   ],
   "rotationTargets": [],
