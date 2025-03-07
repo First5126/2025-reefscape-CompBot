@@ -289,6 +289,10 @@ public class CommandFactory {
     Command coralPivot = m_coralPivot.gotoAngle(level.angle);
     Command algaeFeedOut = m_algaeRollers.feedOut();
 
-    return elevator.alongWith(algaePivot).alongWith(coralPivot).andThen(algaeFeedOut);
+    return elevator
+        .alongWith(algaePivot)
+        .andThen(coralPivot)
+        .andThen(Commands.waitSeconds(0.3))
+        .andThen(algaeFeedOut);
   }
 }
