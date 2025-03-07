@@ -13,75 +13,8 @@
                 "data": {
                   "pathName": "Middle to Reef Barge Center"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Raise Elevator to L3"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place Coral"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Reef Barge Center to Processer"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lower Elevator"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Process Algae"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Processer to Reef Barge Right"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Raise Elevator to L4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef Barge Right to Processer"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Process Algae"
           }
         }
       ]
