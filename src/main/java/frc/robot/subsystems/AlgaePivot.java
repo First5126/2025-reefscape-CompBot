@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -17,7 +16,6 @@ import com.ctre.phoenix6.signals.SensorPhaseValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -106,6 +104,10 @@ public class AlgaePivot extends SubsystemBase {
     return command;
   }
 
+  public Command setAngle(CoralLevels level) {
+    return runOnce(() -> rotate(level.algaeAngle));
+  }
+
   public Command goToMidPoint() {
     return runOnce(
         () -> {
@@ -122,19 +124,21 @@ public class AlgaePivot extends SubsystemBase {
     m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
   }
 
-  public Command openLoopCommandUp(){
+  public Command openLoopCommandUp() {
     return runOnce(
-      ()->{openLoop(0.1);}
-    );
+        () -> {
+          openLoop(0.1);
+        });
   }
 
-  public Command openLoopCommandDown(){
+  public Command openLoopCommandDown() {
     return runOnce(
-      ()->{openLoop(-0.1);}
-    );
+        () -> {
+          openLoop(-0.1);
+        });
   }
 
-  private void openLoop(double power){
+  private void openLoop(double power) {
     m_AlgaePivotTalon.setControl(new DutyCycleOut(power));
   }
 

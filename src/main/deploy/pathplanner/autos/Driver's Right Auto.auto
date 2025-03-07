@@ -17,22 +17,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Raise Elevator to L3"
+                  "name": "Place Coral L4"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Place Coral"
+            "name": "Dealgefy L3"
           }
         },
         {
@@ -73,7 +67,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Raise Elevator to L4"
+                  "name": "Dealgefy L3"
                 }
               }
             ]

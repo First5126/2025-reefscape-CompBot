@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Raise Elevator To L2"
+            "name": "Place Coral L4"
           }
         },
         {
@@ -25,19 +25,26 @@
         {
           "type": "named",
           "data": {
-            "name": "Raise Elevator to L4"
+            "name": "Dealgefy L3"
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef Barge Left to Processer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef Barge Left to Processer"
+                }
+              }
+            ]
           }
         },
         {
@@ -55,31 +62,26 @@
         {
           "type": "named",
           "data": {
-            "name": "Raise Elevator To L2"
+            "name": "Dealgefy L3"
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Raise Elevator to L4"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef Barge Right to Processer"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef Barge Right to Processer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              }
+            ]
           }
         },
         {
