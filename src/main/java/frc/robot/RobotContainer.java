@@ -230,7 +230,7 @@ public class RobotContainer {
 
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
-    m_coDriverController.a().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.PROCESSER));
+    m_coDriverController.a().onTrue(m_commandFactory.setAlgaeProcessorLevel());
 
     m_coDriverController
         .leftTrigger()
@@ -276,7 +276,7 @@ public class RobotContainer {
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b().negate())
-        .onTrue(m_algaeRollers.feedOut()); // standard
+        .whileTrue(m_commandFactory.processAlgae()); // standard
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b())
