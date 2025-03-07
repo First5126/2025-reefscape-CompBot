@@ -86,21 +86,23 @@ public class CommandFactory {
 
   public Command coralPivotAndIntake(CoralLevels level) {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
-    Command pivotCoralRollers = m_coralPivot.gotoCoralStationSetpoint();
-    Command pivotAlgaeRollers = m_algaePivot.goToLevel(level);
+    Command coralPivot = m_coralPivot.gotoCoralStationSetpoint();
+    Command algaePivot = m_algaePivot.goToLevel(level);
     Command intakeCoral = m_coralRollers.rollInCommand(level);
-    Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
+    Command stopIntake = m_coralRollers.stopCommand();
+    Command finishIntake = m_coralPivot.goToUpperSetpoint();
 
     return elevator
-        .andThen(pivotCoralRollers)
+        .andThen(coralPivot)
         .alongWith(intakeCoral)
-        .alongWith(pivotAlgaeRollers)
+        .alongWith(algaePivot)
         .until(m_coralRollers.hasCoral())
-        .andThen(finishIntake)
-        .andThen(
+        .andThen(stopIntake)
+        .alongWith(
             Commands.deadline(
                 Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
-        .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
+        .andThen(finishIntake)
+        .alongWith(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
   public Command coralPivotAndOutake(CoralLevels level) {
