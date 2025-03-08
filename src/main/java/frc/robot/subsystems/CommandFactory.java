@@ -100,6 +100,7 @@ public class CommandFactory {
             Commands.deadline(
                 Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
         .andThen(finishIntake)
+        .asProxy()
         .alongWith(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
