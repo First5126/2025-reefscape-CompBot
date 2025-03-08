@@ -248,7 +248,7 @@ public class CommandFactory {
     return raiseElevator
         .alongWith(pivotCoralRollersCommand)
         .alongWith(algaePivot)
-        .withTimeout(0.25)
+        .withTimeout(0.5)
         .andThen(ReleaseCoral);
   }
 
