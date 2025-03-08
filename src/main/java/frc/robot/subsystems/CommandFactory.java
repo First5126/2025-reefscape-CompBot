@@ -243,9 +243,11 @@ public class CommandFactory {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(level);
     Command raiseElevator = m_elevator.setCoralPosition(level);
+    Command algaePivot = m_algaePivot.setAngle(level);
 
     return raiseElevator
         .alongWith(pivotCoralRollersCommand)
+        .alongWith(algaePivot)
         .withTimeout(0.25)
         .andThen(ReleaseCoral);
   }
