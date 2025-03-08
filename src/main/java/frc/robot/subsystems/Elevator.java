@@ -230,7 +230,7 @@ public class Elevator extends SubsystemBase {
   // using exesting mPositionVoltage write set position method in meters
   private void setPosition(CoralLevels position) {
     m_currentCoralLevel = position;
-    m_level = m_currentCoralLevel;
+    m_level = position;
     m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
     SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
   }

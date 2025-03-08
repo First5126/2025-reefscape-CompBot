@@ -80,6 +80,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
 
+  private final SwerveRequest m_brake = new SwerveRequest.SwerveDriveBrake();
+
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation =
       new SysIdRoutine(
@@ -298,15 +300,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(
         () -> {
           double speedMultiplier = level.get().maxSpeed;
+          SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                      fieldCentricthrottleSupplier.get(), 0.06, 1))
-                  * speedMultiplier;
+                  fieldCentricthrottleSupplier.get(), 0.06, 1));
           double robotCentricThrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                          robotCentricthrottleSupplier.get(), 0.06, 2)
-                      / 2)
-                  * speedMultiplier;
+                      robotCentricthrottleSupplier.get(), 0.06, 2)
+                  / 2);
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
@@ -417,6 +418,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                   .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
                   .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
         });
+  }
+
+  public Command brake() {
+    return runOnce(() -> setControl(m_brake));
   }
 
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
