@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -245,7 +244,10 @@ public class CommandFactory {
     Command ReleaseCoral = m_coralRollers.rollOutCommand(level);
     Command raiseElevator = m_elevator.setCoralPosition(level);
 
-    return raiseElevator.alongWith(pivotCoralRollersCommand).withTimeout(0.25).andThen(ReleaseCoral);
+    return raiseElevator
+        .alongWith(pivotCoralRollersCommand)
+        .withTimeout(0.25)
+        .andThen(ReleaseCoral);
   }
 
   public Command moveElevatorUpToL2() {
