@@ -420,6 +420,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         });
   }
 
+  public Command brake() {
+    return runOnce(() -> setControl(m_brake));
+  }
+
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
     run(() -> horizontalDrive(horizontalError, skew));
   }
