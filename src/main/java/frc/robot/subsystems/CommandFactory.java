@@ -96,10 +96,8 @@ public class CommandFactory {
         .alongWith(intakeCoral)
         .alongWith(pivotAlgaeRollers)
         .until(m_coralRollers.hasCoral())
-        .andThen(
-            Commands.deadline(
-                Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
         .andThen(finishIntake)
+        .andThen(Commands.deadline(Commands.waitSeconds(0.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
         .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
@@ -188,7 +186,7 @@ public class CommandFactory {
         .andThen(m_coralPivot.goToUpperSetpoint())
         .andThen(
             Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
-        .andThen(m_elevator.setCoralPosition(CoralLevels.L2));
+        .andThen(m_elevator.setCoralPosition(CoralLevels.L3));
   }
 
   public Command zeroRobot() {
