@@ -256,6 +256,18 @@ public class CommandFactory {
     return elevator;
   }
 
+  public Command moveElevatorUpToL4() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
+
+    return elevator;
+  }
+
+  public Command placeCoralL4Command(){
+    Command coralOuttake = m_coralRollers.rollOutCommand(CoralLevels.L4);
+
+    return coralOuttake;
+  }
+
   public Command algaePivotAndIntake(CoralLevels level) {
     Command elevator = m_elevator.setCoralPosition(level);
     Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);

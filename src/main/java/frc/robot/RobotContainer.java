@@ -130,7 +130,7 @@ public class RobotContainer {
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
-    NamedCommands.registerCommand("Place Coral L4", m_commandFactory.placeCoralL4().asProxy());
+    NamedCommands.registerCommand("Place Coral L4 OLD", m_commandFactory.placeCoralL4().asProxy());
     NamedCommands.registerCommand(
         "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
@@ -140,6 +140,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
     NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2());
+    NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL2());
+    NamedCommands.registerCommand("Place Coral L4", m_commandFactory.placeCoralL4Command());
     NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL3().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
