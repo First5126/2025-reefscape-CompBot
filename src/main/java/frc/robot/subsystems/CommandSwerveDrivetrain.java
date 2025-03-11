@@ -39,6 +39,7 @@ import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -70,7 +71,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
-  private PIDController m_xController = new PIDController(0.2, 0, 0);
+  private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
+  private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
@@ -160,6 +162,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
   }
 
   /**
@@ -183,6 +186,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
   }
 
   /**
@@ -217,6 +221,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
   }
 
   /**
@@ -288,6 +293,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
+  }
+
+  private void setupVisonPIDs() {
+    m_xController.setTolerance(TunerConstants.visonXErrorTolerance);
+    m_yController.setTolerance(TunerConstants.visonYErrorTolerance);
   }
 
   public Command gasPedalCommand(
@@ -434,6 +444,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withVelocityX(m_xController.calculate(xError))
         .withVelocityY(0)
         .withRotationalRate(0);
+  }
+
+  public Command visonAdjust(
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, double horizontalTarget, double verticalTarget) {
+    return run(
+        () -> {
+          setControl(
+              m_RobotCentricdrive
+                  .withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
+                  .withVelocityY(m_yController.calculate(horizontalError.get(), horizontalTarget))
+                  .withRotationalRate(0));
+        });
   }
 
   private void startSimThread() {

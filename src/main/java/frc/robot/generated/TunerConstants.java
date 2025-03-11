@@ -96,6 +96,16 @@ public class TunerConstants {
 
   private static final int kPigeonId = 0;
 
+  public static final double visonXAdjustmentP = 0.1;
+  public static final double visonXAdjustmentI = 0;
+  public static final double visonXAdjustmentD = 0;
+  public static final double visonXErrorTolerance = 0.0;
+
+  public static final double visonYAdjustmentP = 0.1;
+  public static final double visonYAdjustmentI = 0;
+  public static final double visonYAdjustmentD = 0;
+  public static final double visonYErrorTolerance = 0.0;
+
   // These are only used for simulation
   private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
   private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
