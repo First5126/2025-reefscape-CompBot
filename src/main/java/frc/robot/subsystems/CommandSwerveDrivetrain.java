@@ -41,6 +41,8 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.vision.VisonAdjustment;
+
 import java.util.function.Supplier;
 
 /**
@@ -292,6 +294,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Speed", m_max_speed);
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
+    SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
+
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
 
@@ -447,14 +451,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command visonAdjust(
-      Supplier<Double> horizontalError, Supplier<Double> verticalError, double horizontalTarget, double verticalTarget) {
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, double verticalTarget) {
     return run(
         () -> {
+          SmartDashboard.putNumber("Vertical Error", verticalError.get());
+          SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
-              m_RobotCentricdrive
-                  .withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
-                  .withVelocityY(m_yController.calculate(horizontalError.get(), horizontalTarget))
-                  .withRotationalRate(0));
+            m_RobotCentricdrive
+                //.withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
+                .withVelocityY(-m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
         });
   }
 

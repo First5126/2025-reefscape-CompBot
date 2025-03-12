@@ -205,11 +205,12 @@ public class RobotContainer {
 
     m_driverController
         .a()
+        .and(VisonAdjustment::hasTarget)
         .whileTrue(
             m_drivetrain.visonAdjust(
                 VisonAdjustment::getTX,
                 VisonAdjustment::getTY,
-                VisonAdjustment.horizontalTarget,
+                VisonAdjustment::getGoalTX,
                 VisonAdjustment.verticalTarget));
 
     m_driverController.y().onTrue(m_drivetrain.brake());

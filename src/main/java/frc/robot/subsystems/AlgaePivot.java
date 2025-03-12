@@ -4,15 +4,17 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorPhaseValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +31,7 @@ public class AlgaePivot extends SubsystemBase {
   private TalonFXS m_AlgaePivotTalon;
   private Trigger hasAlgae;
   private Supplier<CoralLevels> coralLevelSupplier;
+  private CoreCANcoder m_CANcoder;
 
   public AlgaePivot(Trigger hasAlgae, Supplier<CoralLevels> coralLevelSupplier) {
     this.hasAlgae = hasAlgae;
@@ -60,7 +63,15 @@ public class AlgaePivot extends SubsystemBase {
         AlgaePivotConstants.MotionMagicCruiseVelocity;
     talonFXSConfiguration.MotionMagic.MotionMagicJerk = AlgaePivotConstants.MotionMagicJerk;
     talonFXSConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    talonFXSConfiguration.ExternalFeedback.SensorPhase = SensorPhaseValue.Opposed;
+
+    CANcoderConfiguration CANCoderConfiguration = new CANcoderConfiguration();
+    CANCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    CANCoderConfiguration.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+
+    m_CANcoder = new CoreCANcoder(CANConstants.ALGAE_CANCODER);
+    m_CANcoder.getConfigurator().apply(CANCoderConfiguration);
+
+    talonFXSConfiguration.ExternalFeedback.withFusedCANcoder(m_CANcoder);
 
     m_AlgaePivotTalon = new TalonFXS(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);

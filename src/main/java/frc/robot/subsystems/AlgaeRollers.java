@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,8 +16,6 @@ import frc.robot.constants.CANConstants;
 
 public class AlgaeRollers extends SubsystemBase {
   private TalonFXS m_motorOne;
-
-  private CANrange m_algaeCANrange;
 
   private Trigger m_hasGamePiece;
 
@@ -39,12 +35,6 @@ public class AlgaeRollers extends SubsystemBase {
     talonFXSConfiguration.Slot0.kV = AlgaeConstants.kV;
 
     m_motorOne.getConfigurator().apply(talonFXSConfiguration);
-
-    CANrangeConfiguration CANrangeConfiguration = new CANrangeConfiguration();
-    CANrangeConfiguration.ProximityParams.ProximityThreshold = AlgaeConstants.PROXIMITY_THRESHOLD;
-
-    m_algaeCANrange = new CANrange(CANConstants.ALGAE_CAN_RANGE, CANConstants.ELEVATOR_CANIVORE);
-    m_algaeCANrange.getConfigurator().apply(CANrangeConfiguration);
 
     m_hasGamePiece = new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE);
   }
@@ -96,7 +86,8 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   private boolean isAlgaeLoaded() {
-    return m_algaeCANrange.getIsDetected().getValue();
+    // return m_algaeCANrange.getIsDetected().getValue();
+    return false;
   }
 
   public void disable() {
