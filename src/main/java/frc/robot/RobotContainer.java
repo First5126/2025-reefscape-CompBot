@@ -98,49 +98,22 @@ public class RobotContainer {
   new AprilTagRecognition(m_commandFactory);*/
 
   public RobotContainer() {
-
-    NamedCommands.registerCommand(
-        "Go To ReefPose1",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose2",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose3",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose4",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose5",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose6",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position Coral Station",
-        m_commandFactory.elevatorInTakeCoralStation().asProxy());
-
+    // All the Autonomous Commands of placing Coral On the different Levels
+    NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL2().asProxy());
+    NamedCommands.registerCommand("Place CoralL3", m_commandFactory.placeCoralL3().asProxy());
+    NamedCommands.registerCommand("Place CoralL4", m_commandFactory.placeCoralL4().asProxy());
+    //All Commands To raise Elevator to different Levels
+    NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2().asProxy());
+    NamedCommands.registerCommand("Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
+    NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
+    //All other Commands
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
-    NamedCommands.registerCommand("Place Coral L4", m_commandFactory.placeCoralL4().asProxy());
-    NamedCommands.registerCommand(
-        "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
+    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());
-    NamedCommands.registerCommand(
-        "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
-    NamedCommands.registerCommand(
-        "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
-    NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2());
-    NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL3().asProxy());
+    NamedCommands.registerCommand("Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
+    NamedCommands.registerCommand("Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
+    NamedCommands.registerCommand("Raise Elevator to position Coral Station", m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 

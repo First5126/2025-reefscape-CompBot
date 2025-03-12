@@ -19,7 +19,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Place Coral L4"
+            "name": "Raise ElevatorL4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place CoralL4"
           }
         }
       ]

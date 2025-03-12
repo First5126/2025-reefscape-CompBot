@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right to Reef Barge Right"
+            "pathName": "Left to Reef Barge Left"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Place Coral L4"
+            "name": "Place CoralL4"
           }
         },
         {
@@ -35,12 +35,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -53,16 +47,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Barge Right to Processer"
+                  "pathName": "Reef Barge Left to Processer"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -72,21 +60,15 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Processer to Reef Driver Right"
+            "pathName": "Processer to Reef Barge Right"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Dealgefy L3"
           }
         },
         {
@@ -96,7 +78,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Driver Right to Processer"
+                  "pathName": "Reef Barge Right to Processer"
                 }
               },
               {
@@ -106,12 +88,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {

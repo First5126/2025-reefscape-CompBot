@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left to Reef Barge Left"
+            "pathName": "Right to Reef Barge Right"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Place Coral L4"
+            "name": "Place CoralL4"
           }
         },
         {
@@ -35,6 +35,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -47,10 +53,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Barge Left to Processer"
+                  "pathName": "Reef Barge Right to Processer"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -60,15 +72,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Processer to Reef Barge Right"
+            "waitTime": 0.5
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Dealgefy L3"
+            "pathName": "Processer to Reef Driver Right"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -78,7 +96,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Barge Right to Processer"
+                  "pathName": "Reef Driver Right to Processer"
                 }
               },
               {
@@ -88,6 +106,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
