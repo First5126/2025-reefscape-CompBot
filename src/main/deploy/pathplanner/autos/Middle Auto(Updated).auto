@@ -5,21 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Middle to Reef Barge Center"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Raise ElevatorL4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle to Reef Barge Center"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
+              }
+            ]
           }
         },
         {
