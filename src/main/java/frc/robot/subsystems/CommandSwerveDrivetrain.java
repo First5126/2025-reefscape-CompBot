@@ -82,8 +82,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
   private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
   private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
-  private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
-  private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
