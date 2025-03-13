@@ -44,7 +44,10 @@ import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
 import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.vision.VisonAdjustment;
+
 import frc.robot.vision.VisonAdjustment;
 
 import java.util.function.Supplier;
@@ -77,6 +80,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
+  private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
+  private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
   private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
   private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
 
@@ -170,6 +175,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
     setupVisonPIDs();
   }
 
