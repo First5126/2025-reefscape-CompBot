@@ -34,6 +34,43 @@
           "data": {
             "name": "Place CoralL4"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle Go To Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait Until Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle Go Back To Reef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place CoralL4"
+          }
         }
       ]
     }

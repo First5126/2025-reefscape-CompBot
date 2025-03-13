@@ -107,7 +107,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
     NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
     //All other Commands
-    NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
+    NamedCommands.registerCommand("Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
+
+
+
+
+NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());
