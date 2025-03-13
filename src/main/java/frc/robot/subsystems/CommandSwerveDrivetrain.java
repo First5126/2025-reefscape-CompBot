@@ -458,7 +458,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                //.withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
+                .withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
                 .withVelocityY(-m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         });

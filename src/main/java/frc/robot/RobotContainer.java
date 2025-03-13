@@ -36,6 +36,7 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
+import frc.robot.vision.VisonAdjustment;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -202,15 +203,15 @@ public class RobotContainer {
     // m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
     // m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    /*m_driverController
-    .a()
-    .and(VisonAdjustment::hasTarget)
-    .whileTrue(
-        m_drivetrain.visonAdjust(
-            VisonAdjustment::getTX,
-            VisonAdjustment::getTY,
-            VisonAdjustment::getGoalTX,
-            VisonAdjustment.verticalTarget));*/
+    m_driverController
+        .a()
+        .and(VisonAdjustment::hasTarget)
+        .whileTrue(
+            m_drivetrain.visonAdjust(
+                VisonAdjustment::getTX,
+                VisonAdjustment::getTY,
+                VisonAdjustment::getGoalTX,
+                VisonAdjustment.verticalTarget));
 
     m_driverController.y().onTrue(m_drivetrain.brake());
 
