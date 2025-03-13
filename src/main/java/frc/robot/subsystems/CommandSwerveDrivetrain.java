@@ -451,15 +451,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command visonAdjust(
-      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, double verticalTarget) {
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
     return run(
         () -> {
           SmartDashboard.putNumber("Vertical Error", verticalError.get());
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                .withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
-                .withVelocityY(-m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         });
   }

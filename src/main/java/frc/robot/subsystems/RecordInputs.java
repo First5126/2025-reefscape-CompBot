@@ -92,6 +92,10 @@ public class RecordInputs extends SubsystemBase {
     return false;
   }
 
+  public String getSelectedCoralStationSide() {
+    return m_selectedCoralStationSide;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Position enabled", positionEnabled);

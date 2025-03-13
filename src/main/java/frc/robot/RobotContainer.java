@@ -172,6 +172,9 @@ public class RobotContainer {
 
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    // Setup visonadjustment
+    VisonAdjustment.selectedSideSupplier = m_recordInputs::getSelectedCoralStationSide;
   }
 
   private boolean yIsNotPressed() {
@@ -211,7 +214,8 @@ public class RobotContainer {
                 VisonAdjustment::getTX,
                 VisonAdjustment::getTY,
                 VisonAdjustment::getGoalTX,
-                VisonAdjustment.verticalTarget));
+                VisonAdjustment::getGoalTY,
+                VisonAdjustment::getInversion));
 
     m_driverController.y().onTrue(m_drivetrain.brake());
 
@@ -226,6 +230,9 @@ public class RobotContainer {
 
     m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
     m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
+
+    m_driverController.leftBumper().onTrue(m_recordInputs.setLeftSideCoralStation());
+    m_driverController.rightBumper().onTrue(m_recordInputs.setRightSideCoralStation());
 
     // configureDriverAutoCommands();
   }
