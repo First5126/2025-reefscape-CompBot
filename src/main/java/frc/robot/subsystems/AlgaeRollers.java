@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,10 @@ public class AlgaeRollers extends SubsystemBase {
     talonFXSConfiguration.Slot0.kG = AlgaeConstants.kG;
     talonFXSConfiguration.Slot0.kA = AlgaeConstants.kA;
     talonFXSConfiguration.Slot0.kV = AlgaeConstants.kV;
+
+    talonFXSConfiguration.HardwareLimitSwitch.ForwardLimitSource =
+        ForwardLimitSourceValue.LimitSwitchPin;
+    talonFXSConfiguration.HardwareLimitSwitch.ForwardLimitEnable = false;
 
     m_motorOne.getConfigurator().apply(talonFXSConfiguration);
 
@@ -86,8 +91,7 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   private boolean isAlgaeLoaded() {
-    // return m_algaeCANrange.getIsDetected().getValue();
-    return false;
+    return m_motorOne.getForwardLimit().getValue().value == 0;
   }
 
   public void disable() {
