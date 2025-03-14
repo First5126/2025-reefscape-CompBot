@@ -474,6 +474,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withRotationalRate(0);
   }
 
+  /*
+   * Adjusts the robot so that the supplied errors match the target erros from the april tag.
+   */
   public Command visonAdjust(
       Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
     return run(

@@ -92,6 +92,7 @@ public class RecordInputs extends SubsystemBase {
     return false;
   }
 
+  // returns the selected side of the coral station i.e. the left or right side of the coral station
   public String getSelectedCoralStationSide() {
     return m_selectedCoralStationSide;
   }

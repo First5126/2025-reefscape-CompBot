@@ -14,27 +14,6 @@ public class VisonAdjustment {
   public static final double verticalTarget_front = -6.1;
   public static final double verticalTarget_elevator = 5.18;
 
-  private static String getNearestLimeLightToTag() {
-    double nearestTagDistance = Double.POSITIVE_INFINITY;
-    String nearestLimelight = "";
-
-    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_FRONTR)) {
-      if (nearestTagDistance > tag.distToCamera) {
-        nearestTagDistance = tag.distToCamera;
-        nearestLimelight = LIMELIGHT_FRONTR;
-      }
-    }
-
-    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_ELEVATOR)) {
-      if (nearestTagDistance > tag.distToCamera) {
-        nearestTagDistance = tag.distToCamera;
-        nearestLimelight = LIMELIGHT_ELEVATOR;
-      }
-    }
-
-    return nearestLimelight;
-  }
-
   public static double getTX() {
     return LimelightHelpers.getTX(getNearestLimeLightToTag());
   }
@@ -78,5 +57,26 @@ public class VisonAdjustment {
 
   public static boolean hasTarget() {
     return LimelightHelpers.getRawFiducials(getNearestLimeLightToTag()).length > 0;
+  }
+
+  private static String getNearestLimeLightToTag() {
+    double nearestTagDistance = Double.POSITIVE_INFINITY;
+    String nearestLimelight = "";
+
+    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_FRONTR)) {
+      if (nearestTagDistance > tag.distToCamera) {
+        nearestTagDistance = tag.distToCamera;
+        nearestLimelight = LIMELIGHT_FRONTR;
+      }
+    }
+
+    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_ELEVATOR)) {
+      if (nearestTagDistance > tag.distToCamera) {
+        nearestTagDistance = tag.distToCamera;
+        nearestLimelight = LIMELIGHT_ELEVATOR;
+      }
+    }
+
+    return nearestLimelight;
   }
 }
