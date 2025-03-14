@@ -19,12 +19,16 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,7 +44,10 @@ import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
 import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.vision.VisonAdjustment;
+
 import frc.robot.vision.VisonAdjustment;
 
 import java.util.function.Supplier;
@@ -85,6 +92,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       new SwerveRequest.SysIdSwerveRotation();
 
   private final SwerveRequest m_brake = new SwerveRequest.SwerveDriveBrake();
+
+
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation =
@@ -164,6 +173,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
     setupVisonPIDs();
   }
 
@@ -336,34 +346,48 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             activeThrottle = robotCentricThrottle;
           }
 
+          boolean isBraking = false;
+
           if (!(x == 0 && y == 0)) {
             double angle = Math.atan2(x, y) + Math.PI / 2;
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
+          } else {
+            // robot is not receiving input
+            ChassisSpeeds speeds = getSpeeds();
+
+            // are we near stop within a tolarance
+            if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01)) {
+              isBraking = true;
+              brake();
+            }
           }
 
-          if (activeThrottle == robotCentricThrottle) {
-            setControl(
-                m_RobotCentricdrive
-                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
-                    .withDeadband(0.05)
-                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
-                    .withDeadband(0.05)
-                    .withRotationalRate(
-                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
-          } else {
-            setControl(
-                m_FieldCentricdrive
-                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
-                    .withDeadband(0.05)
-                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
-                    .withDeadband(0.05)
-                    .withRotationalRate(
-                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+          if (!isBraking) {
+            if (activeThrottle == robotCentricThrottle) {
+              setControl(
+                  m_RobotCentricdrive
+                      .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                      .withDeadband(0.05)
+                      .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                      .withDeadband(0.05)
+                      .withRotationalRate(
+                          -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+            } else {
+              setControl(
+                  m_FieldCentricdrive
+                      .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                      .withDeadband(0.05)
+                      .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                      .withDeadband(0.05)
+                      .withRotationalRate(
+                          -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+            }
           }
 
           SmartDashboard.putNumber("FieldCentricthrottle", fieldCentricthrottle);
           SmartDashboard.putNumber("RobotCentricThrottle", robotCentricThrottle);
+          SmartDashboard.putBoolean("XBrake", isBraking);
         });
   }
 
@@ -450,16 +474,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withRotationalRate(0);
   }
 
+  /*
+   * Adjusts the robot so that the supplied errors match the target erros from the april tag.
+   */
   public Command visonAdjust(
-      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, double verticalTarget) {
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
     return run(
         () -> {
           SmartDashboard.putNumber("Vertical Error", verticalError.get());
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                //.withVelocityX(-m_xController.calculate(verticalError.get(), verticalTarget))
-                .withVelocityY(-m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         });
   }
