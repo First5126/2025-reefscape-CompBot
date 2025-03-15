@@ -104,10 +104,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Place CoralL4", m_commandFactory.placeCoralL4().asProxy());
     //All Commands To raise Elevator to different Levels
     NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2().asProxy());
+    NamedCommands.registerCommand("Raise Elevator Coral Station", m_commandFactory.moveElevatorUpToCoralStation().asProxy());
     NamedCommands.registerCommand("Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
     NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
     //All other Commands
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
+    NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
     NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());

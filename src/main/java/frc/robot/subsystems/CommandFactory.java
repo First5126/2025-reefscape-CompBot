@@ -214,7 +214,6 @@ public class CommandFactory {
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
 
-
   public Command putBallInProcesser() {
     Command pivotAlgaeRollers = m_algaePivot.goToMidPoint();
     Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.startFeedOut());
@@ -233,7 +232,6 @@ public class CommandFactory {
     return placeCoralonL2();
   }
 
-
   public Command lowerElevator() {
     Command lowerL3Elevator = m_elevator.goToBottom();
 
@@ -241,10 +239,9 @@ public class CommandFactory {
   }
 
   private Command placeCoralonL4() {
-    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
 
-    return pivotCoralRollersCommand.withTimeout(0.5).andThen(ReleaseCoral);
+    return ReleaseCoral;
 
   }
 
@@ -266,12 +263,25 @@ public class CommandFactory {
 
   }
 
+  public Command intakeCoral() {
+    Command coralIntake = m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION);
+
+    return coralIntake;
+  }
 
   public Command moveElevatorUpToL2() {
-    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2);
-    Command algaePivot = m_algaePivot.setAngle(CoralLevels.L4);
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2).until(m_elevator::elevatorAtPosition);
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
 
-    return elevator.andThen(algaePivot);
+    return elevator.andThen(pivotCoralRollersCommand);
+  }
+
+  public Command moveElevatorUpToCoralStation() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.CORAL_STATION);
+    Command algaePivot = m_algaePivot.setAngle(CoralLevels.CORAL_STATION);
+    Command coralPiviot = m_coralPivot.gotoCoralStationSetpoint();
+
+    return elevator.alongWith(coralPiviot).alongWith(algaePivot);
   }
 
   public Command moveElevatorUpToL3() {
@@ -282,10 +292,11 @@ public class CommandFactory {
 
 
   public Command moveElevatorUpToL4() {
+    Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
     Command algaePivot = m_algaePivot.setAngle(CoralLevels.L4);
 
-    return elevator.andThen(algaePivot);
+    return elevator.alongWith(algaePivot).alongWith(pivotCoralRollersCommand);
   }
 
   public Command algaePivotAndIntake(CoralLevels level) {

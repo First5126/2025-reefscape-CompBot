@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.031,
-        "y": 1.091
+        "x": 1.3823630136986302,
+        "y": 1.1776327054794524
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.552266542814938,
-        "y": 2.0556601429295536
+        "x": 1.6294853406845198,
+        "y": 1.215455390538543
       },
       "isLocked": false,
-      "linkedName": "Processer"
+      "linkedName": "Right Coral Station"
     },
     {
       "anchor": {
-        "x": 5.334118150684932,
-        "y": 2.9206121575342467
+        "x": 3.162676056338027,
+        "y": 1.6298415492957736
       },
       "prevControl": {
-        "x": 5.934940989387074,
-        "y": 1.9052137830059659
+        "x": 2.370084945815963,
+        "y": 1.9169408583488272
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef Barge Right"
+      "linkedName": "Reef Driver Right away"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 119.99999999999999
+    "velocity": 0.3,
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": -90.0
+    "velocity": 0,
+    "rotation": -126.0
   },
   "useDefaultConstraints": true
 }

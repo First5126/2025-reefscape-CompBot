@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.6870598591549286,
-        "y": 2.6360915492957737
+        "x": 3.9970000000000003,
+        "y": 2.9659282
       },
       "prevControl": {
-        "x": 5.283708696750739,
-        "y": 1.7462340253164204
+        "x": 5.593648837595811,
+        "y": 2.0760706760206467
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef Driver Right"
     }
   ],
   "rotationTargets": [],
