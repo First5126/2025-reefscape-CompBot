@@ -36,6 +36,7 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
+import frc.robot.vision.VisonAdjustment;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -147,6 +148,9 @@ public class RobotContainer {
 
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    // Setup visonadjustment
+    VisonAdjustment.selectedSideSupplier = m_recordInputs::getSelectedCoralStationSide;
   }
 
   private boolean yIsNotPressed() {
@@ -178,15 +182,16 @@ public class RobotContainer {
     // m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
     // m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    /*m_driverController
-    .a()
-    .and(VisonAdjustment::hasTarget)
-    .whileTrue(
-        m_drivetrain.visonAdjust(
-            VisonAdjustment::getTX,
-            VisonAdjustment::getTY,
-            VisonAdjustment::getGoalTX,
-            VisonAdjustment.verticalTarget));*/
+    m_driverController
+        .a()
+        .and(VisonAdjustment::hasTarget)
+        .whileTrue(
+            m_drivetrain.visonAdjust(
+                VisonAdjustment::getTX,
+                VisonAdjustment::getTY,
+                VisonAdjustment::getGoalTX,
+                VisonAdjustment::getGoalTY,
+                VisonAdjustment::getInversion));
 
     m_driverController.y().onTrue(m_drivetrain.brake());
 
@@ -201,6 +206,9 @@ public class RobotContainer {
 
     m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
     m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
+
+    m_driverController.leftBumper().onTrue(m_recordInputs.setLeftSideCoralStation());
+    m_driverController.rightBumper().onTrue(m_recordInputs.setRightSideCoralStation());
 
     // configureDriverAutoCommands();
   }
