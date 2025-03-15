@@ -36,15 +36,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L2"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Middle Go To Station"
+            "pathName": "Reef Barge Center to Processer"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Wait Until Coral"
+            "name": "Process Algae"
           }
         },
         {
@@ -54,7 +60,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle Go Back To Reef"
+                  "pathName": "Processer to Reef Barge Right"
                 }
               },
               {
@@ -69,7 +75,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Place CoralL4"
+            "name": "Dealgefy L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Barge Right to Processer"
           }
         }
       ]

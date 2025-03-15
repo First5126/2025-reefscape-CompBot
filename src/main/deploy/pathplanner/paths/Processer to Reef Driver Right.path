@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.031,
-        "y": 1.091
+        "x": 5.980222602739726,
+        "y": 0.6968107876712327
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.179753396440382,
-        "y": 2.095234548121139
+        "x": 6.128975999180108,
+        "y": 1.7010453357923718
       },
       "isLocked": false,
       "linkedName": "Processer"
     },
     {
       "anchor": {
-        "x": 3.6870598591549286,
-        "y": 2.6360915492957737
+        "x": 3.8146126760563375,
+        "y": 2.7919894366197173
       },
       "prevControl": {
-        "x": 5.283708696750739,
-        "y": 1.7462340253164204
+        "x": 5.411261513652148,
+        "y": 1.902131912640364
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Reef Side"
     }
   ],
   "rotationTargets": [],

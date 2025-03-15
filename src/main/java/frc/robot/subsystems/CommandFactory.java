@@ -215,10 +215,18 @@ public class CommandFactory {
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
 
+  public Command dealegfyL2() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2);
+    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
+    Command IntakeAlgae = m_algaeRollers.feedIn();
+
+    return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
+  }
+
 
   public Command putBallInProcesser() {
-    Command pivotAlgaeRollers = m_algaePivot.goToMidPoint();
-    Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.startFeedOut());
+    Command goToLevelProcesser = m_elevator.setCoralPosition(CoralLevels.PROCESSER_TRAVEL);
+    Command finalCommand = goToLevelProcesser.withTimeout(0.5).andThen(m_algaeRollers.startFeedOut());
 
     return finalCommand;
   }
