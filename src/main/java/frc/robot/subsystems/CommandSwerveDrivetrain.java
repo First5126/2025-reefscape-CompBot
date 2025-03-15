@@ -353,15 +353,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double angle = Math.atan2(x, y) + Math.PI / 2;
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
-          } else {
+          } else if (x == 0 && y == 0 && rotation == 0) {
             // robot is not receiving input
             ChassisSpeeds speeds = getSpeeds();
 
             // are we near stop within a tolarance
-            if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01)) {
+            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
               isBraking = true;
               brake();
-            }
+            //}
           }
 
           if (!isBraking) {
@@ -459,8 +459,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         });
   }
 
-  public Command brake() {
-    return runOnce(() -> setControl(m_brake));
+  private void brake() {
+    setControl(m_brake);
   }
 
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
@@ -473,6 +473,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withVelocityX(m_xController.calculate(xError))
         .withVelocityY(0)
         .withRotationalRate(0);
+  }
+
+  private boolean visonPIDsAtSetpoint() {
+    return m_xController.atSetpoint() && m_yController.atSetpoint();
   }
 
   /*
@@ -488,7 +492,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             m_RobotCentricdrive
                 .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get())));
-        });
+        }).until(this::visonPIDsAtSetpoint);
   }
 
   public Command squareUpOnApriltag(Supplier<Rotation2d> rotation2d){
