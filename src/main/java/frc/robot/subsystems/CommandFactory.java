@@ -105,7 +105,7 @@ public class CommandFactory {
 
   public Command coralPivotAndOutake(CoralLevels level) {
     Command elevator = m_elevator.setCoralPosition(level);
-    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.coralAngle);
     Command pivotAlgaeRolllers = m_algaePivot.setAngle(level);
 
     return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
@@ -260,7 +260,7 @@ public class CommandFactory {
 
   public Command algaePivotAndIntake(CoralLevels level) {
     Command elevator = m_elevator.setCoralPosition(level);
-    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.coralAngle);
     Command pivotAlgaeRolllers = m_algaePivot.goToLevel(level);
 
     return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
@@ -276,7 +276,7 @@ public class CommandFactory {
 
     Command elevator = m_elevator.setCoralPosition(level);
     Command algaePivot = m_algaePivot.setAngle(level);
-    Command coralPivot = m_coralPivot.gotoAngle(level.angle);
+    Command coralPivot = m_coralPivot.gotoAngle(level.coralAngle);
     return elevator.alongWith(algaePivot).alongWith(coralPivot);
   }
 
@@ -291,7 +291,7 @@ public class CommandFactory {
 
     Command elevator = m_elevator.setCoralPosition(level);
     Command algaePivot = m_algaePivot.setAngle(level);
-    Command coralPivot = m_coralPivot.gotoAngle(level.angle);
+    Command coralPivot = m_coralPivot.gotoAngle(level.coralAngle);
     Command algaeFeedOut = m_algaeRollers.feedOut();
 
     return elevator

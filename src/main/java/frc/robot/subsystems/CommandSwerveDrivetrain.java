@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -31,6 +33,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -320,11 +323,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
       Supplier<Double> ySupplier,
-      Supplier<CoralLevels> level) {
+      Supplier<Double> elevatorHeight) {
     return run(
         () -> {
-          double speedMultiplier = level.get().maxSpeed;
-          SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
                   fieldCentricthrottleSupplier.get(), 0.06, 1));
@@ -332,6 +333,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
               (ControllerConstants.modifyAxisWithCustomDeadband(
                       robotCentricthrottleSupplier.get(), 0.06, 2)
                   / 2);
+
+          // apply speed multiplier.  the heigher the elevator the slower the velocity
+          double maxHeight = CoralLevels.L4.heightAngle.in(Rotations);
+          double currentHeight = MathUtil.clamp(elevatorHeight.get(), 0d, maxHeight);
+          double speedMultiplier = (1 - (currentHeight / maxHeight)) * 0.6 + 0.4;
+          SmartDashboard.putNumber("limiter", speedMultiplier);
+          fieldCentricthrottle = fieldCentricthrottle * speedMultiplier;
+          robotCentricThrottle = robotCentricThrottle * speedMultiplier;
+
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =

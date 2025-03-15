@@ -204,7 +204,7 @@ public class Elevator extends SubsystemBase {
     setControl(new DutyCycleOut(0));
   }
 
-  private double getElevatorHeight() {
+  public double getElevatorHeight() {
     return m_leftMotor.getPosition().getValue().in(Rotations);
   }
 
