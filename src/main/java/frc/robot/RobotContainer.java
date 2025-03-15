@@ -36,6 +36,7 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
+import frc.robot.vision.VisonAdjustment;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -108,8 +109,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
     NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
     //All other Commands
+    NamedCommands.registerCommand("Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
+
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
+    NamedCommands.registerCommand("Dealgefy L2", m_commandFactory.dealegfyL2().asProxy());
     NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());
@@ -146,6 +150,9 @@ public class RobotContainer {
 
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    // Setup visonadjustment
+    VisonAdjustment.selectedSideSupplier = m_recordInputs::getSelectedCoralStationSide;
   }
 
   private boolean yIsNotPressed() {
@@ -177,15 +184,16 @@ public class RobotContainer {
     // m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
     // m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
 
-    /*m_driverController
-    .a()
-    .and(VisonAdjustment::hasTarget)
-    .whileTrue(
-        m_drivetrain.visonAdjust(
-            VisonAdjustment::getTX,
-            VisonAdjustment::getTY,
-            VisonAdjustment::getGoalTX,
-            VisonAdjustment.verticalTarget));*/
+    m_driverController
+        .a()
+        .and(VisonAdjustment::hasTarget)
+        .whileTrue(
+            m_drivetrain.visonAdjust(
+                VisonAdjustment::getTX,
+                VisonAdjustment::getTY,
+                VisonAdjustment::getGoalTX,
+                VisonAdjustment::getGoalTY,
+                VisonAdjustment::getInversion));
 
     m_driverController.y().onTrue(m_drivetrain.brake());
 
@@ -200,6 +208,9 @@ public class RobotContainer {
 
     m_driverController.povUp().whileTrue(m_drivetrain.cardinalMovement(0.1, 0));
     m_driverController.povDown().whileTrue(m_drivetrain.cardinalMovement(-0.1, 0));
+
+    m_driverController.leftBumper().onTrue(m_recordInputs.setLeftSideCoralStation());
+    m_driverController.rightBumper().onTrue(m_recordInputs.setRightSideCoralStation());
 
     // configureDriverAutoCommands();
   }

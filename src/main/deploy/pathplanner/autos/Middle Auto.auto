@@ -34,6 +34,55 @@
           "data": {
             "name": "Place CoralL4"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Barge Center to Processer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Processer to Reef Barge Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Barge Right to Processer"
+          }
         }
       ]
     }

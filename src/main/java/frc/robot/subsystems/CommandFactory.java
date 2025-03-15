@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
 import frc.robot.constants.PoseConstants.Pose;
@@ -188,7 +189,7 @@ public class CommandFactory {
         .andThen(m_coralPivot.goToUpperSetpoint())
         .andThen(
             Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
-        .andThen(m_elevator.setCoralPosition(CoralLevels.L2));
+        .andThen(m_elevator.setCoralPosition(CoralLevels.L3));
   }
 
   public Command zeroRobot() {
@@ -214,9 +215,18 @@ public class CommandFactory {
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
 
+  public Command dealegfyL2() {
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2);
+    Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
+    Command IntakeAlgae = m_algaeRollers.feedIn();
+
+    return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
+  }
+
+
   public Command putBallInProcesser() {
-    Command pivotAlgaeRollers = m_algaePivot.goToMidPoint();
-    Command finalCommand = pivotAlgaeRollers.andThen(m_algaeRollers.startFeedOut());
+    Command goToLevelProcesser = m_elevator.setCoralPosition(CoralLevels.PROCESSER_TRAVEL);
+    Command finalCommand = goToLevelProcesser.withTimeout(0.5).andThen(m_algaeRollers.startFeedOut());
 
     return finalCommand;
   }
@@ -342,5 +352,10 @@ public class CommandFactory {
         .andThen(algaeFeedOut);
   }
 
+  public Command waitUntilCoralIn() {
+    Command runIntake = elevatorInTakeCoralStation();
 
+    return runIntake.until(m_coralRollers.hasCoral());
+
+  }
 }

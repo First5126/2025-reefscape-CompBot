@@ -3,19 +3,21 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.031,
-        "y": 1.091
+        "x": 5.980222602739726,
+        "y": 0.6968107876712327
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.179753396440382,
-        "y": 2.095234548121139
+        "x": 6.128975999180108,
+        "y": 1.7010453357923718
       },
       "isLocked": false,
       "linkedName": "Processer"
     },
     {
       "anchor": {
+        "x": 3.8146126760563375,
+        "y": 2.7919894366197173
         "x": 3.9970000000000003,
         "y": 2.9659282
       },
@@ -25,6 +27,7 @@
       },
       "nextControl": null,
       "isLocked": false,
+      "linkedName": "Right Reef Side"
       "linkedName": "Reef Driver Right"
     }
   ],
