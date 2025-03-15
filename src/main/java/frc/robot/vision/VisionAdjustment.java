@@ -1,9 +1,13 @@
 package frc.robot.vision;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.constants.ApriltagConstants;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-public class VisonAdjustment {
+public class VisionAdjustment {
 
   public static final String LIMELIGHT_FRONTR = "limelight-frontr";
   public static final String LIMELIGHT_ELEVATOR = "limelight-elevate";
@@ -20,6 +24,16 @@ public class VisonAdjustment {
 
   public static double getTY() {
     return LimelightHelpers.getTY(getNearestLimeLightToTag());
+  }
+
+  public static Rotation2d getRotation() {
+    int tagID = getClosestApriltag().id;
+    Optional<Pose3d> tagPose = ApriltagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(tagID);
+    if (tagPose.isPresent()) {
+      return tagPose.get().toPose2d().getRotation();
+    } else {
+      return null;
+    }
   }
 
   public static double getGoalTX() {
@@ -78,5 +92,15 @@ public class VisonAdjustment {
     }
 
     return nearestLimelight;
+  }
+
+  public static RawFiducial getClosestApriltag() {
+    RawFiducial closestTag = LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())[0];
+    for (RawFiducial tag : LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())) {
+      if (closestTag.distToCamera < tag.distToCamera) {
+        closestTag = tag;
+      }
+    }
+    return closestTag;
   }
 }

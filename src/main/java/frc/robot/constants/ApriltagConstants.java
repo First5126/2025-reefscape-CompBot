@@ -1,7 +1,13 @@
 package frc.robot.constants;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+
 // https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/Apriltag_Images_and_User_Guide.pdf
 public final class ApriltagConstants {
+  public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+
   public enum Blue {
     LEFT_CORAL_STATION(13),
     RIGHT_CORAL_STATION(12),
