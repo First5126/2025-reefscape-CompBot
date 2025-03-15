@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,7 +42,8 @@ public class AlgaeRollers extends SubsystemBase {
 
     m_motorOne.getConfigurator().apply(talonFXSConfiguration);
 
-    m_hasGamePiece = new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE);
+    m_hasGamePiece =
+        new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE, DebounceType.kFalling);
   }
 
   public Trigger hasAlgae() {

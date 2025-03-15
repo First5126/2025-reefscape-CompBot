@@ -11,8 +11,9 @@ public class VisonAdjustment {
   public static Supplier<String> selectedSideSupplier;
 
   // in degress
-  public static final double verticalTarget_front = -6.1;
-  public static final double verticalTarget_elevator = 5.18;
+  public static final double verticalTargetFront = -9.84;
+  public static final double verticalTargetElevatorLeft = 6.5;
+  public static final double verticalTargetElevatorRight = 6.42;
 
   public static double getTX() {
     return LimelightHelpers.getTX(getNearestLimeLightToTag());
@@ -25,12 +26,12 @@ public class VisonAdjustment {
   public static double getGoalTX() {
 
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
-      return getTY() * 6.70558 + 23.9141;
+      return getTY() * 4.73085 + 28.2116;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       if (selectedSideSupplier.get().equals("right")) {
-        return getTY() * -0.529032 + -6.77097;
+        return getTY() * -0.546835 + -3.35932;
       } else if (selectedSideSupplier.get().equals("left")) {
-        return getTY() * -0.410133 + 0.00301568;
+        return getTY() * -0.338092 + 1.8376;
       }
     }
     return getTY();
@@ -39,9 +40,13 @@ public class VisonAdjustment {
   public static double getGoalTY() {
 
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
-      return verticalTarget_front;
+      return verticalTargetFront;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
-      return verticalTarget_elevator;
+      if (selectedSideSupplier.get().equals("right")) {
+        return verticalTargetElevatorRight;
+      } else if (selectedSideSupplier.get().equals("left")) {
+        return verticalTargetElevatorLeft;
+      }
     }
     return getTY();
   }
