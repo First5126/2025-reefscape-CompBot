@@ -83,6 +83,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
   private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
   private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
+  private PIDController m_rotationController = new PIDController(TunerConstants.visonRotationAdjustmentP, TunerConstants.visonRotationAdjustmentI, TunerConstants.visonRotationAdjustmentD);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
@@ -354,13 +355,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
           } else if (x == 0 && y == 0 && rotation == 0) {
+          } else if (x == 0 && y == 0 && rotation == 0) {
             // robot is not receiving input
             ChassisSpeeds speeds = getSpeeds();
 
             // are we near stop within a tolarance
             //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
+            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
               isBraking = true;
               brake();
+            //}
             //}
           }
 
@@ -492,24 +496,40 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           setControl(
             m_RobotCentricdrive
                 .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
-                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get())));
-        });
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
+        }).until(this::visonPIDsAtSetpoint);
   }
 
+
   public Command squareUpOnApriltag(Supplier<Rotation2d> rotation2d){
-    return run(
+    return runEnd(
       () -> {
-        double rotation = rotation2d.get().getDegrees() + 180;
-        if (rotation >= 360) {
-          rotation = rotation - 360;
-        }
-        setControl(
-          m_RobotCentricdrive
-            .withRotationalRate(rotation)
-        );
+        if (rotation2d.get() != null) {
+          double rotation = rotation2d.get().getDegrees() + 180;
+          if (rotation >= 360) {
+            rotation = rotation - 360;
+          }
+          setControl(
+            m_RobotCentricdrive
+              .withVelocityX(0)
+              .withVelocityY(0)
+              .withRotationalRate(m_rotationController.calculate(getPose2d().getRotation().getDegrees(),rotation))
+          );
       }
-    );
+    },
+    () -> {
+      SmartDashboard.putString("LimeLight Rotation Reading", "Ending Command");
+      setControl(
+        m_RobotCentricdrive
+          .withVelocityX(0)
+          .withVelocityY(0)
+          .withRotationalRate(0)
+
+      );
+    });
   }
+
 
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
