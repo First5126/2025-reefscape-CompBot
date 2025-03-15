@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.ApriltagConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
@@ -46,9 +47,9 @@ import frc.robot.constants.DrivetrainConstants.CurrentLimits;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.vision.VisonAdjustment;
+import frc.robot.vision.VisionAdjustment;
 
-import frc.robot.vision.VisonAdjustment;
+import frc.robot.vision.VisionAdjustment;
 
 import java.util.function.Supplier;
 
@@ -304,8 +305,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Speed", m_max_speed);
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
-    SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
-    SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
+    SmartDashboard.putBoolean("Can Vison Align", VisionAdjustment.hasTarget());
 
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
@@ -481,7 +481,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   /*
-   * Adjusts the robot so that the supplied errors match the target erros from the april tag.
+   * Adjusts the robot so that the supplied errors match the target errors from the april tag.
    */
   public Command visonAdjust(
       Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
@@ -491,11 +491,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
-                .withVelocityX(0.0)
-                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
-                .withRotationalRate(0));
-        }).until(this::visonPIDsAtSetpoint);
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get())));
+        });
+  }
+
+  public Command squareUpOnApriltag(Supplier<Rotation2d> rotation2d){
+    return run(
+      () -> {
+        double rotation = rotation2d.get().getDegrees() + 180;
+        if (rotation >= 360) {
+          rotation = rotation - 360;
+        }
+        setControl(
+          m_RobotCentricdrive
+            .withRotationalRate(rotation)
+        );
+      }
+    );
   }
 
   private void startSimThread() {

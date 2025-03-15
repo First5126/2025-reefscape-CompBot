@@ -36,7 +36,7 @@ import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
-import frc.robot.vision.VisonAdjustment;
+import frc.robot.vision.VisionAdjustment;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -173,8 +173,8 @@ public class RobotContainer {
     // Record both DS control and joystick data
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    // Setup visonadjustment
-    VisonAdjustment.selectedSideSupplier = m_recordInputs::getSelectedCoralStationSide;
+    // Setup VisionAdjustment
+    VisionAdjustment.selectedSideSupplier = m_recordInputs::getSelectedCoralStationSide;
   }
 
   private boolean yIsNotPressed() {
@@ -208,14 +208,18 @@ public class RobotContainer {
 
     m_driverController
         .a()
-        .and(VisonAdjustment::hasTarget)
+        .and(VisionAdjustment::hasTarget)
         .whileTrue(
             m_drivetrain.visonAdjust(
-                VisonAdjustment::getTX,
-                VisonAdjustment::getTY,
-                VisonAdjustment::getGoalTX,
-                VisonAdjustment::getGoalTY,
-                VisonAdjustment::getInversion));
+                VisionAdjustment::getTX,
+                VisionAdjustment::getTY,
+                VisionAdjustment::getGoalTX,
+                VisionAdjustment::getGoalTY,
+                VisionAdjustment::getInversion));
+
+    m_driverController
+        .x()
+        .whileTrue(m_drivetrain.squareUpOnApriltag(VisionAdjustment::getRotation));
 
     m_driverController.start().onTrue(m_commandFactory.zeroRobot());
 
