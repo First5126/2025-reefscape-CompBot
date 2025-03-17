@@ -72,7 +72,7 @@ public class AprilTagLocalizationConstants {
   public static final Matrix<N3, N1> LIMELIGHT_FAR_STDDEV_FRONTR =
       VecBuilder.fill(0.05, 0.05, 999999999.9);
   public static final Matrix<N3, N1> LIMELIGHT_INVERSE_OFFSET_FRONTR =
-      VecBuilder.fill(-0.31, 0.24, -0.229);
+      VecBuilder.fill(-0.31, 0.24, -0.23535);
   public static final LimelightDetails LIMELIGHT_DETAILS_FRONTR =
       new LimelightDetails(
           LIMELIGHT_NAME_FRONTR,
