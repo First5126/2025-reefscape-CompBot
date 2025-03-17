@@ -217,8 +217,6 @@ public class RobotContainer {
                 VisonAdjustment::getGoalTY,
                 VisonAdjustment::getInversion));
 
-    m_driverController.y().onTrue(m_drivetrain.brake());
-
     m_driverController.start().onTrue(m_commandFactory.zeroRobot());
 
     m_driverController.b().whileTrue(m_commandFactory.moveBack());
@@ -247,6 +245,8 @@ public class RobotContainer {
     m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
     m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
+
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
     m_coDriverController.a().onTrue(m_commandFactory.setAlgaeProcessorLevel());
 
