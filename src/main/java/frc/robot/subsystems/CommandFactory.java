@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
 import frc.robot.constants.PoseConstants.Pose;
@@ -216,20 +215,21 @@ public class CommandFactory {
   }
 
   public Command dealegfyL2() {
-    Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2);
+    Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2).withTimeout(8);
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
     Command IntakeAlgae = m_algaeRollers.feedIn();
 
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
 
-
   public Command putBallInProcesser() {
     Command goToLevelProcesser = m_elevator.setCoralPosition(CoralLevels.PROCESSER_TRAVEL);
-    Command finalCommand = goToLevelProcesser.withTimeout(0.5).andThen(m_algaeRollers.startFeedOut());
+    Command finalCommand =
+        goToLevelProcesser.withTimeout(0.5).andThen(m_algaeRollers.startFeedOut());
 
     return finalCommand;
   }
+
   public Command placeCoralL4() {
     return placeCoralonL4();
   }
@@ -252,7 +252,6 @@ public class CommandFactory {
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
 
     return ReleaseCoral;
-
   }
 
   private Command placeCoralonL3() {
@@ -261,7 +260,6 @@ public class CommandFactory {
     Command algaePivot = m_algaePivot.setAngle(CoralLevels.L3);
 
     return algaePivot.andThen(pivotCoralRollersCommand).withTimeout(0.1).andThen(ReleaseCoral);
-
   }
 
   private Command placeCoralonL2() {
@@ -270,7 +268,6 @@ public class CommandFactory {
     Command algaePivot = m_algaePivot.setAngle(CoralLevels.L2);
 
     return algaePivot.andThen(pivotCoralRollersCommand).withTimeout(0.1).andThen(ReleaseCoral);
-
   }
 
   public Command intakeCoral() {
@@ -280,7 +277,8 @@ public class CommandFactory {
   }
 
   public Command moveElevatorUpToL2() {
-    Command elevator = m_elevator.setCoralPosition(CoralLevels.L2).until(m_elevator::elevatorAtPosition);
+    Command elevator =
+        m_elevator.setCoralPosition(CoralLevels.L2).until(m_elevator::elevatorAtPosition);
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
 
     return elevator.andThen(pivotCoralRollersCommand);
@@ -299,7 +297,6 @@ public class CommandFactory {
 
     return elevator;
   }
-
 
   public Command moveElevatorUpToL4() {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
@@ -356,7 +353,5 @@ public class CommandFactory {
     Command runIntake = elevatorInTakeCoralStation();
 
     return runIntake.until(m_coralRollers.hasCoral());
-
   }
-
 }

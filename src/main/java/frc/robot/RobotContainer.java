@@ -103,23 +103,44 @@ public class RobotContainer {
     NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL2().asProxy());
     NamedCommands.registerCommand("Place CoralL3", m_commandFactory.placeCoralL3().asProxy());
     NamedCommands.registerCommand("Place CoralL4", m_commandFactory.placeCoralL4().asProxy());
-    //All Commands To raise Elevator to different Levels
-    NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2().asProxy());
-    NamedCommands.registerCommand("Raise Elevator Coral Station", m_commandFactory.moveElevatorUpToCoralStation().asProxy());
-    NamedCommands.registerCommand("Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
-    NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
-    //All other Commands
-    NamedCommands.registerCommand("Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
+    // All Commands To raise Elevator to different Levels
+    NamedCommands.registerCommand(
+        "Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator Coral Station", m_commandFactory.moveElevatorUpToCoralStation().asProxy());
+    NamedCommands.registerCommand(
+        "Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
+    NamedCommands.registerCommand(
+        "Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
+    // All other Commands
+    NamedCommands.registerCommand(
+        "Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
+
+    NamedCommands.registerCommand(
+        "Get Nearest Tag",
+        m_drivetrain
+            .visonAdjust(
+                VisonAdjustment::getTX,
+                VisonAdjustment::getTY,
+                VisonAdjustment::getGoalTX,
+                VisonAdjustment::getGoalTY,
+                VisonAdjustment::getInversion)
+            .asProxy());
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
     NamedCommands.registerCommand("Dealgefy L2", m_commandFactory.dealegfyL2().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
+    NamedCommands.registerCommand(
+        "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
     NamedCommands.registerCommand("Place Coral", m_commandFactory.placeCoralL3().asProxy());
-    NamedCommands.registerCommand("Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
-    NamedCommands.registerCommand("Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
-    NamedCommands.registerCommand("Raise Elevator to position Coral Station", m_commandFactory.elevatorInTakeCoralStation().asProxy());
+    NamedCommands.registerCommand(
+        "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator to position Coral Station",
+        m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Reef Barge Center"
+                  "pathName": "Left to Reef Barge Left"
                 }
               },
               {
@@ -21,6 +21,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
           }
         },
         {
@@ -36,15 +42,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Dealgefy L2"
+            "waitTime": 0.5
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Reef Barge Center to Processer"
+            "name": "Dealgefy L3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef Barge Left to Processer"
+                }
+              }
+            ]
           }
         },
         {
@@ -75,13 +100,44 @@
         {
           "type": "named",
           "data": {
-            "name": "Dealgefy L2"
+            "name": "Get Nearest Tag"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Reef Barge Right to Processer"
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef Barge Right to Processer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae"
           }
         }
       ]
