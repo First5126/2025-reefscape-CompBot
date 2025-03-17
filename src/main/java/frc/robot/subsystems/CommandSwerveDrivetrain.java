@@ -305,6 +305,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
     SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
+    SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
 
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
@@ -454,7 +455,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           setControl(
               m_RobotCentricdrive
                   .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
-                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
+                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX)))
+                  .withRotationalRate(0.0));
         });
   }
 
@@ -489,7 +491,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityX(0.0)
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);

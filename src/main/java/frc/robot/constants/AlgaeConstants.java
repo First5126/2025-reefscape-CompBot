@@ -22,5 +22,5 @@ public class AlgaeConstants {
   public static final double kA = 0;
 
   public static final double PROXIMITY_THRESHOLD = 0.1;
-  public static final double DEBOUNCE = 0.02;
+  public static final double DEBOUNCE = 0.1;
 }

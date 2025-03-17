@@ -11,9 +11,13 @@ public class VisonAdjustment {
   public static Supplier<String> selectedSideSupplier;
 
   // in degress
-  public static final double verticalTargetFront = -9.84;
-  public static final double verticalTargetElevatorLeft = 6.5;
-  public static final double verticalTargetElevatorRight = 6.42;
+  public static final double verticalTargetFront = 9.47;
+  public static final double verticalTargetElevatorLeft = 8.75;
+  public static final double verticalTargetElevatorRight = 8.72;
+  public static final double verticalTargetElevatorProcessor = 0.0;
+
+  public static final int[] coralStationIDs = {1, 2, 12, 13};
+  public static final int[] processerIDs = {3, 16};
 
   public static double getTX() {
     return LimelightHelpers.getTX(getNearestLimeLightToTag());
@@ -23,15 +27,29 @@ public class VisonAdjustment {
     return LimelightHelpers.getTY(getNearestLimeLightToTag());
   }
 
+  public static RawFiducial getNearestTag() {
+    double nearestTagDistance = Double.POSITIVE_INFINITY;
+    RawFiducial nearestTag = null;
+
+    for (RawFiducial tag : LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())) {
+      if (tag.distToCamera < nearestTagDistance) {
+        nearestTag = tag;
+        nearestTagDistance = tag.distToCamera;
+      }
+    }
+
+    return nearestTag;
+  }
+
   public static double getGoalTX() {
 
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
-      return getTY() * 4.73085 + 28.2116;
+      return getTY() * 7.68525 + -58.9293;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       if (selectedSideSupplier.get().equals("right")) {
-        return getTY() * -0.546835 + -3.35932;
+        return getTY() * -0.393498 + -2.7087;
       } else if (selectedSideSupplier.get().equals("left")) {
-        return getTY() * -0.338092 + 1.8376;
+        return getTY() * -0.323929 + 3.49438;
       }
     }
     return getTY();
@@ -53,7 +71,7 @@ public class VisonAdjustment {
 
   public static int getInversion() {
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
-      return -1;
+      return 1;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       return 1;
     }
