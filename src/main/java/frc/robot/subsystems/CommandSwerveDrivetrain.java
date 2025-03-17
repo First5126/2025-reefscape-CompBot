@@ -305,6 +305,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
     SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
+    SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
 
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
@@ -352,15 +353,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double angle = Math.atan2(x, y) + Math.PI / 2;
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
-          } else {
+          } else if (x == 0 && y == 0 && rotation == 0) {
             // robot is not receiving input
             ChassisSpeeds speeds = getSpeeds();
 
             // are we near stop within a tolarance
-            if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01)) {
+            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
               isBraking = true;
               brake();
-            }
+            //}
           }
 
           if (!isBraking) {
@@ -454,12 +455,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           setControl(
               m_RobotCentricdrive
                   .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
-                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
+                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX)))
+                  .withRotationalRate(0.0));
         });
   }
 
-  public Command brake() {
-    return runOnce(() -> setControl(m_brake));
+  private void brake() {
+    setControl(m_brake);
   }
 
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
@@ -474,6 +476,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withRotationalRate(0);
   }
 
+  private boolean visonPIDsAtSetpoint() {
+    return m_xController.atSetpoint() && m_yController.atSetpoint();
+  }
+
   /*
    * Adjusts the robot so that the supplied errors match the target erros from the april tag.
    */
@@ -485,10 +491,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
           setControl(
             m_RobotCentricdrive
-                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityX(0.0)
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
-        });
+        }).until(this::visonPIDsAtSetpoint);
   }
 
   private void startSimThread() {
