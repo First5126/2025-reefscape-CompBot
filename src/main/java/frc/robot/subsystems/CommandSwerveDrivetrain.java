@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Value;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -492,14 +493,29 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(
         () -> {
           SmartDashboard.putNumber("Vertical Error", verticalError.get());
-          SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
           SmartDashboard.putBoolean("Running Limelight", true);
           setControl(
             m_RobotCentricdrive
                 .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
-        }).until(this::visonPIDsAtSetpoint);
+        }).until(this::visonPIDsAtSetpoint).withTimeout(Seconds.of(0.75));
+  }
+
+  public Command visonAdjustTimeout(
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+    return run(
+        () -> {
+          SmartDashboard.putNumber("Vertical Error", verticalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
+          setControl(
+            m_RobotCentricdrive
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
+        }).withTimeout(Seconds.of(0.75)).finallyDo(()->{System.out.println("Finsihd Liemligth Cmomand");}).handleInterrupt(()->{System.out.println("Inturrpted Limeliught Commamd");});
   }
 
   public Command setPose(Pose2d pose){

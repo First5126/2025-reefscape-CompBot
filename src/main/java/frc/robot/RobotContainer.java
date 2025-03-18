@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -15,11 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -126,13 +119,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Get Nearest Tag",
         m_drivetrain
-            .visonAdjust(
+            .visonAdjustTimeout(
                 VisonAdjustment::getTX,
                 VisonAdjustment::getTY,
                 VisonAdjustment::getGoalTX,
                 VisonAdjustment::getGoalTY,
                 VisonAdjustment::getInversion)
-                .asProxy());
+            .asProxy());
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
@@ -334,11 +327,11 @@ public class RobotContainer {
         .onTrue(m_coralRollers.rollOutCommand(CoralLevels.L4)); // panic
   }
 
-    private Command rumbleCommand(
-        CommandXboxController xboxController,
-        RumbleType rumbleType,
-        double rumbleStrength,
-        Time rumbleTime) {
+  private Command rumbleCommand(
+      CommandXboxController xboxController,
+      RumbleType rumbleType,
+      double rumbleStrength,
+      Time rumbleTime) {
     Command wait = Commands.waitTime(rumbleTime);
     Command stopRumble =
         Commands.runOnce(

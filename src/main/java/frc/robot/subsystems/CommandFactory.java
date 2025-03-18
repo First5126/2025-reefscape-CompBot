@@ -249,8 +249,10 @@ public class CommandFactory {
   }
 
   private Command placeCoralonL4() {
+    System.out.println("Placing Coral L4");
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
 
+    SmartDashboard.putData("Place Coral L4", ReleaseCoral);
     return ReleaseCoral;
   }
 
@@ -267,11 +269,13 @@ public class CommandFactory {
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
     Command algaePivot = m_algaePivot.setAngle(CoralLevels.L2);
 
+    SmartDashboard.putData("Place Coral L2", ReleaseCoral);
     return algaePivot.andThen(pivotCoralRollersCommand).withTimeout(0.1).andThen(ReleaseCoral);
   }
 
   public Command intakeCoral() {
     Command coralIntake = m_coralRollers.rollInCommand(CoralLevels.CORAL_STATION);
+    SmartDashboard.putData("Intaking Coral", coralIntake);
 
     return coralIntake;
   }

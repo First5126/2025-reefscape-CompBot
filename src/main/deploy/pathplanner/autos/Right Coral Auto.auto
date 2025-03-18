@@ -104,12 +104,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Align on tag"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0.1
@@ -194,6 +188,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
           }
         },
         {
