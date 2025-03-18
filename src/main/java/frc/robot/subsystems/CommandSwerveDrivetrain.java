@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Value;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -19,6 +20,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -307,6 +309,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
     SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
 
+    SmartDashboard.putBoolean("Running Limelight", false);
+
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
 
@@ -489,13 +493,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         () -> {
           SmartDashboard.putNumber("Vertical Error", verticalError.get());
           SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
           setControl(
             m_RobotCentricdrive
-                //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
-                .withVelocityX(0.0)
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);
+  }
+
+  public Command setPose(Pose2d pose){
+    return runOnce(
+      ()->{
+        if (DriverStation.getAlliance().isPresent()){
+          if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
+            resetPose(FlippingUtil.flipFieldPose(pose));
+          }}
+        else{
+          resetPose(pose);
+        }
+      });
   }
 
   private void startSimThread() {

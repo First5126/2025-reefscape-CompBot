@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.269802061619611,
-        "y": 1.858939185209318
+        "x": 3.36079579807704,
+        "y": 1.9509907881953479
       },
       "isLocked": false,
       "linkedName": "Reef Driver Right away"
     },
     {
       "anchor": {
-        "x": 3.994226497081,
-        "y": 2.9739999999999998
+        "x": 3.8,
+        "y": 2.7
       },
       "prevControl": {
-        "x": 3.653304719269648,
-        "y": 2.295060596848977
+        "x": 3.4335975330856447,
+        "y": 2.147761321173359
       },
       "nextControl": null,
       "isLocked": false,

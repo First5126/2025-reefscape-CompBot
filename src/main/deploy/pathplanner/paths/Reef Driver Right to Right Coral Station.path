@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9970000000000003,
-        "y": 2.9659282
+        "x": 3.8,
+        "y": 2.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3724896217357268,
-        "y": 1.4363456576513536
+        "x": 3.1754896217357262,
+        "y": 1.170417457651359
       },
       "isLocked": false,
       "linkedName": "Reef Driver Right"

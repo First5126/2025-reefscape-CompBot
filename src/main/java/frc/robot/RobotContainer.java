@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -13,6 +15,11 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -110,7 +117,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
     //All other Commands
     NamedCommands.registerCommand("Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
-
+    NamedCommands.registerCommand("Align on tag", m_drivetrain.visonAdjust(
+        VisonAdjustment::getTX,
+        VisonAdjustment::getTY,
+        VisonAdjustment::getGoalTX,
+        VisonAdjustment::getGoalTY,
+        VisonAdjustment::getInversion
+    ).asProxy());
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
     NamedCommands.registerCommand("Dealgefy L2", m_commandFactory.dealegfyL2().asProxy());
@@ -120,6 +133,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
     NamedCommands.registerCommand("Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
     NamedCommands.registerCommand("Raise Elevator to position Coral Station", m_commandFactory.elevatorInTakeCoralStation().asProxy());
+    NamedCommands.registerCommand("Set Pose Reef Barge Right", m_drivetrain.setPose(new Pose2d(new Translation2d(5.334, 2.921), new Rotation2d(Degrees.of(120.0)))));
+    NamedCommands.registerCommand("Set Pose Coral Station Right", m_drivetrain.setPose(new Pose2d(new Translation2d(1.382, 1.178), new Rotation2d(Degrees.of(-126.0)))));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -306,11 +321,11 @@ public class RobotContainer {
         .onTrue(m_coralRollers.rollOutCommand(CoralLevels.L4)); // panic
   }
 
-  private Command rumbleCommand(
-      CommandXboxController xboxController,
-      RumbleType rumbleType,
-      double rumbleStrength,
-      Time rumbleTime) {
+    private Command rumbleCommand(
+        CommandXboxController xboxController,
+        RumbleType rumbleType,
+        double rumbleStrength,
+        Time rumbleTime) {
     Command wait = Commands.waitTime(rumbleTime);
     Command stopRumble =
         Commands.runOnce(

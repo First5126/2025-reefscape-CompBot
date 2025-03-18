@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Set Pose Reef Barge Right"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -52,6 +58,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Pose Coral Station Right"
           }
         },
         {
@@ -89,6 +101,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align on tag"
           }
         },
         {
@@ -133,6 +151,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Pose Coral Station Right"
           }
         },
         {
