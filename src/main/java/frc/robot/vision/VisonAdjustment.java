@@ -31,6 +31,7 @@ public class VisonAdjustment {
     double nearestTagDistance = Double.POSITIVE_INFINITY;
     RawFiducial nearestTag = null;
 
+
     for (RawFiducial tag : LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())) {
       if (tag.distToCamera < nearestTagDistance) {
         nearestTag = tag;

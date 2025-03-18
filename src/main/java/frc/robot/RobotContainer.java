@@ -125,7 +125,7 @@ public class RobotContainer {
                 VisonAdjustment::getGoalTX,
                 VisonAdjustment::getGoalTY,
                 VisonAdjustment::getInversion)
-            asProxy());
+                .asProxy());
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
