@@ -98,7 +98,7 @@ public class TunerConstants {
 
   public static final double visonXAdjustmentP = 0.08;
   public static final double visonXAdjustmentI = 0;
-  public static final double visonXAdjustmentD = 0.008;
+  public static final double visonXAdjustmentD = 0;
   public static final double visonXErrorTolerance = 0.15;
 
   public static final double visonYAdjustmentP = 0.04;
