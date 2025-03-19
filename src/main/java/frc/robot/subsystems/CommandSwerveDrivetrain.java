@@ -500,7 +500,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
-        }).until(this::visonPIDsAtSetpoint).withTimeout(Seconds.of(0.75));
+        }).until(this::visonPIDsAtSetpoint);
   }
 
   public Command visonAdjustTimeout(

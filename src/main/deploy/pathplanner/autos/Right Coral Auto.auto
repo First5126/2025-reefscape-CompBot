@@ -104,6 +104,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.1

@@ -96,9 +96,9 @@ public class CommandFactory {
         .alongWith(intakeCoral)
         .alongWith(pivotAlgaeRollers)
         .until(m_coralRollers.hasCoral())
-        .andThen(
+        /*.andThen(
             Commands.deadline(
-                Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))
+                Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))*/
         .andThen(finishIntake)
         .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }

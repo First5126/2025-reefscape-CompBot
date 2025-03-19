@@ -119,7 +119,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Get Nearest Tag",
         m_drivetrain
-            .visonAdjustTimeout(
+            .visonAdjust(
                 VisonAdjustment::getTX,
                 VisonAdjustment::getTY,
                 VisonAdjustment::getGoalTX,
