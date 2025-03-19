@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.5
@@ -100,6 +106,12 @@
           "type": "path",
           "data": {
             "pathName": "Reef Barge Right to Processer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae"
           }
         }
       ]

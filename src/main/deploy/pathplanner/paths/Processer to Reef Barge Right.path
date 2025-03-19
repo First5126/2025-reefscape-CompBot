@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.213912671232877,
-        "y": 2.845483732876712
+        "x": 5.334118150684932,
+        "y": 2.9206121575342467
       },
       "prevControl": {
-        "x": 5.814735509935019,
-        "y": 1.8300853583484311
+        "x": 5.934940989387075,
+        "y": 1.905213783005967
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef Barge Right"
+      "linkedName": "Right Side Of The Reef-Anvay"
     }
   ],
   "rotationTargets": [],
