@@ -13,6 +13,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -65,6 +67,9 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
+  public static final AprilTagFieldLayout FIELD_LAYOUT =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+
   /*private AprilTagLocalization m_aprilTagLocalization =
   new AprilTagLocalization(
       m_drivetrain::getPose2d,
@@ -99,6 +104,8 @@ public class RobotContainer {
   new AprilTagRecognition(m_commandFactory);*/
 
   public RobotContainer() {
+
+    SmartDashboard.putString("LimeLight Rotation Reading", "Nothing");
 
     NamedCommands.registerCommand(
         "Go To ReefPose1",
@@ -219,7 +226,10 @@ public class RobotContainer {
 
     m_driverController
         .x()
-        .whileTrue(m_drivetrain.squareUpOnApriltag(VisionAdjustment::getRotation));
+        .whileTrue(
+            m_drivetrain
+                .squareUpOnApriltag(VisionAdjustment::getRotation)
+                .onlyWhile(VisionAdjustment::hasTarget));
 
     m_driverController.start().onTrue(m_commandFactory.zeroRobot());
 

@@ -106,6 +106,11 @@ public class TunerConstants {
   public static final double visonYAdjustmentD = 0; // possible d value of 0.004
   public static final double visonYErrorTolerance = 0.15;
 
+  public static final double visonRotationAdjustmentP = 0.05;
+  public static final double visonRotationAdjustmentI = 0;
+  public static final double visonRotationAdjustmentD = 0; // possible d value of 0.004
+  public static final double visonRotationErrorTolerance = 0.15;
+
   // These are only used for simulation
   private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
   private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
