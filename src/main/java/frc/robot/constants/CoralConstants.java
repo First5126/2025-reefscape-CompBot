@@ -14,7 +14,7 @@ public class CoralConstants {
   public static final AngularVelocity OUTTAKE_SPEED = RevolutionsPerSecond.of(-110);
 
   public static final double PROXIMITY_THRESHOLD = 0.1;
-  public static final double DEBOUNCE = 0.00;
+  public static final double DEBOUNCE = 0.06;
 
   public static final double kP = 20;
   public static final double kI = 0;

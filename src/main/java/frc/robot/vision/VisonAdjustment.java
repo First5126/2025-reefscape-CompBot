@@ -46,10 +46,15 @@ public class VisonAdjustment {
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
       return getTY() * 7.68525 + -58.9293;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
-      if (selectedSideSupplier.get().equals("right")) {
-        return getTY() * -0.393498 + -2.7087;
-      } else if (selectedSideSupplier.get().equals("left")) {
-        return getTY() * -0.323929 + 3.49438;
+      if (lookingAt(coralStationIDs)) {
+        if (selectedSideSupplier.get().equals("right")) {
+          return getTY() * -0.393498 + -2.7087;
+        } else if (selectedSideSupplier.get().equals("left")) {
+          return getTY() * -0.323929 + 3.49438;
+        }
+      }
+      else if (lookingAt(processerIDs)) {
+        return getTY() * 1 + 0;
       }
     }
     return getTY();
@@ -60,10 +65,16 @@ public class VisonAdjustment {
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
       return verticalTargetFront;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
-      if (selectedSideSupplier.get().equals("right")) {
-        return verticalTargetElevatorRight;
-      } else if (selectedSideSupplier.get().equals("left")) {
-        return verticalTargetElevatorLeft;
+
+      if (lookingAt(coralStationIDs)) {
+        if (selectedSideSupplier.get().equals("right")) {
+          return verticalTargetElevatorRight;
+        } else if (selectedSideSupplier.get().equals("left")) {
+          return verticalTargetElevatorLeft;
+        }
+      }
+      else if (lookingAt(processerIDs)) {
+        return verticalTargetElevatorProcessor;
       }
     }
     return getTY();
@@ -101,5 +112,19 @@ public class VisonAdjustment {
     }
 
     return nearestLimelight;
+  }
+
+  private static boolean lookingAt(int[] list) {
+    boolean found = false;
+    int id = getNearestTag().id;
+
+    for (int otherId : list) {
+      if (otherId == id) {
+        found = true;
+        break;
+      }
+    }
+
+    return found;
   }
 }
