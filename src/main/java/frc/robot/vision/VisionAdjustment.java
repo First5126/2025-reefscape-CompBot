@@ -2,7 +2,8 @@ package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.constants.ApriltagConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,11 +29,20 @@ public class VisionAdjustment {
   }
 
   public static Rotation2d getRotation() {
+    SmartDashboard.putString("LimeLight Rotation Reading", "Getting Rotation");
+    if (getClosestApriltag() == null) {
+      SmartDashboard.putString("LimeLight Rotation Reading", "Tag is null");
+      return null;
+    }
     int tagID = getClosestApriltag().id;
-    Optional<Pose3d> tagPose = ApriltagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(tagID);
+    SmartDashboard.putString("LimeLight Rotation Reading", "End of getting closestApriltagId");
+    Optional<Pose3d> tagPose = RobotContainer.FIELD_LAYOUT.getTagPose(tagID);
+    SmartDashboard.putString("LimeLight Rotation Reading", "End of tagPose Optional");
     if (tagPose.isPresent()) {
+      SmartDashboard.putString("LimeLight Rotation Reading", "Tag Pressent");
       return tagPose.get().toPose2d().getRotation();
     } else {
+      SmartDashboard.putString("LimeLight Rotation Reading", "Tag Null");
       return null;
     }
   }
@@ -100,7 +110,12 @@ public class VisionAdjustment {
   }
 
   public static RawFiducial getClosestApriltag() {
-    RawFiducial closestTag = LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())[0];
+    RawFiducial closestTag;
+    if (LimelightHelpers.getRawFiducials(getNearestLimeLightToTag()).length != 0) {
+      closestTag = LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())[0];
+    } else {
+      return null;
+    }
     for (RawFiducial tag : LimelightHelpers.getRawFiducials(getNearestLimeLightToTag())) {
       if (closestTag.distToCamera < tag.distToCamera) {
         closestTag = tag;
