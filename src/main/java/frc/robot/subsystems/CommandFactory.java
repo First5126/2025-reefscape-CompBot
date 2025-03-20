@@ -99,8 +99,8 @@ public class CommandFactory {
         /*.andThen(
             Commands.deadline(
                 Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))*/
-        .andThen(finishIntake)
-        .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
+        .andThen(finishIntake);
+        //.andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
   public Command coralPivotAndOutake(CoralLevels level) {
