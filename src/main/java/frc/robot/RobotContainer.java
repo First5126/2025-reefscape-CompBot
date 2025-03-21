@@ -127,6 +127,24 @@ public class RobotContainer {
                 VisonAdjustment::getInversion)
             );
 
+    NamedCommands.registerCommand(
+        "Adjust Horrizontal",
+        m_drivetrain
+            .visonAdjustHorrizontal(
+                VisonAdjustment::getTX,
+                VisonAdjustment::getGoalTX,
+                VisonAdjustment::getInversion)
+            );
+
+    NamedCommands.registerCommand(
+        "Adjust Vertical",
+        m_drivetrain
+            .visonAdjustVertical(
+                VisonAdjustment::getTY,
+                VisonAdjustment::getGoalTY,
+                VisonAdjustment::getInversion)
+            );
+
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
     NamedCommands.registerCommand("Dealgefy L2", m_commandFactory.dealegfyL2().asProxy());

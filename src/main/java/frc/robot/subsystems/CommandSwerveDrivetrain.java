@@ -481,8 +481,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withRotationalRate(0);
   }
 
+  private boolean xVisonPIDAtSetpoint() {
+    return m_xController.atSetpoint();
+  }
+
+  private boolean yVisonPIDAtSetpoint() {
+    return m_yController.atSetpoint();
+  }
+
   private boolean visonPIDsAtSetpoint() {
-    return m_xController.atSetpoint() && m_yController.atSetpoint();
+    return xVisonPIDAtSetpoint() && yVisonPIDAtSetpoint();
   }
 
   /*
@@ -501,6 +509,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);
+  }
+
+  public Command visonAdjustVertical(
+    Supplier<Double> verticalError, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Vertical Error", verticalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityY(0.0)
+                  .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::xVisonPIDAtSetpoint);
+  }
+
+  public Command visonAdjustHorrizontal(
+    Supplier<Double> horizontalError, Supplier<Double> horizontalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityX(0.0)
+                  .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::yVisonPIDAtSetpoint);
   }
 
   public Command visonAdjustTimeout(

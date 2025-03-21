@@ -106,13 +106,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Get Nearest Tag"
+            "name": "Adjust Vertical"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Adjust Horrizontal"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 0.5
           }
         },
         {
