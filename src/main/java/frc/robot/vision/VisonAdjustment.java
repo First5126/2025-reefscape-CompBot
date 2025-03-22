@@ -1,5 +1,6 @@
 package frc.robot.vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
 import java.util.function.Supplier;
 
@@ -14,7 +15,7 @@ public class VisonAdjustment {
   public static final double verticalTargetFront = 9.47;
   public static final double verticalTargetElevatorLeft = 8.75;
   public static final double verticalTargetElevatorRight = 8.72;
-  public static final double verticalTargetElevatorProcessor = 0.0;
+  public static final double verticalTargetElevatorProcessor = -7.53;
 
   public static final int[] coralStationIDs = {1, 2, 12, 13};
   public static final int[] processerIDs = {3, 16};
@@ -46,24 +47,33 @@ public class VisonAdjustment {
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
       return getTY() * 7.68525 + -58.9293;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
-      if (selectedSideSupplier.get().equals("right")) {
-        return getTY() * -0.393498 + -2.7087;
-      } else if (selectedSideSupplier.get().equals("left")) {
-        return getTY() * -0.323929 + 3.49438;
+      if (lookingAt(coralStationIDs)) {
+        if (selectedSideSupplier.get().equals("right")) {
+          return getTY() * -0.393498 + -2.7087;
+        } else if (selectedSideSupplier.get().equals("left")) {
+          return getTY() * -0.323929 + 3.49438;
+        }
+      } else if (lookingAt(processerIDs)) {
+        return getTY() * -0.636596 + -8.28357;
       }
     }
     return getTY();
   }
 
   public static double getGoalTY() {
-
+    SmartDashboard.putBoolean("LOOKING AT PROCESSER", lookingAt(processerIDs));
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
       return verticalTargetFront;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
-      if (selectedSideSupplier.get().equals("right")) {
-        return verticalTargetElevatorRight;
-      } else if (selectedSideSupplier.get().equals("left")) {
-        return verticalTargetElevatorLeft;
+
+      if (lookingAt(coralStationIDs)) {
+        if (selectedSideSupplier.get().equals("right")) {
+          return verticalTargetElevatorRight;
+        } else if (selectedSideSupplier.get().equals("left")) {
+          return verticalTargetElevatorLeft;
+        }
+      } else if (lookingAt(processerIDs)) {
+        return verticalTargetElevatorProcessor;
       }
     }
     return getTY();
@@ -101,5 +111,19 @@ public class VisonAdjustment {
     }
 
     return nearestLimelight;
+  }
+
+  private static boolean lookingAt(int[] list) {
+    boolean found = false;
+    int id = getNearestTag().id;
+
+    for (int otherId : list) {
+      if (otherId == id) {
+        found = true;
+        break;
+      }
+    }
+
+    return found;
   }
 }
