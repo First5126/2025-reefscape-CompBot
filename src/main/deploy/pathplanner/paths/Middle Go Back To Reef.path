@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.125,
-        "y": 2.897
+        "x": 1.74,
+        "y": 1.2349999999999988
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5004896217357264,
-        "y": 1.3674174576513587
+        "x": 1.9312316175861932,
+        "y": 1.4381412309622568
       },
       "isLocked": false,
-      "linkedName": "Reef Driver Right No Limelight"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.582,
-        "y": 1.328
+        "x": 3.672887323943661,
+        "y": 2.6360915492957737
       },
       "prevControl": {
-        "x": 2.226956093112403,
-        "y": 2.3110760390277894
+        "x": 3.7210394023222206,
+        "y": 2.881410479156119
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Coral Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.8,
     "maxAcceleration": 1.302,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -126.0
+    "velocity": 0,
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -125.00000000000001
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

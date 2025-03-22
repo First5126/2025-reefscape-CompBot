@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Value;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -19,6 +21,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -307,6 +310,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
     SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
 
+    SmartDashboard.putBoolean("Running Limelight", false);
+
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
   }
 
@@ -476,8 +481,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withRotationalRate(0);
   }
 
+  private boolean xVisonPIDAtSetpoint() {
+    return m_xController.atSetpoint();
+  }
+
+  private boolean yVisonPIDAtSetpoint() {
+    return m_yController.atSetpoint();
+  }
+
   private boolean visonPIDsAtSetpoint() {
-    return m_xController.atSetpoint() && m_yController.atSetpoint();
+    return xVisonPIDAtSetpoint() && yVisonPIDAtSetpoint();
   }
 
   /*
@@ -488,13 +501,70 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(
         () -> {
           SmartDashboard.putNumber("Vertical Error", verticalError.get());
-          SmartDashboard.putNumber("Horisontal Error", horizontalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
           setControl(
             m_RobotCentricdrive
                 .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);
+  }
+
+  public Command visonAdjustVertical(
+    Supplier<Double> verticalError, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Vertical Error", verticalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityY(0.0)
+                  .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::xVisonPIDAtSetpoint).withTimeout(1.0);
+  }
+
+  public Command visonAdjustHorrizontal(
+    Supplier<Double> horizontalError, Supplier<Double> horizontalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityX(0.0)
+                  .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::yVisonPIDAtSetpoint).withTimeout(1.0);
+  }
+
+  public Command visonAdjustTimeout(
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+    return run(
+        () -> {
+          SmartDashboard.putNumber("Vertical Error", verticalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
+          setControl(
+            m_RobotCentricdrive
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
+        }).withTimeout(Seconds.of(0.75)).finallyDo(()->{System.out.println("Finsihd Liemligth Cmomand");}).handleInterrupt(()->{System.out.println("Inturrpted Limeliught Commamd");});
+  }
+
+  public Command setPose(Pose2d pose){
+    return runOnce(
+      ()->{
+        if (DriverStation.getAlliance().isPresent()){
+          if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
+            resetPose(FlippingUtil.flipFieldPose(pose));
+          }}
+        else{
+          resetPose(pose);
+        }
+      });
   }
 
   private void startSimThread() {

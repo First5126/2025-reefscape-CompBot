@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8,
-        "y": 2.7
+        "x": 4.125,
+        "y": 2.897
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1754896217357262,
-        "y": 1.170417457651359
+        "x": 3.5004896217357264,
+        "y": 1.3674174576513587
       },
       "isLocked": false,
-      "linkedName": "Reef Driver Right"
+      "linkedName": "Reef Driver Right No Limelight"
     },
     {
       "anchor": {

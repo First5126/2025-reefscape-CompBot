@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.031,
-        "y": 1.091
+        "x": 5.980222602739726,
+        "y": 0.6968107876712327
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.552266542814938,
-        "y": 2.0556601429295536
+        "x": 5.501489145554665,
+        "y": 1.6614709306007862
       },
       "isLocked": false,
       "linkedName": "Processer"
     },
     {
       "anchor": {
-        "x": 5.349143835616438,
-        "y": 2.6200984589041094
+        "x": 5.334118150684932,
+        "y": 2.9206121575342467
       },
       "prevControl": {
-        "x": 5.9499666743185795,
-        "y": 1.6047000843758286
+        "x": 5.934940989387075,
+        "y": 1.905213783005967
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef Barge Right"
+      "linkedName": "Right Side Of The Reef-Anvay"
     }
   ],
   "rotationTargets": [],
