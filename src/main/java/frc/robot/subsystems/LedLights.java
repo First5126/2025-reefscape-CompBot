@@ -9,11 +9,14 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
+import java.util.HashMap;
 
 public class LedLights extends SubsystemBase {
   private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, CANConstants.ELEVATOR_CANIVORE);
 
+  public static HashMap<Trigger, RobotState> m_triggers = new HashMap<Trigger, RobotState>();
   private static final Color8Bit CLEAR = new Color8Bit(0, 0, 0);
   private static final Color8Bit RED = new Color8Bit(255, 0, 0);
   private static final Color8Bit GREEN = new Color8Bit(0, 255, 0);
@@ -25,8 +28,7 @@ public class LedLights extends SubsystemBase {
 
   public enum RobotState {
     EMPTY, // state when the robot is completly empty of any coral or algae
-    CORAL_INTAKE_LEFT, // state when the robot is awaiting to intake coral on the left
-    CORAL_INTAKE_RIGHT, // state when the robot is awaiting to intake coral on the right
+    CORAL_INTAKE, // state when the robot is awaiting to intake coral on the right
     CORAL_RECEIVED, // state when robot has received coral for placing
     ALGAE_INTAKE, // state when the robot is performing an algae intake
     ALGAE_OUTAKE,
@@ -50,10 +52,25 @@ public class LedLights extends SubsystemBase {
    *
    * @return a Command for applying a color
    */
+  public void registerTrigger(Trigger trigger, RobotState state) {
+    m_triggers.put(trigger, state);
+  }
+
   public Command applyColor(Color8Bit color) {
     return runOnce(
         () -> {
           m_candle.setLEDs(color.red, color.green, color.blue);
+        });
+  }
+
+  private void applyColorvoid(Color8Bit color) {
+    m_candle.setLEDs(color.red, color.green, color.blue);
+  }
+
+  public Command applyState(RobotState state, Trigger trigger) {
+    return runOnce(
+        () -> {
+          setState(state, trigger);
         });
   }
 
@@ -64,34 +81,40 @@ public class LedLights extends SubsystemBase {
         });
   }
 
+  public void setState(RobotState state, Trigger trigger) {
+    if (trigger.getAsBoolean()) {
+      setState(state);
+    }
+  }
+
   // TODO: define states
   public void setState(RobotState state) {
     switch (state) {
       case EMPTY:
-        applyColor(PURPLE);
+        applyColorvoid(PURPLE);
         break;
-      case CORAL_INTAKE_LEFT:
-        break;
-      case CORAL_INTAKE_RIGHT:
+      case CORAL_INTAKE:
         break;
       case CORAL_RECEIVED:
+        applyColorvoid(CLEAR);
         break;
       case ALGAE_INTAKE:
-        applyColor(RED);
         break;
       case ALGAE_RECEIVED:
-        applyColor(GREEN);
+        applyColorvoid(GREEN);
         break;
       case ALGAE_OUTAKE:
-        applyColor(BLUE);
         break;
       case PLACING_CORAL_L1:
         break;
       case PLACING_CORAL_L2:
+        applyColorvoid(BLUE);
         break;
       case PLACING_CORAL_L3:
+        applyColorvoid(BLUE);
         break;
       case PLACING_CORAL_L4:
+        applyColorvoid(BLUE);
         break;
       case PROCESSING_ALGAE:
         break;
@@ -110,5 +133,19 @@ public class LedLights extends SubsystemBase {
 
   private void setAnimation(Animation animation) {
     m_candle.animate(animation);
+  }
+
+  public void periodic() {
+    boolean foundstate = false;
+    for (Trigger trigger : m_triggers.keySet()) {
+      if (trigger.getAsBoolean()) {
+        setState(m_triggers.get(trigger));
+        foundstate = true;
+        break;
+      }
+    }
+    if (foundstate == false) {
+      setState(RobotState.EMPTY);
+    }
   }
 }

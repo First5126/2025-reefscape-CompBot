@@ -20,10 +20,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralConstants;
 import frc.robot.constants.CoralLevels;
+import frc.robot.subsystems.LedLights.RobotState;
 
 public class CoralRollers extends SubsystemBase {
 
   private TalonFXS m_coralTalonFXS;
+  private LedLights m_ledLights = LedLights.getInstance();
 
   private CANrange m_LeftCANrange;
   private CANrange m_RightCANrange;
@@ -62,6 +64,8 @@ public class CoralRollers extends SubsystemBase {
     m_RightCANrange.getConfigurator().apply(CANrangeConfiguration);
 
     m_hasGamePiece = new Trigger(this::isDetected).debounce(CoralConstants.DEBOUNCE);
+
+    m_ledLights.registerTrigger(m_hasGamePiece, RobotState.CORAL_RECEIVED);
   }
 
   public Trigger hasCoral() {

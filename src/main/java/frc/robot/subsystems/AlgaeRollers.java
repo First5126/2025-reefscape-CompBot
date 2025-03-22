@@ -46,6 +46,7 @@ public class AlgaeRollers extends SubsystemBase {
 
     m_hasGamePiece =
         new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE, DebounceType.kFalling);
+    m_ledLights.registerTrigger(m_hasGamePiece, RobotState.ALGAE_RECEIVED);
   }
 
   public Trigger hasAlgae() {
@@ -62,11 +63,7 @@ public class AlgaeRollers extends SubsystemBase {
   public Command feedIn() {
     return m_ledLights
         .applyState(RobotState.ALGAE_INTAKE)
-        .andThen(
-            startFeedIn()
-                .until(m_hasGamePiece)
-                .andThen(m_ledLights.applyState(RobotState.ALGAE_RECEIVED))
-                .andThen(holdAlgae()));
+        .andThen(startFeedIn().until(m_hasGamePiece).andThen(holdAlgae()));
   }
 
   public Command startFeedOut() {
@@ -77,10 +74,7 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedOut() {
-    return startFeedOut()
-        .onlyWhile(m_hasGamePiece)
-        .andThen(m_ledLights.applyState(RobotState.EMPTY))
-        .andThen(stop());
+    return startFeedOut().onlyWhile(m_hasGamePiece).andThen(stop());
   }
 
   public Command stop() {

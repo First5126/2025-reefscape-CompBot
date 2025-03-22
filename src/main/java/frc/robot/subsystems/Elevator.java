@@ -30,21 +30,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.subsystems.LedLights.RobotState;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Elevator extends SubsystemBase {
   private final TalonFX m_leftMotor;
   private final TalonFX m_rightMotor;
+  private LedLights m_ledLights = LedLights.getInstance();
 
   private final CANdi m_CANdi;
   private final MotionMagicVoltage m_moitonMagicVoltage;
   private final VoltageOut m_VoltageOut = new VoltageOut(0);
   private final Slot0Configs m_slot0Configs = new Slot0Configs();
   private CoralLevels m_level = CoralLevels.TRAVEL;
+  private Trigger elevatorLevel2Trigger;
+  private Trigger elevatorLevel3Trigger;
+  private Trigger elevatorLevel4Trigger;
+  private Trigger elevatorCoralStationTrigger;
 
   // Keep track of the current coral level designated for the elevator
   private CoralLevels[] m_corralLevels = {
@@ -100,6 +107,31 @@ public class Elevator extends SubsystemBase {
     m_leftMotor.setControl(m_VoltageOut.withOutput(0));
 
     SmartDashboard.putBoolean("Elevator Brake", true);
+    elevatorLevel2Trigger = new Trigger(this::getLevel2);
+    elevatorLevel3Trigger = new Trigger(this::getLevel3);
+    elevatorLevel4Trigger = new Trigger(this::getLevel4);
+    elevatorCoralStationTrigger = new Trigger(this::getCoralStation);
+
+    m_ledLights.registerTrigger(elevatorLevel2Trigger, RobotState.PLACING_CORAL_L2);
+    m_ledLights.registerTrigger(elevatorLevel3Trigger, RobotState.PLACING_CORAL_L3);
+    m_ledLights.registerTrigger(elevatorLevel4Trigger, RobotState.PLACING_CORAL_L4);
+    m_ledLights.registerTrigger(elevatorCoralStationTrigger, RobotState.ALGAE_INTAKE);
+  }
+
+  private Boolean getLevel2() {
+    return m_currentCoralLevel == CoralLevels.L2;
+  }
+
+  private Boolean getLevel3() {
+    return m_currentCoralLevel == CoralLevels.L3;
+  }
+
+  private Boolean getLevel4() {
+    return m_currentCoralLevel == CoralLevels.L4;
+  }
+
+  private Boolean getCoralStation() {
+    return m_currentCoralLevel == CoralLevels.CORAL_STATION;
   }
 
   public Command openLoopCommand(Supplier<Double> speed) {
