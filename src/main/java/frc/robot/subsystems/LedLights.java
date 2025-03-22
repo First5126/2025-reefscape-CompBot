@@ -29,6 +29,7 @@ public class LedLights extends SubsystemBase {
     CORAL_INTAKE_RIGHT, // state when the robot is awaiting to intake coral on the right
     CORAL_RECEIVED, // state when robot has received coral for placing
     ALGAE_INTAKE, // state when the robot is performing an algae intake
+    ALGAE_OUTAKE,
     ALGAE_RECEIVED, // state when the robot has received algae and is ready for next step
     PLACING_CORAL_L1, // state when robot has determined to place on reef L1
     PLACING_CORAL_L2, // state when robot has determined to place on reef L2
@@ -56,14 +57,45 @@ public class LedLights extends SubsystemBase {
         });
   }
 
+  public Command applyState(RobotState state) {
+    return runOnce(
+        () -> {
+          setState(state);
+        });
+  }
+
   // TODO: define states
   public void setState(RobotState state) {
     switch (state) {
       case EMPTY:
+        applyColor(PURPLE);
         break;
       case CORAL_INTAKE_LEFT:
         break;
       case CORAL_INTAKE_RIGHT:
+        break;
+      case CORAL_RECEIVED:
+        break;
+      case ALGAE_INTAKE:
+        applyColor(RED);
+        break;
+      case ALGAE_RECEIVED:
+        applyColor(GREEN);
+        break;
+      case ALGAE_OUTAKE:
+        applyColor(BLUE);
+        break;
+      case PLACING_CORAL_L1:
+        break;
+      case PLACING_CORAL_L2:
+        break;
+      case PLACING_CORAL_L3:
+        break;
+      case PLACING_CORAL_L4:
+        break;
+      case PROCESSING_ALGAE:
+        break;
+      case SHOOTING_ALGAE:
         break;
 
       default:
