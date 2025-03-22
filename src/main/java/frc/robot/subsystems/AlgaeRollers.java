@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AlgaeConstants;
 import frc.robot.constants.CANConstants;
+import frc.robot.subsystems.LedLights.RobotState;
 
 public class AlgaeRollers extends SubsystemBase {
   private TalonFXS m_motorOne;
 
   private Trigger m_hasGamePiece;
+  private LedLights m_ledLights = LedLights.getInstance();
 
   private VelocityVoltage m_velocityVoltage = new VelocityVoltage(0).withSlot(0);
 
@@ -44,6 +46,7 @@ public class AlgaeRollers extends SubsystemBase {
 
     m_hasGamePiece =
         new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE, DebounceType.kFalling);
+    m_ledLights.registerTrigger(m_hasGamePiece, RobotState.ALGAE_RECEIVED);
   }
 
   public Trigger hasAlgae() {
@@ -58,7 +61,9 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedIn() {
-    return startFeedIn().until(m_hasGamePiece).andThen(holdAlgae());
+    return m_ledLights
+        .applyState(RobotState.ALGAE_INTAKE)
+        .andThen(startFeedIn().until(m_hasGamePiece).andThen(holdAlgae()));
   }
 
   public Command startFeedOut() {
