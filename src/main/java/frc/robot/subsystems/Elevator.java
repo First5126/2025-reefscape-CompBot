@@ -115,7 +115,7 @@ public class Elevator extends SubsystemBase {
     m_ledLights.registerTrigger(elevatorLevel2Trigger, RobotState.PLACING_CORAL_L2);
     m_ledLights.registerTrigger(elevatorLevel3Trigger, RobotState.PLACING_CORAL_L3);
     m_ledLights.registerTrigger(elevatorLevel4Trigger, RobotState.PLACING_CORAL_L4);
-    m_ledLights.registerTrigger(elevatorCoralStationTrigger, RobotState.ALGAE_INTAKE);
+    m_ledLights.registerTrigger(elevatorCoralStationTrigger, RobotState.CORAL_INTAKE);
   }
 
   private Boolean getLevel2() {

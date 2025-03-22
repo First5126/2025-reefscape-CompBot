@@ -17,6 +17,7 @@ public class LedLights extends SubsystemBase {
   private CANdle m_candle = new CANdle(CANConstants.CANDLE_ID, CANConstants.ELEVATOR_CANIVORE);
 
   public static HashMap<Trigger, RobotState> m_triggers = new HashMap<Trigger, RobotState>();
+  private static final Color8Bit WHITE = new Color8Bit(255, 255, 255);
   private static final Color8Bit CLEAR = new Color8Bit(0, 0, 0);
   private static final Color8Bit RED = new Color8Bit(255, 0, 0);
   private static final Color8Bit GREEN = new Color8Bit(0, 255, 0);
@@ -96,7 +97,7 @@ public class LedLights extends SubsystemBase {
       case CORAL_INTAKE:
         break;
       case CORAL_RECEIVED:
-        applyColorvoid(CLEAR);
+        applyColorvoid(WHITE);
         break;
       case ALGAE_INTAKE:
         break;
