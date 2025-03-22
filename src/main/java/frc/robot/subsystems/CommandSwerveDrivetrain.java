@@ -50,7 +50,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.vision.VisionAdjustment;
 
-import frc.robot.vision.VisionAdjustment;
 
 import java.util.function.Supplier;
 
@@ -85,7 +84,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
   private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
   private PIDController m_rotationController = new PIDController(TunerConstants.visonRotationAdjustmentP, TunerConstants.visonRotationAdjustmentI, TunerConstants.visonRotationAdjustmentD);
-
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
       new SwerveRequest.SysIdSwerveTranslation();
@@ -356,17 +354,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
           } else if (x == 0 && y == 0 && rotation == 0) {
-          } else if (x == 0 && y == 0 && rotation == 0) {
             // robot is not receiving input
             ChassisSpeeds speeds = getSpeeds();
 
             // are we near stop within a tolarance
-            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
-            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
+            if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01)) {
               isBraking = true;
               brake();
-            //}
-            //}
+            }
           }
 
           if (!isBraking) {
