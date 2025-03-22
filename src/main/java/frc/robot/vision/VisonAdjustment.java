@@ -1,5 +1,6 @@
 package frc.robot.vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.vision.LimelightHelpers.RawFiducial;
 import java.util.function.Supplier;
 
@@ -14,7 +15,7 @@ public class VisonAdjustment {
   public static final double verticalTargetFront = 9.47;
   public static final double verticalTargetElevatorLeft = 8.75;
   public static final double verticalTargetElevatorRight = 8.72;
-  public static final double verticalTargetElevatorProcessor = 0.0;
+  public static final double verticalTargetElevatorProcessor = -7.53;
 
   public static final int[] coralStationIDs = {1, 2, 12, 13};
   public static final int[] processerIDs = {3, 16};
@@ -52,16 +53,15 @@ public class VisonAdjustment {
         } else if (selectedSideSupplier.get().equals("left")) {
           return getTY() * -0.323929 + 3.49438;
         }
-      }
-      else if (lookingAt(processerIDs)) {
-        return getTY() * 1 + 0;
+      } else if (lookingAt(processerIDs)) {
+        return getTY() * -0.636596 + -8.28357;
       }
     }
     return getTY();
   }
 
   public static double getGoalTY() {
-
+    SmartDashboard.putBoolean("LOOKING AT PROCESSER", lookingAt(processerIDs));
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
       return verticalTargetFront;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
@@ -72,8 +72,7 @@ public class VisonAdjustment {
         } else if (selectedSideSupplier.get().equals("left")) {
           return verticalTargetElevatorLeft;
         }
-      }
-      else if (lookingAt(processerIDs)) {
+      } else if (lookingAt(processerIDs)) {
         return verticalTargetElevatorProcessor;
       }
     }
