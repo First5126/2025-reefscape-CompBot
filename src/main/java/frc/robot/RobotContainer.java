@@ -99,39 +99,45 @@ public class RobotContainer {
   new AprilTagRecognition(m_commandFactory);*/
 
   public RobotContainer() {
+    // All the Autonomous Commands of placing Coral On the different Levels
+    NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL2().asProxy());
+    NamedCommands.registerCommand("Place CoralL3", m_commandFactory.placeCoralL3().asProxy());
+    NamedCommands.registerCommand("Place CoralL4", m_commandFactory.placeCoralL4().asProxy());
+    // All Commands To raise Elevator to different Levels
+    NamedCommands.registerCommand(
+        "Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator Coral Station", m_commandFactory.moveElevatorUpToCoralStation().asProxy());
+    NamedCommands.registerCommand(
+        "Raise ElevatorL3", m_commandFactory.moveElevatorUpToL3().asProxy());
+    NamedCommands.registerCommand(
+        "Raise ElevatorL4", m_commandFactory.moveElevatorUpToL4().asProxy());
+    // All other Commands
+    NamedCommands.registerCommand(
+        "Wait Until Coral", m_commandFactory.waitUntilCoralIn().asProxy());
 
     NamedCommands.registerCommand(
-        "Go To ReefPose1",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition1.getPose()).asProxy());
+        "Get Nearest Tag",
+        m_drivetrain.visonAdjust(
+            VisonAdjustment::getTX,
+            VisonAdjustment::getTY,
+            VisonAdjustment::getGoalTX,
+            VisonAdjustment::getGoalTY,
+            VisonAdjustment::getInversion));
+
     NamedCommands.registerCommand(
-        "Go To ReefPose2",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition2.getPose()).asProxy());
+        "Adjust Horrizontal",
+        m_drivetrain.visonAdjustHorrizontal(
+            VisonAdjustment::getTX, VisonAdjustment::getGoalTX, VisonAdjustment::getInversion));
+
     NamedCommands.registerCommand(
-        "Go To ReefPose3",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition3.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose4",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition4.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose5",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition5.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Go To ReefPose6",
-        m_commandFactory.goToPose(PoseConstants.ReefPosition6.getPose()).asProxy());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 1", m_commandFactory.elevatorOutTakeL1());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 2", m_commandFactory.elevatorOutTakeL2());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 3", m_commandFactory.elevatorOutTakeL3());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position 4", m_commandFactory.elevatorOutTakeL4());
-    NamedCommands.registerCommand(
-        "Raise Elevator to position Coral Station",
-        m_commandFactory.elevatorInTakeCoralStation().asProxy());
+        "Adjust Vertical",
+        m_drivetrain.visonAdjustVertical(
+            VisonAdjustment::getTY, VisonAdjustment::getGoalTY, VisonAdjustment::getInversion));
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
-    NamedCommands.registerCommand("Place Coral L4", m_commandFactory.placeCoralL4().asProxy());
+    NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
+    NamedCommands.registerCommand("Dealgefy L2", m_commandFactory.dealegfyL2().asProxy());
     NamedCommands.registerCommand(
         "Raise Elevator to L3", m_commandFactory.algaeGoToL3().asProxy().withTimeout(2));
     NamedCommands.registerCommand("Process Algae", m_commandFactory.putBallInProcesser().asProxy());
@@ -140,8 +146,9 @@ public class RobotContainer {
         "Lower Elevator", m_commandFactory.lowerElevator().asProxy().withTimeout(1.5));
     NamedCommands.registerCommand(
         "Raise Elevator To L2", m_commandFactory.elevatorOutTakeL2().asProxy());
-    NamedCommands.registerCommand("Raise ElevatorL2", m_commandFactory.moveElevatorUpToL2());
-    NamedCommands.registerCommand("Place CoralL2", m_commandFactory.placeCoralL3().asProxy());
+    NamedCommands.registerCommand(
+        "Raise Elevator to position Coral Station",
+        m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -244,7 +251,15 @@ public class RobotContainer {
 
     m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
-    m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController
+        .back()
+        .and(m_coDriverController.b().negate())
+        .onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController
+        .back()
+        .and(m_coDriverController.b())
+        .onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
+
     m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
 
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
@@ -264,7 +279,7 @@ public class RobotContainer {
 
     m_coDriverController
         .povUp()
-        .and(this::yIsNotPressed)
+        .and(m_coDriverController.b().negate())
         .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L1));
 
     m_coDriverController.povRight().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L2));
@@ -280,7 +295,11 @@ public class RobotContainer {
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b().negate())
-        .onTrue(m_algaeRollers.feedIn()); // standard
+        .whileTrue(m_algaeRollers.feedIn()); // standard
+    m_coDriverController
+        .leftBumper()
+        .and(m_coDriverController.b().negate())
+        .onFalse(m_algaeRollers.stop()); // standard
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b())
@@ -295,6 +314,10 @@ public class RobotContainer {
         .rightBumper()
         .and(m_coDriverController.b().negate())
         .whileTrue(m_commandFactory.processAlgae()); // standard
+    m_coDriverController
+        .rightBumper()
+        .and(m_coDriverController.b().negate())
+        .whileTrue(m_algaeRollers.stop()); // standard
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b())

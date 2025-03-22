@@ -12,7 +12,7 @@ public class AlgaeConstants {
   public static final Voltage INTAKE_SPEED = Volts.of(6);
   public static final Voltage OUTTAKE_SPEED = Volts.of(-8);
   public static final Voltage SHOOTING_SPEED = Volts.of(1);
-  public static final Voltage HOLDING_SPEED = Volts.of(3);
+  public static final Voltage HOLDING_SPEED = Volts.of(4.5);
 
   public static final double kP = 5;
   public static final double kI = 0;
@@ -22,5 +22,5 @@ public class AlgaeConstants {
   public static final double kA = 0;
 
   public static final double PROXIMITY_THRESHOLD = 0.1;
-  public static final double DEBOUNCE = 0.1;
+  public static final double DEBOUNCE = 0.5;
 }

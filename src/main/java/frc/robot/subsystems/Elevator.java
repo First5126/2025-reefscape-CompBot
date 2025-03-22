@@ -292,18 +292,18 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
     SmartDashboard.putBoolean("S2 Reverse Limit Source:", isLowerLimitReached());
 
-    if (SmartDashboard.getBoolean("Elevator Brake", true)) {
-      MotorOutputConfigs brake = new MotorOutputConfigs();
-      brake.NeutralMode = NeutralModeValue.Brake;
+    // if (SmartDashboard.getBoolean("Elevator Brake", true)) {
+    //  MotorOutputConfigs brake = new MotorOutputConfigs();
+    //  brake.NeutralMode = NeutralModeValue.Brake;
 
-      m_leftMotor.getConfigurator().apply(brake);
-      m_rightMotor.getConfigurator().apply(brake);
-    } else {
-      MotorOutputConfigs unbrake = new MotorOutputConfigs();
-      unbrake.NeutralMode = NeutralModeValue.Coast;
+    //  m_leftMotor.getConfigurator().apply(brake);
+    //  m_rightMotor.getConfigurator().apply(brake);
+    // } else {
+    //  MotorOutputConfigs unbrake = new MotorOutputConfigs();
+    //  unbrake.NeutralMode = NeutralModeValue.Coast;
 
-      m_leftMotor.getConfigurator().apply(unbrake);
-      m_rightMotor.getConfigurator().apply(unbrake);
-    }
+    //  m_leftMotor.getConfigurator().apply(unbrake);
+    //  m_rightMotor.getConfigurator().apply(unbrake);
+    // }
   }
 }

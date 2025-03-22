@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.175176056338028,
-        "y": 5.229665492957746
+        "x": 5.364,
+        "y": 5.151
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.288556338028169,
-        "y": 6.193397887323942
+        "x": 4.5481528693512185,
+        "y": 5.705317718463315
       },
       "isLocked": false,
-      "linkedName": "Left-Reef"
+      "linkedName": "Reef Barge Left"
     },
     {
       "anchor": {
-        "x": 6.096390845070422,
-        "y": 5.754049295774647
+        "x": 1.582,
+        "y": 6.7238
       },
       "prevControl": {
-        "x": 5.115844085719425,
-        "y": 5.835761525720561
-      },
-      "nextControl": {
-        "x": 6.4365316901408445,
-        "y": 5.725704225352112
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.980222602739726,
-        "y": 0.6968107876712327
-      },
-      "prevControl": {
-        "x": 5.971739422341538,
-        "y": 1.6904965874412672
+        "x": 3.0208071872296474,
+        "y": 5.818083348961855
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processer"
+      "linkedName": "Left Coral Station"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.8,
+    "maxVelocity": 3.0,
     "maxAcceleration": 1.302,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -58,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 126.0
   },
   "reversed": false,
   "folder": null,
@@ -66,5 +50,5 @@
     "velocity": 0,
     "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

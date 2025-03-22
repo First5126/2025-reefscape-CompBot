@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Left to Reef Barge Left"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left to Reef Barge Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
           }
         },
         {
@@ -19,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Place Coral L4"
+            "name": "Place CoralL4"
           }
         },
         {
@@ -60,9 +79,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Processer to Reef Barge Right"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Processer to Reef Barge Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
