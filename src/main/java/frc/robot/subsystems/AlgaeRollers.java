@@ -80,7 +80,8 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command holdAlgae() {
-    return runOnce(() -> {
+    return runOnce(
+        () -> {
           m_motorOne.setControl(new VoltageOut(AlgaeConstants.HOLDING_SPEED));
         });
   }

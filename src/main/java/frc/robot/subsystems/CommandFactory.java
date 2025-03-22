@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.CoralLevels;
-import frc.robot.constants.PoseConstants;
 import frc.robot.constants.PoseConstants.Pose;
 import java.util.HashSet;
 import java.util.function.BooleanSupplier;
@@ -97,10 +96,10 @@ public class CommandFactory {
         .alongWith(pivotAlgaeRollers)
         .until(m_coralRollers.hasCoral())
         /*.andThen(
-            Commands.deadline(
-                Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))*/
+        Commands.deadline(
+            Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))*/
         .andThen(finishIntake);
-        //.andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
+    // .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
   public Command coralPivotAndOutake(CoralLevels level) {

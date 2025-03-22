@@ -118,32 +118,22 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Get Nearest Tag",
-        m_drivetrain
-            .visonAdjust(
-                VisonAdjustment::getTX,
-                VisonAdjustment::getTY,
-                VisonAdjustment::getGoalTX,
-                VisonAdjustment::getGoalTY,
-                VisonAdjustment::getInversion)
-            );
+        m_drivetrain.visonAdjust(
+            VisonAdjustment::getTX,
+            VisonAdjustment::getTY,
+            VisonAdjustment::getGoalTX,
+            VisonAdjustment::getGoalTY,
+            VisonAdjustment::getInversion));
 
     NamedCommands.registerCommand(
         "Adjust Horrizontal",
-        m_drivetrain
-            .visonAdjustHorrizontal(
-                VisonAdjustment::getTX,
-                VisonAdjustment::getGoalTX,
-                VisonAdjustment::getInversion)
-            );
+        m_drivetrain.visonAdjustHorrizontal(
+            VisonAdjustment::getTX, VisonAdjustment::getGoalTX, VisonAdjustment::getInversion));
 
     NamedCommands.registerCommand(
         "Adjust Vertical",
-        m_drivetrain
-            .visonAdjustVertical(
-                VisonAdjustment::getTY,
-                VisonAdjustment::getGoalTY,
-                VisonAdjustment::getInversion)
-            );
+        m_drivetrain.visonAdjustVertical(
+            VisonAdjustment::getTY, VisonAdjustment::getGoalTY, VisonAdjustment::getInversion));
 
     NamedCommands.registerCommand("Dealgefy L3", m_commandFactory.dealegfyL3().asProxy());
     NamedCommands.registerCommand("Intake Coral", m_commandFactory.intakeCoral().asProxy());
@@ -159,7 +149,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
-
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -262,8 +251,14 @@ public class RobotContainer {
 
     m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
-    m_coDriverController.back().and(m_coDriverController.b().negate()).onTrue(m_algaePivot.goToUpperSetpoint());
-    m_coDriverController.back().and(m_coDriverController.b()).onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
+    m_coDriverController
+        .back()
+        .and(m_coDriverController.b().negate())
+        .onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController
+        .back()
+        .and(m_coDriverController.b())
+        .onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
 
     m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
 
