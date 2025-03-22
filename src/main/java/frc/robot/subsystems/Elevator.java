@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Rotations;
 
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -24,24 +25,33 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import com.ctre.phoenix6.signals.S2CloseStateValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.subsystems.LedLights.RobotState;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Elevator extends SubsystemBase {
   private final TalonFX m_leftMotor;
   private final TalonFX m_rightMotor;
+  private LedLights m_ledLights = LedLights.getInstance();
 
   private final CANdi m_CANdi;
   private final MotionMagicVoltage m_moitonMagicVoltage;
   private final VoltageOut m_VoltageOut = new VoltageOut(0);
   private final Slot0Configs m_slot0Configs = new Slot0Configs();
+  private CoralLevels m_level = CoralLevels.TRAVEL;
+  private Trigger elevatorLevel2Trigger;
+  private Trigger elevatorLevel3Trigger;
+  private Trigger elevatorLevel4Trigger;
+  private Trigger elevatorCoralStationTrigger;
 
   // Keep track of the current coral level designated for the elevator
   private CoralLevels[] m_corralLevels = {
@@ -54,6 +64,9 @@ public class Elevator extends SubsystemBase {
     m_rightMotor = new TalonFX(CANConstants.RIGHT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
 
     m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI, CANConstants.ELEVATOR_CANIVORE);
+    CANdiConfiguration candiConfig = new CANdiConfiguration();
+    candiConfig.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenNotHigh;
+    m_CANdi.getConfigurator().apply(candiConfig);
 
     TalonFXConfiguration m_leftConfig = new TalonFXConfiguration();
     TalonFXConfiguration m_rightConfig = new TalonFXConfiguration();
@@ -94,6 +107,31 @@ public class Elevator extends SubsystemBase {
     m_leftMotor.setControl(m_VoltageOut.withOutput(0));
 
     SmartDashboard.putBoolean("Elevator Brake", true);
+    elevatorLevel2Trigger = new Trigger(this::getLevel2);
+    elevatorLevel3Trigger = new Trigger(this::getLevel3);
+    elevatorLevel4Trigger = new Trigger(this::getLevel4);
+    elevatorCoralStationTrigger = new Trigger(this::getCoralStation);
+
+    m_ledLights.registerTrigger(elevatorLevel2Trigger, RobotState.PLACING_CORAL_L2);
+    m_ledLights.registerTrigger(elevatorLevel3Trigger, RobotState.PLACING_CORAL_L3);
+    m_ledLights.registerTrigger(elevatorLevel4Trigger, RobotState.PLACING_CORAL_L4);
+    m_ledLights.registerTrigger(elevatorCoralStationTrigger, RobotState.CORAL_INTAKE);
+  }
+
+  private Boolean getLevel2() {
+    return m_currentCoralLevel == CoralLevels.L2;
+  }
+
+  private Boolean getLevel3() {
+    return m_currentCoralLevel == CoralLevels.L3;
+  }
+
+  private Boolean getLevel4() {
+    return m_currentCoralLevel == CoralLevels.L4;
+  }
+
+  private Boolean getCoralStation() {
+    return m_currentCoralLevel == CoralLevels.CORAL_STATION;
   }
 
   public Command openLoopCommand(Supplier<Double> speed) {
@@ -136,9 +174,15 @@ public class Elevator extends SubsystemBase {
 
   public Command setCoralPosition(CoralLevels position) {
     return runOnce(
-        () -> {
-          setPosition(position);
-        });
+            () -> {
+              setPosition(position);
+            })
+        .until(this::elevatorAtPosition);
+  }
+
+  public boolean elevatorAtPosition() {
+    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble())
+        < ElevatorConstants.ELEVATOR_TOLERANCE;
   }
 
   public Command stopMotors() {
@@ -218,6 +262,7 @@ public class Elevator extends SubsystemBase {
   // using exesting mPositionVoltage write set position method in meters
   private void setPosition(CoralLevels position) {
     m_currentCoralLevel = position;
+    m_level = position;
     m_leftMotor.setControl(m_moitonMagicVoltage.withPosition(position.heightAngle));
     SmartDashboard.putNumber("goal position", position.heightAngle.in(Revolutions));
   }
@@ -236,24 +281,29 @@ public class Elevator extends SubsystemBase {
     return m_leftMotor.getForwardLimit().getValue().equals(ForwardLimitValue.ClosedToGround);
   }
 
+  public CoralLevels getCoralLevel() {
+    return m_level;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Height: ", getElevatorHeight());
     SmartDashboard.putBoolean("Elevator Lower Limit Switch Status: ", isLowerLimitReached());
     SmartDashboard.putBoolean("Elevator Upper Limit Switch Status: ", isUpperLimitReached());
+    SmartDashboard.putBoolean("S2 Reverse Limit Source:", isLowerLimitReached());
 
-    if (SmartDashboard.getBoolean("Elevator Brake", true)) {
-      MotorOutputConfigs brake = new MotorOutputConfigs();
-      brake.NeutralMode = NeutralModeValue.Brake;
+    // if (SmartDashboard.getBoolean("Elevator Brake", true)) {
+    //  MotorOutputConfigs brake = new MotorOutputConfigs();
+    //  brake.NeutralMode = NeutralModeValue.Brake;
 
-      m_leftMotor.getConfigurator().apply(brake);
-      m_rightMotor.getConfigurator().apply(brake);
-    } else {
-      MotorOutputConfigs unbrake = new MotorOutputConfigs();
-      unbrake.NeutralMode = NeutralModeValue.Coast;
+    //  m_leftMotor.getConfigurator().apply(brake);
+    //  m_rightMotor.getConfigurator().apply(brake);
+    // } else {
+    //  MotorOutputConfigs unbrake = new MotorOutputConfigs();
+    //  unbrake.NeutralMode = NeutralModeValue.Coast;
 
-      m_leftMotor.getConfigurator().apply(unbrake);
-      m_rightMotor.getConfigurator().apply(unbrake);
-    }
+    //  m_leftMotor.getConfigurator().apply(unbrake);
+    //  m_rightMotor.getConfigurator().apply(unbrake);
+    // }
   }
 }

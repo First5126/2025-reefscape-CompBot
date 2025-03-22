@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.582,
+        "y": 1.328
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8291223269858896,
+        "y": 1.3658226850580424
+      },
+      "isLocked": false,
+      "linkedName": "Right Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 3.162676056338027,
+        "y": 1.6298415492957736
+      },
+      "prevControl": {
+        "x": 2.370084945815963,
+        "y": 1.9169408583488272
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef Driver Right away"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 1.302,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.3,
+    "rotation": 59.99999999999999
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -126.0
+  },
+  "useDefaultConstraints": true
+}

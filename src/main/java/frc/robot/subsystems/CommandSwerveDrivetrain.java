@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Value;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -19,12 +21,17 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.FlippingUtil;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,9 +43,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.CoralLevels;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.CurrentLimits;
+import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.vision.VisonAdjustment;
+
+import frc.robot.vision.VisonAdjustment;
+
 import java.util.function.Supplier;
 
 /**
@@ -69,7 +83,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SlewRateLimiter m_xLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_yLimiter = new SlewRateLimiter(2.5);
   private SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
-  private PIDController m_xController = new PIDController(0.2, 0, 0);
+  private PIDController m_xController = new PIDController(TunerConstants.visonXAdjustmentP, TunerConstants.visonXAdjustmentI, TunerConstants.visonXAdjustmentD);
+  private PIDController m_yController = new PIDController(TunerConstants.visonYAdjustmentP, TunerConstants.visonYAdjustmentI, TunerConstants.visonYAdjustmentD);
 
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
@@ -78,6 +93,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
+
+  private final SwerveRequest m_brake = new SwerveRequest.SwerveDriveBrake();
+
+
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation =
@@ -157,6 +176,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
+    setupVisonPIDs();
   }
 
   /**
@@ -180,6 +201,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
   }
 
   /**
@@ -214,6 +236,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     applySupplyCurrentLimits();
     configureAutobuilder();
+    setupVisonPIDs();
   }
 
   /**
@@ -284,7 +307,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     SmartDashboard.putNumber("Max Speed", m_max_speed);
     SmartDashboard.putNumber("Max Accel", m_max_accel);
 
+    SmartDashboard.putBoolean("Can Vison Align", VisonAdjustment.hasTarget());
+    SmartDashboard.putBoolean("Vison PIDs Aligned", visonPIDsAtSetpoint());
+
+    SmartDashboard.putBoolean("Running Limelight", false);
+
     m_last_speed = state.ModuleStates[0].speedMetersPerSecond;
+  }
+
+  private void setupVisonPIDs() {
+    m_xController.setTolerance(TunerConstants.visonXErrorTolerance);
+    m_yController.setTolerance(TunerConstants.visonYErrorTolerance);
   }
 
   public Command gasPedalCommand(
@@ -292,16 +325,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Supplier<Double> robotCentricthrottleSupplier,
       Supplier<Double> rotationSupplier,
       Supplier<Double> xSupplier,
-      Supplier<Double> ySupplier) {
+      Supplier<Double> ySupplier,
+      Supplier<CoralLevels> level) {
     return run(
         () -> {
+          double speedMultiplier = level.get().maxSpeed;
+          SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
-              ControllerConstants.modifyAxisWithCustomDeadband(
-                  fieldCentricthrottleSupplier.get(), 0.06, 1);
+              (ControllerConstants.modifyAxisWithCustomDeadband(
+                  fieldCentricthrottleSupplier.get(), 0.06, 1));
           double robotCentricThrottle =
-              ControllerConstants.modifyAxisWithCustomDeadband(
+              (ControllerConstants.modifyAxisWithCustomDeadband(
                       robotCentricthrottleSupplier.get(), 0.06, 2)
-                  / 2;
+                  / 2);
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
           double rotation =
@@ -316,34 +352,48 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             activeThrottle = robotCentricThrottle;
           }
 
+          boolean isBraking = false;
+
           if (!(x == 0 && y == 0)) {
             double angle = Math.atan2(x, y) + Math.PI / 2;
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;
+          } else if (x == 0 && y == 0 && rotation == 0) {
+            // robot is not receiving input
+            ChassisSpeeds speeds = getSpeeds();
+
+            // are we near stop within a tolarance
+            //if (MathUtil.isNear(0, speeds.vxMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.vyMetersPerSecond, 0.01) && MathUtil.isNear(0, speeds.omegaRadiansPerSecond, 0.01)) {
+              isBraking = true;
+              brake();
+            //}
           }
 
-          if (activeThrottle == robotCentricThrottle) {
-            setControl(
-                m_RobotCentricdrive
-                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
-                    .withDeadband(0.05)
-                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
-                    .withDeadband(0.05)
-                    .withRotationalRate(
-                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
-          } else {
-            setControl(
-                m_FieldCentricdrive
-                    .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
-                    .withDeadband(0.05)
-                    .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
-                    .withDeadband(0.05)
-                    .withRotationalRate(
-                        -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+          if (!isBraking) {
+            if (activeThrottle == robotCentricThrottle) {
+              setControl(
+                  m_RobotCentricdrive
+                      .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                      .withDeadband(0.05)
+                      .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                      .withDeadband(0.05)
+                      .withRotationalRate(
+                          -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+            } else {
+              setControl(
+                  m_FieldCentricdrive
+                      .withVelocityX(-percentOutputToMetersPerSecond(m_xLimiter.calculate(x)))
+                      .withDeadband(0.05)
+                      .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(y)))
+                      .withDeadband(0.05)
+                      .withRotationalRate(
+                          -percentOutputToRadiansPerSecond(m_rotationLimiter.calculate(rotation))));
+            }
           }
 
           SmartDashboard.putNumber("FieldCentricthrottle", fieldCentricthrottle);
           SmartDashboard.putNumber("RobotCentricThrottle", robotCentricThrottle);
+          SmartDashboard.putBoolean("XBrake", isBraking);
         });
   }
 
@@ -410,8 +460,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           setControl(
               m_RobotCentricdrive
                   .withVelocityY(percentOutputToMetersPerSecond(m_yLimiter.calculate(velocityY)))
-                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX))));
+                  .withVelocityX(percentOutputToMetersPerSecond(m_xLimiter.calculate(velocityX)))
+                  .withRotationalRate(0.0));
         });
+  }
+
+  private void brake() {
+    setControl(m_brake);
   }
 
   private void horizontalAdjust(Supplier<Double> horizontalError, double skew) {
@@ -424,6 +479,92 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withVelocityX(m_xController.calculate(xError))
         .withVelocityY(0)
         .withRotationalRate(0);
+  }
+
+  private boolean xVisonPIDAtSetpoint() {
+    return m_xController.atSetpoint();
+  }
+
+  private boolean yVisonPIDAtSetpoint() {
+    return m_yController.atSetpoint();
+  }
+
+  private boolean visonPIDsAtSetpoint() {
+    return xVisonPIDAtSetpoint() && yVisonPIDAtSetpoint();
+  }
+
+  /*
+   * Adjusts the robot so that the supplied errors match the target erros from the april tag.
+   */
+  public Command visonAdjust(
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+    return run(
+        () -> {
+          SmartDashboard.putNumber("Vertical Error", verticalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
+          setControl(
+            m_RobotCentricdrive
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
+        }).until(this::visonPIDsAtSetpoint);
+  }
+
+  public Command visonAdjustVertical(
+    Supplier<Double> verticalError, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Vertical Error", verticalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityY(0.0)
+                  .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::xVisonPIDAtSetpoint).withTimeout(1.0);
+  }
+
+  public Command visonAdjustHorrizontal(
+    Supplier<Double> horizontalError, Supplier<Double> horizontalTarget, Supplier<Integer> inversionSupplier) {
+      return run(
+          () -> {
+            SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+            SmartDashboard.putBoolean("Running Limelight", true);
+            setControl(
+              m_RobotCentricdrive
+                  .withVelocityX(0.0)
+                  .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                  .withRotationalRate(0));
+          }).until(this::yVisonPIDAtSetpoint).withTimeout(1.0);
+  }
+
+  public Command visonAdjustTimeout(
+      Supplier<Double> horizontalError, Supplier<Double> verticalError, Supplier<Double> horizontalTarget, Supplier<Double> verticalTarget, Supplier<Integer> inversionSupplier) {
+    return run(
+        () -> {
+          SmartDashboard.putNumber("Vertical Error", verticalError.get());
+          SmartDashboard.putNumber("Horizontal Error", horizontalError.get());
+          SmartDashboard.putBoolean("Running Limelight", true);
+          setControl(
+            m_RobotCentricdrive
+                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+                .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withRotationalRate(0));
+        }).withTimeout(Seconds.of(0.75)).finallyDo(()->{System.out.println("Finsihd Liemligth Cmomand");}).handleInterrupt(()->{System.out.println("Inturrpted Limeliught Commamd");});
+  }
+
+  public Command setPose(Pose2d pose){
+    return runOnce(
+      ()->{
+        if (DriverStation.getAlliance().isPresent()){
+          if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
+            resetPose(FlippingUtil.flipFieldPose(pose));
+          }}
+        else{
+          resetPose(pose);
+        }
+      });
   }
 
   private void startSimThread() {

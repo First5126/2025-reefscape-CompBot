@@ -4,15 +4,17 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorPhaseValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,14 +24,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AlgaePivotConstants;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.CoralLevels;
+import java.util.function.Supplier;
 
 public class AlgaePivot extends SubsystemBase {
   private MotionMagicVoltage m_motionMatiVoltage = new MotionMagicVoltage(0).withSlot(0);
   private TalonFXS m_AlgaePivotTalon;
   private Trigger hasAlgae;
+  private Supplier<CoralLevels> coralLevelSupplier;
+  private CoreCANcoder m_CANcoder;
 
-  public AlgaePivot(Trigger hasAlgae) {
+  public AlgaePivot(Trigger hasAlgae, Supplier<CoralLevels> coralLevelSupplier) {
     this.hasAlgae = hasAlgae;
+    this.coralLevelSupplier = coralLevelSupplier;
+
     TalonFXSConfiguration talonFXSConfiguration = new TalonFXSConfiguration();
 
     talonFXSConfiguration.Slot0.kP = AlgaePivotConstants.kP;
@@ -56,7 +63,15 @@ public class AlgaePivot extends SubsystemBase {
         AlgaePivotConstants.MotionMagicCruiseVelocity;
     talonFXSConfiguration.MotionMagic.MotionMagicJerk = AlgaePivotConstants.MotionMagicJerk;
     talonFXSConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    talonFXSConfiguration.ExternalFeedback.SensorPhase = SensorPhaseValue.Opposed;
+
+    CANcoderConfiguration CANCoderConfiguration = new CANcoderConfiguration();
+    CANCoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    CANCoderConfiguration.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+
+    m_CANcoder = new CoreCANcoder(CANConstants.ALGAE_CANCODER);
+    m_CANcoder.getConfigurator().apply(CANCoderConfiguration);
+
+    talonFXSConfiguration.ExternalFeedback.withFusedCANcoder(m_CANcoder);
 
     m_AlgaePivotTalon = new TalonFXS(CANConstants.ALGAE_PIVOT, CANConstants.ELEVATOR_CANIVORE);
     m_AlgaePivotTalon.setNeutralMode(NeutralModeValue.Brake);
@@ -86,11 +101,22 @@ public class AlgaePivot extends SubsystemBase {
         });
   }
 
+  public boolean shouldGoToMidPoint() {
+    if (hasAlgae.getAsBoolean() && !coralLevelSupplier.get().name().equals("PROCESSER")) {
+      return true;
+    }
+    return false;
+  }
+
   public Command goToLevel(CoralLevels level) {
     ConditionalCommand command =
-        new ConditionalCommand(goToMidPoint(), rotateToLevel(level), hasAlgae);
+        new ConditionalCommand(goToMidPoint(), rotateToLevel(level), this::shouldGoToMidPoint);
 
     return command;
+  }
+
+  public Command setAngle(CoralLevels level) {
+    return runOnce(() -> rotate(level.algaeAngle));
   }
 
   public Command goToMidPoint() {
@@ -107,6 +133,24 @@ public class AlgaePivot extends SubsystemBase {
 
   private void rotate(Angle setpoint) {
     m_AlgaePivotTalon.setControl(m_motionMatiVoltage.withPosition(setpoint));
+  }
+
+  public Command openLoopCommandUp() {
+    return runOnce(
+        () -> {
+          openLoop(0.1);
+        });
+  }
+
+  public Command openLoopCommandDown() {
+    return runOnce(
+        () -> {
+          openLoop(-0.1);
+        });
+  }
+
+  private void openLoop(double power) {
+    m_AlgaePivotTalon.setControl(new DutyCycleOut(power));
   }
 
   private Command rotateToLevel(CoralLevels level) {

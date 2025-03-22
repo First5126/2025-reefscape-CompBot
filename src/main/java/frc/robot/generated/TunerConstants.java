@@ -96,6 +96,16 @@ public class TunerConstants {
 
   private static final int kPigeonId = 0;
 
+  public static final double visonXAdjustmentP = 0.08;
+  public static final double visonXAdjustmentI = 0;
+  public static final double visonXAdjustmentD = 0;
+  public static final double visonXErrorTolerance = 0.15;
+
+  public static final double visonYAdjustmentP = 0.04;
+  public static final double visonYAdjustmentI = 0;
+  public static final double visonYAdjustmentD = 0; // possible d value of 0.004
+  public static final double visonYErrorTolerance = 1.5;
+
   // These are only used for simulation
   private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
   private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
@@ -161,7 +171,7 @@ public class TunerConstants {
   private static final int kBackLeftDriveMotorId = 5;
   private static final int kBackLeftSteerMotorId = 6;
   private static final int kBackLeftEncoderId = 3;
-  private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.390625);
+  private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.38525390625);
   private static final boolean kBackLeftSteerMotorInverted = true;
   private static final boolean kBackLeftEncoderInverted = false;
 

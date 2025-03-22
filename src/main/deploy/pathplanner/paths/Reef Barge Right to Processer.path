@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.334118150684932,
+        "y": 2.9206121575342467
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.697760969863299,
+        "y": 1.936424483105794
+      },
+      "isLocked": false,
+      "linkedName": "Right Side Of The Reef-Anvay"
+    },
+    {
+      "anchor": {
+        "x": 5.980222602739726,
+        "y": 0.6968107876712327
+      },
+      "prevControl": {
+        "x": 5.558373757547129,
+        "y": 1.7293427917453665
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Processer"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 1.302,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

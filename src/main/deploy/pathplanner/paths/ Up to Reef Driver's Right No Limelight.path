@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.162676056338027,
+        "y": 1.6298415492957736
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.36079579807704,
+        "y": 1.9509907881953479
+      },
+      "isLocked": false,
+      "linkedName": "Reef Driver Right away"
+    },
+    {
+      "anchor": {
+        "x": 4.125,
+        "y": 2.897
+      },
+      "prevControl": {
+        "x": 3.758597533085645,
+        "y": 2.3447613211733587
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef Driver Right No Limelight"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 1.302,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0.3,
+    "rotation": 59.99999999999999
+  },
+  "useDefaultConstraints": true
+}

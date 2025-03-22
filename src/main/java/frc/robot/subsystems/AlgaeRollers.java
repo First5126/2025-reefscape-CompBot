@@ -1,27 +1,27 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.AlgaeConstants;
 import frc.robot.constants.CANConstants;
+import frc.robot.subsystems.LedLights.RobotState;
 
 public class AlgaeRollers extends SubsystemBase {
   private TalonFXS m_motorOne;
 
-  private CANrange m_algaeCANrange;
-
   private Trigger m_hasGamePiece;
+  private LedLights m_ledLights = LedLights.getInstance();
 
   private VelocityVoltage m_velocityVoltage = new VelocityVoltage(0).withSlot(0);
 
@@ -38,15 +38,15 @@ public class AlgaeRollers extends SubsystemBase {
     talonFXSConfiguration.Slot0.kA = AlgaeConstants.kA;
     talonFXSConfiguration.Slot0.kV = AlgaeConstants.kV;
 
+    talonFXSConfiguration.HardwareLimitSwitch.ForwardLimitSource =
+        ForwardLimitSourceValue.LimitSwitchPin;
+    talonFXSConfiguration.HardwareLimitSwitch.ForwardLimitEnable = false;
+
     m_motorOne.getConfigurator().apply(talonFXSConfiguration);
 
-    CANrangeConfiguration CANrangeConfiguration = new CANrangeConfiguration();
-    CANrangeConfiguration.ProximityParams.ProximityThreshold = AlgaeConstants.PROXIMITY_THRESHOLD;
-
-    m_algaeCANrange = new CANrange(CANConstants.ALGAE_CAN_RANGE, CANConstants.ELEVATOR_CANIVORE);
-    m_algaeCANrange.getConfigurator().apply(CANrangeConfiguration);
-
-    m_hasGamePiece = new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE);
+    m_hasGamePiece =
+        new Trigger(this::isAlgaeLoaded).debounce(AlgaeConstants.DEBOUNCE, DebounceType.kFalling);
+    m_ledLights.registerTrigger(m_hasGamePiece, RobotState.ALGAE_RECEIVED);
   }
 
   public Trigger hasAlgae() {
@@ -61,7 +61,9 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedIn() {
-    return startFeedIn().until(m_hasGamePiece).andThen(holdAlgae());
+    return m_ledLights
+        .applyState(RobotState.ALGAE_INTAKE)
+        .andThen(startFeedIn().until(m_hasGamePiece).andThen(holdAlgae()));
   }
 
   public Command startFeedOut() {
@@ -83,20 +85,20 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command holdAlgae() {
-    return run(() -> {
+    return runOnce(
+        () -> {
           m_motorOne.setControl(new VoltageOut(AlgaeConstants.HOLDING_SPEED));
-        })
-        .onlyWhile(m_hasGamePiece)
-        .andThen(stop());
+        });
   }
 
   public void periodic() {
     SmartDashboard.putBoolean("Has Algae", isAlgaeLoaded());
+    SmartDashboard.putNumber("Algae Intake Speed", m_motorOne.getVelocity().getValueAsDouble());
     // SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
   }
 
   private boolean isAlgaeLoaded() {
-    return m_algaeCANrange.getIsDetected().getValue();
+    return m_motorOne.getForwardLimit().getValue().value == 0;
   }
 
   public void disable() {
