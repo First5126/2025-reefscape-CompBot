@@ -80,15 +80,15 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command holdAlgae() {
-    return run(() -> {
+    return runOnce(
+        () -> {
           m_motorOne.setControl(new VoltageOut(AlgaeConstants.HOLDING_SPEED));
-        })
-        .onlyWhile(m_hasGamePiece)
-        .andThen(stop());
+        });
   }
 
   public void periodic() {
     SmartDashboard.putBoolean("Has Algae", isAlgaeLoaded());
+    SmartDashboard.putNumber("Algae Intake Speed", m_motorOne.getVelocity().getValueAsDouble());
     // SmartDashboard.putString("Algae Motor Rotation", m_motorOne.getDescription());
   }
 

@@ -5,64 +5,58 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Right to Reef Barge Right"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place Coral L4"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Dealgefy L3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Lower Elevator"
+                  "pathName": "Middle to Reef Barge Center"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Reef Barge Right to Processer"
+                  "name": "Raise ElevatorL4"
                 }
               }
             ]
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place CoralL4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Barge Center to Processer"
           }
         },
         {
@@ -72,46 +66,46 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Processer to Reef Driver Right"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Driver Right to Processer"
+                  "pathName": "Processer to Reef Barge Right"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Lower Elevator"
+                  "name": "Raise ElevatorL4"
                 }
               }
             ]
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Get Nearest Tag"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgefy L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef Barge Right to Processer"
           }
         },
         {
