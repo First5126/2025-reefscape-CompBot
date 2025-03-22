@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Driver's Side Right to Reef Barge Right"
+                  "pathName": "Driver's Side Right to Reef Barge Right(Limelight)"
                 }
               }
             ]
@@ -91,7 +91,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Up to Reef Driver's Right"
+                  "pathName": "Up to Reef Driver's Right(Limelight)"
                 }
               },
               {
@@ -190,7 +190,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Up to Reef Driver's Right"
+                  "pathName": "Up to Reef Driver's Right(Limelight)"
                 }
               },
               {

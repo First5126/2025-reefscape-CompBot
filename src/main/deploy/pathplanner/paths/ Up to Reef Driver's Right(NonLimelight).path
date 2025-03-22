@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.8,
-        "y": 2.7
+        "x": 4.165,
+        "y": 2.87
       },
       "prevControl": {
-        "x": 3.4335975330856447,
-        "y": 2.147761321173359
+        "x": 3.798597533085645,
+        "y": 2.317761321173359
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef Driver Right"
+      "linkedName": "Reef Driver Right No Limelight"
     }
   ],
   "rotationTargets": [],

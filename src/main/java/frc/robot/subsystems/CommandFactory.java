@@ -111,12 +111,11 @@ public class CommandFactory {
     return elevator.andThen(pivotCoralRollers).alongWith(pivotAlgaeRolllers);
   }
 
-  public Command algaePivotAndOutake() {
-    Command pivotAlgaeRollers = m_algaePivot.goToProssesorSetpoint();
-    Command goToPosition =
-        moveToPositionWithDistance(
-            PoseConstants.prossesor::getPose, Meters.of(1), pivotAlgaeRollers);
-    Command finalCommand = goToPosition.andThen(m_algaeRollers.feedOut());
+  public Command algaePivotAndOutake(CoralLevels level) {
+    Command pivotAlgaeRollers = m_algaePivot.goToLevel(level);
+    Command elevator = m_elevator.setCoralPosition(level);
+    Command pivotCoralRollers = m_coralPivot.gotoAngle(level.angle);
+    Command finalCommand = pivotCoralRollers.alongWith(pivotAlgaeRollers).andThen(elevator);
 
     return finalCommand;
   }

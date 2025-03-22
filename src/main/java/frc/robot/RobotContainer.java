@@ -160,6 +160,7 @@ public class RobotContainer {
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
 
+
     autoChooser = AutoBuilder.buildAutoChooser();
 
     configureBindings();
@@ -261,7 +262,9 @@ public class RobotContainer {
 
     m_coDriverController.x().onFalse(m_commandFactory.stopRollers());
 
-    m_coDriverController.back().onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController.back().and(m_coDriverController.b().negate()).onTrue(m_algaePivot.goToUpperSetpoint());
+    m_coDriverController.back().and(m_coDriverController.b()).onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
+
     m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
 
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
@@ -281,7 +284,7 @@ public class RobotContainer {
 
     m_coDriverController
         .povUp()
-        .and(this::yIsNotPressed)
+        .and(m_coDriverController.b().negate())
         .onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L1));
 
     m_coDriverController.povRight().onTrue(m_commandFactory.coralPivotAndOutake(CoralLevels.L2));
@@ -297,7 +300,11 @@ public class RobotContainer {
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b().negate())
-        .onTrue(m_algaeRollers.feedIn()); // standard
+        .whileTrue(m_algaeRollers.feedIn()); // standard
+    m_coDriverController
+        .leftBumper()
+        .and(m_coDriverController.b().negate())
+        .onFalse(m_algaeRollers.stop()); // standard
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b())
@@ -312,6 +319,10 @@ public class RobotContainer {
         .rightBumper()
         .and(m_coDriverController.b().negate())
         .whileTrue(m_commandFactory.processAlgae()); // standard
+    m_coDriverController
+        .rightBumper()
+        .and(m_coDriverController.b().negate())
+        .whileTrue(m_algaeRollers.stop()); // standard
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b())
