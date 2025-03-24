@@ -104,6 +104,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Adjust Horrizontal"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.5
