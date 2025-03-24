@@ -34,7 +34,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LedLights;
+//import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.VisonAdjustment;
 
@@ -74,7 +74,7 @@ public class RobotContainer {
       // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
       AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);*/
 
-  private final LedLights m_ledLights = LedLights.getInstance();
+  //private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
@@ -91,7 +91,6 @@ public class RobotContainer {
           m_climbing,
           m_elevator,
           m_coralRollers,
-          m_ledLights,
           m_coralPivot,
           m_algaePivot);
 

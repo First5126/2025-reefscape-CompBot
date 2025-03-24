@@ -23,7 +23,7 @@ public class CommandFactory {
   private CoralRollers m_coralRollers;
   private AlgaeRollers m_algaeRollers;
   private Climbing m_climbing;
-  private LedLights m_ledLights;
+  //private LedLights m_ledLights;
   private CoralPivot m_coralPivot;
   private AlgaePivot m_algaePivot;
 
@@ -33,7 +33,6 @@ public class CommandFactory {
       Climbing climbing,
       Elevator elevator,
       CoralRollers coralRollers,
-      LedLights ledLights,
       CoralPivot coralPivot,
       AlgaePivot algaePivot) {
     this.m_drivetrain = drivetrain;
@@ -42,7 +41,6 @@ public class CommandFactory {
     this.m_coralRollers = coralRollers;
     this.m_algaeRollers = algaeRollers;
     this.m_climbing = climbing;
-    this.m_ledLights = ledLights;
     this.m_coralPivot = coralPivot;
     this.m_algaePivot = algaePivot;
   }
