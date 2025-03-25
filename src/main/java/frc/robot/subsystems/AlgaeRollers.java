@@ -63,7 +63,7 @@ public class AlgaeRollers extends SubsystemBase {
   public Command feedIn() {
     return m_ledLights
         .applyState(RobotState.ALGAE_INTAKE)
-        .andThen(startFeedIn().until(m_hasGamePiece).andThen(holdAlgae()));
+        .andThen(startFeedIn().repeatedly());
   }
 
   public Command startFeedOut() {
@@ -74,7 +74,7 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedOut() {
-    return startFeedOut().onlyWhile(m_hasGamePiece).andThen(stop());
+    return startFeedOut().withTimeout(0.5).andThen(stop());
   }
 
   public Command stop() {

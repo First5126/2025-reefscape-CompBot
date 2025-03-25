@@ -58,10 +58,6 @@ public class CoralRollers extends SubsystemBase {
 
     CANrangeConfiguration.FovParams = fovConfigs;
 
-    m_LeftCANrange.getConfigurator().apply(CANrangeConfiguration);
-    m_RightCANrange.getConfigurator().apply(CANrangeConfiguration);
-
-
     talonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
     talonConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
     talonConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;

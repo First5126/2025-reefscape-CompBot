@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 public class VisonAdjustment {
 
-  public static final String LIMELIGHT_FRONTR = "limelight-frontr";
+  public static final String LIMELIGHT_FRONT = "limelight-front";
   public static final String LIMELIGHT_ELEVATOR = "limelight-elevate";
 
   public static Supplier<String> selectedSideSupplier;
@@ -44,14 +44,17 @@ public class VisonAdjustment {
 
   public static double getGoalTX() {
 
-    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
-      return getTY() * 7.68525 + -58.9293;
+    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONT)) {
+      return 16.66;
+      //return getTY() * 7.68525 + -57.1;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       if (lookingAt(coralStationIDs)) {
         if (selectedSideSupplier.get().equals("right")) {
-          return getTY() * -0.393498 + -2.7087;
+          return -4.80;
+          //return getTY() * -0.393498 + -2.7087;
         } else if (selectedSideSupplier.get().equals("left")) {
-          return getTY() * -0.323929 + 3.49438;
+          return 1.93;
+          //return getTY() * -0.323929 + 3.49438;
         }
       } else if (lookingAt(processerIDs)) {
         return getTY() * -0.636596 + -8.28357;
@@ -62,7 +65,7 @@ public class VisonAdjustment {
 
   public static double getGoalTY() {
     SmartDashboard.putBoolean("LOOKING AT PROCESSER", lookingAt(processerIDs));
-    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
+    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONT)) {
       return verticalTargetFront;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
 
@@ -80,7 +83,7 @@ public class VisonAdjustment {
   }
 
   public static int getInversion() {
-    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONTR)) {
+    if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONT)) {
       return 1;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       return 1;
@@ -96,10 +99,10 @@ public class VisonAdjustment {
     double nearestTagDistance = Double.POSITIVE_INFINITY;
     String nearestLimelight = "";
 
-    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_FRONTR)) {
+    for (RawFiducial tag : LimelightHelpers.getRawFiducials(LIMELIGHT_FRONT)) {
       if (nearestTagDistance > tag.distToCamera) {
         nearestTagDistance = tag.distToCamera;
-        nearestLimelight = LIMELIGHT_FRONTR;
+        nearestLimelight = LIMELIGHT_FRONT;
       }
     }
 

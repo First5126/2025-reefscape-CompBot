@@ -259,10 +259,10 @@ public class RobotContainer {
         .and(m_coDriverController.b())
         .onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
 
-    m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
+    m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER).alongWith(m_algaeRollers.feedIn()));
 
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
-    m_coDriverController.a().onTrue(m_commandFactory.setAlgaeProcessorLevel());
+    m_coDriverController.a().onTrue(m_commandFactory.setAlgaeProcessorLevel().alongWith(m_algaeRollers.feedIn()));
 
     m_coDriverController
         .leftTrigger()
@@ -298,7 +298,7 @@ public class RobotContainer {
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b().negate())
-        .onFalse(m_algaeRollers.stop()); // standard
+        .onFalse(m_algaeRollers.feedOut()); // standard
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b())
@@ -316,7 +316,7 @@ public class RobotContainer {
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b().negate())
-        .whileTrue(m_algaeRollers.stop()); // standard
+        .whileTrue(m_algaeRollers.feedOut()); // standard
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b())
