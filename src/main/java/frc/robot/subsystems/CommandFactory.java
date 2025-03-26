@@ -339,16 +339,16 @@ public class CommandFactory {
 
     Command elevator = m_elevator.setCoralPosition(level);
     Command algaePivot = m_algaePivot.setAngle(level);
-    Command runWheels = m_algaeRollers.startFeedIn();
     Command coralPivot = m_coralPivot.gotoAngle(level.angle);
     Command algaeFeedOut = m_algaeRollers.startFeedOut();
+    Command stop = m_algaeRollers.stop();
 
     return elevator
         .alongWith(algaePivot)
         .andThen(coralPivot)
-        .alongWith(runWheels)
-        .andThen(Commands.waitSeconds(0.3))
-        .andThen(algaeFeedOut);
+        .andThen(Commands.waitSeconds(0.5))
+        .andThen(algaeFeedOut)
+        .andThen(stop);
   }
 
   public Command waitUntilCoralIn() {

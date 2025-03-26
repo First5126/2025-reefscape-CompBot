@@ -302,7 +302,7 @@ public class RobotContainer {
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b().negate())
-        .onFalse(m_algaeRollers.feedOut()); // standard
+        .onFalse(m_commandFactory.processAlgae().andThen(m_algaeRollers.stop())); // standard
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b())
