@@ -6,8 +6,6 @@ package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 
-import com.ctre.phoenix6.configs.FovParamsConfigs;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
@@ -24,7 +22,6 @@ public class CoralConstants {
   public static final double kG = 0;
   public static final double kV = 0;
   public static final double kA = 0;
-
 
   public static final double FOVX = 0;
   public static final double FOVY = 0;

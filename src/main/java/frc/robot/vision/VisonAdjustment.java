@@ -46,15 +46,15 @@ public class VisonAdjustment {
 
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONT)) {
       return 17.43;
-      //return getTY() * 7.68525 + -57.1;
+      // return getTY() * 7.68525 + -57.1;
     } else if (getNearestLimeLightToTag().equals(LIMELIGHT_ELEVATOR)) {
       if (lookingAt(coralStationIDs)) {
         if (selectedSideSupplier.get().equals("right")) {
           return -4.80;
-          //return getTY() * -0.393498 + -2.7087;
+          // return getTY() * -0.393498 + -2.7087;
         } else if (selectedSideSupplier.get().equals("left")) {
           return 1.93;
-          //return getTY() * -0.323929 + 3.49438;
+          // return getTY() * -0.323929 + 3.49438;
         }
       } else if (lookingAt(processerIDs)) {
         return getTY() * -0.636596 + -8.28357;
