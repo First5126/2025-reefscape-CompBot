@@ -178,13 +178,15 @@ public class CommandFactory {
   }
 
   public Command coralOutakeAndFlipUp(CoralLevels level) {
+    CoralLevels finalLevel = level == CoralLevels.L2 ? CoralLevels.L2 : CoralLevels.L3;
     return m_coralRollers
         .rollOutCommand(level)
         .andThen(Commands.waitSeconds(0.1))
         .andThen(m_coralPivot.goToUpperSetpoint())
         .andThen(
             Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
-        .andThen(m_elevator.setCoralPosition(CoralLevels.L3));
+        .andThen(m_coralPivot.goToLowerSetpoint())
+        .alongWith(m_elevator.setCoralPosition(finalLevel));
   }
 
   public Command zeroRobot() {
@@ -340,7 +342,7 @@ public class CommandFactory {
     Command elevator = m_elevator.setCoralPosition(level);
     Command algaePivot = m_algaePivot.setAngle(level);
     Command coralPivot = m_coralPivot.gotoAngle(level.angle);
-    Command algaeFeedOut = m_algaeRollers.startFeedOut();
+    Command algaeFeedOut = m_algaeRollers.feedOut();
     Command stop = m_algaeRollers.stop();
 
     return elevator
@@ -348,7 +350,8 @@ public class CommandFactory {
         .andThen(coralPivot)
         .andThen(Commands.waitSeconds(0.5))
         .andThen(algaeFeedOut)
-        .andThen(stop);
+        .andThen(stop)
+        .repeatedly();
   }
 
   public Command waitUntilCoralIn() {

@@ -74,6 +74,10 @@ public class CoralPivot extends SubsystemBase {
     m_CoralPivotTalon.setControl(motionMagicVoltage.withPosition(setpoint));
   }
 
+  private boolean isAtSetpoint() {
+    return Math.abs(m_CoralPivotTalon.getClosedLoopError().getValueAsDouble()) < CoralPivotConstants.Threshold;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber(
@@ -85,17 +89,19 @@ public class CoralPivot extends SubsystemBase {
   }
 
   public Command goToLowerSetpoint() {
-    return runOnce(
+    return run(
         () -> {
           rotate(CoralPivotConstants.LOWER_ANGLE);
-        });
+        })
+        .until(this::isAtSetpoint);
   }
 
   public Command goToUpperSetpoint() {
-    return runOnce(
+    return run(
         () -> {
           rotate(CoralPivotConstants.UPPER_ANGLE);
-        });
+        })
+        .until(this::isAtSetpoint);
   }
 
   public Command gotoCoralStationSetpoint() {

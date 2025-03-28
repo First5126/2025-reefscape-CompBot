@@ -72,7 +72,7 @@ public class AlgaeRollers extends SubsystemBase {
   }
 
   public Command feedOut() {
-    return startFeedOut().withTimeout(0.5).andThen(stop());
+    return startFeedOut();
   }
 
   public Command stop() {
