@@ -185,8 +185,7 @@ public class CommandFactory {
         .andThen(m_coralPivot.goToUpperSetpoint())
         .andThen(
             Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
-        .andThen(m_coralPivot.goToLowerSetpoint())
-        .alongWith(m_elevator.setCoralPosition(finalLevel));
+        .andThen(m_elevator.setCoralPosition(finalLevel));
   }
 
   public Command zeroRobot() {

@@ -89,19 +89,19 @@ public class CoralPivot extends SubsystemBase {
   }
 
   public Command goToLowerSetpoint() {
-    return run(
+    return runOnce(
         () -> {
           rotate(CoralPivotConstants.LOWER_ANGLE);
-        })
-        .until(this::isAtSetpoint);
+        });
+        //.until(this::isAtSetpoint);
   }
 
   public Command goToUpperSetpoint() {
-    return run(
+    return runOnce(
         () -> {
           rotate(CoralPivotConstants.UPPER_ANGLE);
-        })
-        .until(this::isAtSetpoint);
+        });
+        //.until(this::isAtSetpoint);
   }
 
   public Command gotoCoralStationSetpoint() {
