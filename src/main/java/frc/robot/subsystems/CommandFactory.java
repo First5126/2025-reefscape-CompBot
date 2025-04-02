@@ -214,7 +214,7 @@ public class CommandFactory {
   public Command dealegfyL2() {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2).withTimeout(8);
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
-    Command IntakeAlgae = m_algaeRollers.feedIn();
+    Command IntakeAlgae = m_algaeRollers.feedInAuto();
 
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
