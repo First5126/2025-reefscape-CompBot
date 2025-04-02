@@ -106,12 +106,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Adjust Vertical"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Adjust Horrizontal"
           }
         },

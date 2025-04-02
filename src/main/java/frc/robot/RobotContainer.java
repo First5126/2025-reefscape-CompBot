@@ -34,7 +34,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.CoralRollers;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LedLights;
+// import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.VisonAdjustment;
 
@@ -74,7 +74,7 @@ public class RobotContainer {
       // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
       AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);*/
 
-  private final LedLights m_ledLights = LedLights.getInstance();
+  // private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
   private final AlgaeRollers m_algaeRollers = new AlgaeRollers();
   private final CoralRollers m_coralRollers = new CoralRollers();
@@ -91,7 +91,6 @@ public class RobotContainer {
           m_climbing,
           m_elevator,
           m_coralRollers,
-          m_ledLights,
           m_coralPivot,
           m_algaePivot);
 
@@ -260,10 +259,14 @@ public class RobotContainer {
         .and(m_coDriverController.b())
         .onTrue(m_commandFactory.algaePivotAndOutake(CoralLevels.BARGE));
 
-    m_coDriverController.start().onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER));
+    m_coDriverController
+        .start()
+        .onTrue(m_algaePivot.goToLevel(CoralLevels.PROCESSER).alongWith(m_algaeRollers.feedIn()));
 
     m_coDriverController.y().onTrue(m_commandFactory.algaePivotAndIntake(CoralLevels.DEALGEFY_L3));
-    m_coDriverController.a().onTrue(m_commandFactory.setAlgaeProcessorLevel());
+    m_coDriverController
+        .a()
+        .onTrue(m_commandFactory.setAlgaeProcessorLevel().alongWith(m_algaeRollers.feedIn()));
 
     m_coDriverController
         .leftTrigger()
@@ -299,7 +302,7 @@ public class RobotContainer {
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b().negate())
-        .onFalse(m_algaeRollers.stop()); // standard
+        .onFalse(m_commandFactory.processAlgae().andThen(m_algaeRollers.stop())); // standard
     m_coDriverController
         .leftBumper()
         .and(m_coDriverController.b())
@@ -317,7 +320,7 @@ public class RobotContainer {
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b().negate())
-        .whileTrue(m_algaeRollers.stop()); // standard
+        .whileTrue(m_algaeRollers.feedOut()); // standard
     m_coDriverController
         .rightBumper()
         .and(m_coDriverController.b())

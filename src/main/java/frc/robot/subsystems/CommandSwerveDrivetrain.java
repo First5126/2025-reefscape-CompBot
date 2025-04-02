@@ -505,8 +505,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putBoolean("Running Limelight", true);
           setControl(
             m_RobotCentricdrive
-                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+               //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withVelocityX(0.01)
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);
   }
