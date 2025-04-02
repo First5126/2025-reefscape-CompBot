@@ -75,7 +75,8 @@ public class CoralPivot extends SubsystemBase {
   }
 
   private boolean isAtSetpoint() {
-    return Math.abs(m_CoralPivotTalon.getClosedLoopError().getValueAsDouble()) < CoralPivotConstants.Threshold;
+    return Math.abs(m_CoralPivotTalon.getClosedLoopError().getValueAsDouble())
+        < CoralPivotConstants.Threshold;
   }
 
   @Override
@@ -93,7 +94,7 @@ public class CoralPivot extends SubsystemBase {
         () -> {
           rotate(CoralPivotConstants.LOWER_ANGLE);
         });
-        //.until(this::isAtSetpoint);
+    // .until(this::isAtSetpoint);
   }
 
   public Command goToUpperSetpoint() {
@@ -101,7 +102,7 @@ public class CoralPivot extends SubsystemBase {
         () -> {
           rotate(CoralPivotConstants.UPPER_ANGLE);
         });
-        //.until(this::isAtSetpoint);
+    // .until(this::isAtSetpoint);
   }
 
   public Command gotoCoralStationSetpoint() {
