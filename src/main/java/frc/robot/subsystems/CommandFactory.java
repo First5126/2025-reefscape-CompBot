@@ -249,9 +249,10 @@ public class CommandFactory {
   private Command placeCoralonL4() {
     System.out.println("Placing Coral L4");
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
+    Command flip = m_coralPivot.goToUpperSetpoint();
 
     SmartDashboard.putData("Place Coral L4", ReleaseCoral);
-    return ReleaseCoral;
+    return ReleaseCoral.andThen(flip).withTimeout(0.1);
   }
 
   private Command placeCoralonL3() {
