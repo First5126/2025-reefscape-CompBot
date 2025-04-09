@@ -23,7 +23,7 @@ public class CommandFactory {
   private CoralRollers m_coralRollers;
   private AlgaeRollers m_algaeRollers;
   private Climbing m_climbing;
-  private LedLights m_ledLights;
+  // private LedLights m_ledLights;
   private CoralPivot m_coralPivot;
   private AlgaePivot m_algaePivot;
 
@@ -33,7 +33,6 @@ public class CommandFactory {
       Climbing climbing,
       Elevator elevator,
       CoralRollers coralRollers,
-      LedLights ledLights,
       CoralPivot coralPivot,
       AlgaePivot algaePivot) {
     this.m_drivetrain = drivetrain;
@@ -42,7 +41,6 @@ public class CommandFactory {
     this.m_coralRollers = coralRollers;
     this.m_algaeRollers = algaeRollers;
     this.m_climbing = climbing;
-    this.m_ledLights = ledLights;
     this.m_coralPivot = coralPivot;
     this.m_algaePivot = algaePivot;
   }
@@ -180,13 +178,14 @@ public class CommandFactory {
   }
 
   public Command coralOutakeAndFlipUp(CoralLevels level) {
+    CoralLevels finalLevel = level == CoralLevels.L2 ? CoralLevels.L2 : CoralLevels.L3;
     return m_coralRollers
         .rollOutCommand(level)
         .andThen(Commands.waitSeconds(0.1))
         .andThen(m_coralPivot.goToUpperSetpoint())
         .andThen(
             Commands.deadline(Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0)))
-        .andThen(m_elevator.setCoralPosition(CoralLevels.L3));
+        .andThen(m_elevator.setCoralPosition(finalLevel));
   }
 
   public Command zeroRobot() {
@@ -215,7 +214,7 @@ public class CommandFactory {
   public Command dealegfyL2() {
     Command elevator = m_elevator.setCoralPosition(CoralLevels.DEALGEFY_L2).withTimeout(8);
     Command pivotAlgaeRollers = m_algaePivot.goToLowerSetpoint();
-    Command IntakeAlgae = m_algaeRollers.feedIn();
+    Command IntakeAlgae = m_algaeRollers.feedInAuto();
 
     return elevator.andThen(pivotAlgaeRollers).alongWith(IntakeAlgae);
   }
@@ -344,12 +343,15 @@ public class CommandFactory {
     Command algaePivot = m_algaePivot.setAngle(level);
     Command coralPivot = m_coralPivot.gotoAngle(level.angle);
     Command algaeFeedOut = m_algaeRollers.feedOut();
+    Command stop = m_algaeRollers.stop();
 
     return elevator
         .alongWith(algaePivot)
         .andThen(coralPivot)
-        .andThen(Commands.waitSeconds(0.3))
-        .andThen(algaeFeedOut);
+        .andThen(Commands.waitSeconds(0.5))
+        .andThen(algaeFeedOut)
+        .andThen(stop)
+        .repeatedly();
   }
 
   public Command waitUntilCoralIn() {

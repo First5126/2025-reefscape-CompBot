@@ -135,18 +135,4 @@ public class LedLights extends SubsystemBase {
   private void setAnimation(Animation animation) {
     m_candle.animate(animation);
   }
-
-  public void periodic() {
-    boolean foundstate = false;
-    for (Trigger trigger : m_triggers.keySet()) {
-      if (trigger.getAsBoolean()) {
-        setState(m_triggers.get(trigger));
-        foundstate = true;
-        break;
-      }
-    }
-    if (foundstate == false) {
-      setState(RobotState.EMPTY);
-    }
-  }
 }

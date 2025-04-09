@@ -5,9 +5,15 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 
 public final class CoralPivotConstants {
-  public static final double MotionMagicAcceleration = 32;
+  // original value
+  // public static final double MotionMagicAcceleration = 32;
+  // reduce by 20% to attemp to see if bettern on movements
+  public static final double MotionMagicAcceleration = 25;
   public static final double MotionMagicCruiseVelocity = 4;
-  public static final double MotionMagicJerk = 320;
+  // original value:
+  // public static final double MotionMagicJerk = 320;
+  // reduce by 20% to attempt to see if better on movements
+  public static final double MotionMagicJerk = 256;
 
   public static final double kP = 50;
   public static final double kI = 0;
@@ -15,6 +21,8 @@ public final class CoralPivotConstants {
   public static final double kG = 0;
   public static final double kV = 0;
   public static final double kA = 0;
+
+  public static final double Threshold = 0.01;
 
   public static final double supplyCurrentLimit = 70.0;
   public static final double lowerSupplyCurrentLimit = 10;

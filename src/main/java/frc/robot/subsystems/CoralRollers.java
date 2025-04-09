@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.FovParamsConfigs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -47,6 +48,15 @@ public class CoralRollers extends SubsystemBase {
     talonConfiguration.Slot0.kG = CoralConstants.kG;
     talonConfiguration.Slot0.kA = CoralConstants.kA;
     talonConfiguration.Slot0.kV = CoralConstants.kV;
+
+    FovParamsConfigs fovConfigs = new FovParamsConfigs();
+
+    fovConfigs.FOVCenterX = CoralConstants.FOVX;
+    fovConfigs.FOVCenterY = CoralConstants.FOVY;
+    fovConfigs.FOVRangeX = CoralConstants.FOVRANGEX;
+    fovConfigs.FOVRangeY = CoralConstants.FOVRANGEY;
+
+    CANrangeConfiguration.FovParams = fovConfigs;
 
     talonConfiguration.Commutation.MotorArrangement = MotorArrangementValue.NEO550_JST;
     talonConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
