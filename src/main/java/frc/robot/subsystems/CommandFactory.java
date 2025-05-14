@@ -99,11 +99,7 @@ public class CommandFactory {
         .alongWith(intakeCoral)
         .alongWith(pivotAlgaeRollers)
         .until(m_coralRollers.hasCoral())
-        /*.andThen(
-        Commands.deadline(
-            Commands.waitSeconds(.3), m_drivetrain.cardinalMovement(-.25, 0).asProxy()))*/
         .andThen(finishIntake);
-    // .andThen(m_elevator.setCoralPosition(CoralLevels.TRAVEL));
   }
 
   public Command coralPivotAndOutake(CoralLevels level) {
@@ -260,7 +256,6 @@ public class CommandFactory {
   private Command placeCoralonL3() {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L3);
-    // Command algaePivot = m_algaePivot.setAngle(CoralLevels.L3);
 
     return pivotCoralRollersCommand.withTimeout(0.1).andThen(ReleaseCoral);
   }
@@ -268,7 +263,6 @@ public class CommandFactory {
   private Command placeCoralonL2() {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L2);
-    // Command algaePivot = m_algaePivot.setAngle(CoralLevels.L2);
 
     SmartDashboard.putData("Place Coral L2", ReleaseCoral);
     return pivotCoralRollersCommand.withTimeout(0.1).andThen(ReleaseCoral);
