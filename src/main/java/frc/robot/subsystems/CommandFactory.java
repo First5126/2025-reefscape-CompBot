@@ -180,11 +180,15 @@ public class CommandFactory {
   }
 
   public Command coralOutakeAndFlipUp(CoralLevels level) {
-    CoralLevels finalLevel = level == CoralLevels.L2 ? CoralLevels.L2 : CoralLevels.L3;
+    ConditionalCommand flipUpCommand =
+        new ConditionalCommand(
+            Commands.waitSeconds(0.1).andThen(m_coralPivot.goToUpperSetpoint()),
+            Commands.none(),
+            m_elevator::getLevel4);
+
     return m_coralRollers
         .rollOutCommand(level)
-        .andThen(Commands.waitSeconds(0.1))
-        .andThen(m_coralPivot.goToUpperSetpoint())
+        .andThen(flipUpCommand)
         .withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
 
@@ -300,7 +304,6 @@ public class CommandFactory {
   public Command moveElevatorUpToL4() {
     Command pivotCoralRollersCommand = m_coralPivot.goToLowerSetpoint();
     Command elevator = m_elevator.setCoralPosition(CoralLevels.L4);
-    // Command algaePivot = m_algaePivot.setAngle(CoralLevels.L4);
 
     return elevator.alongWith(pivotCoralRollersCommand);
   }
