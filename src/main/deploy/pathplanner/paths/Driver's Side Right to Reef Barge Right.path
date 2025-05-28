@@ -11,7 +11,7 @@
         "x": 6.812715403980818,
         "y": 2.4640922995017065
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -24,7 +24,7 @@
         "y": 2.4916355756685893
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Reef Barge Right"
     }
   ],

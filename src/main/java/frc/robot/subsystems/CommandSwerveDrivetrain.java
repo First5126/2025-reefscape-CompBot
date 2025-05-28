@@ -333,10 +333,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putNumber("limiter", speedMultiplier);
           double fieldCentricthrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                  fieldCentricthrottleSupplier.get(), 0.06, 1));
+                  fieldCentricthrottleSupplier.get(), 0.08, 1));
           double robotCentricThrottle =
               (ControllerConstants.modifyAxisWithCustomDeadband(
-                      robotCentricthrottleSupplier.get(), 0.06, 2)
+                      robotCentricthrottleSupplier.get(), 0.08, 2)
                   / 2);
           ControllerConstants.modifyAxis(xSupplier.get());
           ControllerConstants.modifyAxis(ySupplier.get());
@@ -505,8 +505,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           SmartDashboard.putBoolean("Running Limelight", true);
           setControl(
             m_RobotCentricdrive
-                .withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
+               //.withVelocityX(inversionSupplier.get()*m_xController.calculate(verticalError.get(), verticalTarget.get()))
                 .withVelocityY(inversionSupplier.get()*m_yController.calculate(horizontalError.get(), horizontalTarget.get()))
+                .withVelocityX(0.01)
                 .withRotationalRate(0));
         }).until(this::visonPIDsAtSetpoint);
   }

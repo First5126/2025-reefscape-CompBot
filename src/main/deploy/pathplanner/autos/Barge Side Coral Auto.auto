@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Driver's Side Right to Reef Barge Right(Limelight)"
+                  "pathName": "Driver's Side Left to Reef Barge Left"
                 }
               }
             ]
@@ -36,19 +36,13 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Set Pose Reef Barge Right"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Barge Right to Right Coral Station"
+                  "pathName": "Reef Barge Left to Left Coral Station"
                 }
               },
               {
@@ -61,15 +55,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Set Pose Coral Station Right"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 0.005
           }
         },
         {
@@ -81,7 +69,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Coral Station to Reef Driver Right"
+            "pathName": "Left Coral Station to Reef Driver Left"
           }
         },
         {
@@ -91,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Up to Reef Driver's Right"
+                  "pathName": "Up to Reef Driver's Left No Limelight"
                 }
               },
               {
@@ -104,15 +92,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Adjust Horrizontal"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.1
           }
         },
         {
@@ -128,7 +110,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Reef Driver Right to Right Coral Station"
+                  "pathName": "Reef Driver Left to Left Coral Station No Limelight"
                 }
               },
               {
@@ -138,7 +120,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.1
+                        "waitTime": 0.005
                       }
                     },
                     {
@@ -154,15 +136,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Set Pose Coral Station Right"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 0.05
           }
         },
         {
@@ -174,7 +150,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Coral Station to Reef Driver Right"
+            "pathName": "Left Coral Station to Reef Driver Left"
           }
         },
         {
@@ -184,7 +160,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Up to Reef Driver's Right"
+                  "pathName": "Up to Reef Driver's Left No Limelight"
                 }
               },
               {
@@ -197,15 +173,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Get Nearest Tag"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 0.05
           }
         },
         {

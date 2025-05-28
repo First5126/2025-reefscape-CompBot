@@ -4,28 +4,46 @@
     {
       "anchor": {
         "x": 7.1,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Copy of Middle-GoToReef.path
         "y": 4.168
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.977814712674886,
         "y": 4.182142475357989
+========
+        "y": 3.997
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.025041412820189,
+        "y": 3.997
+>>>>>>>> 8aa92eda2381757299f55756ea1c61f21f9f5342:src/main/deploy/pathplanner/paths/Middle to Reef Barge Center.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Copy of Middle-GoToReef.path
         "x": 6.371,
         "y": 4.168
       },
       "prevControl": {
         "x": 6.620628438275674,
         "y": 4.154374920035167
+========
+        "x": 5.860017123287671,
+        "y": 4.04
+      },
+      "prevControl": {
+        "x": 6.110017123287671,
+        "y": 4.04
+>>>>>>>> 8aa92eda2381757299f55756ea1c61f21f9f5342:src/main/deploy/pathplanner/paths/Middle to Reef Barge Center.path
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "re"
     }
   ],
   "rotationTargets": [],
