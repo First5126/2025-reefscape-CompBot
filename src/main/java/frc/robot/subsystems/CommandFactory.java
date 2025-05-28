@@ -181,10 +181,10 @@ public class CommandFactory {
 
   public Command coralOutakeAndFlipUp(CoralLevels level) {
     ConditionalCommand flipUpCommand =
-        new ConditionalCommand(
-            Commands.waitSeconds(0.1).andThen(m_coralPivot.goToUpperSetpoint()),
-            Commands.none(),
-            m_elevator::getLevel4);
+    new ConditionalCommand(
+      Commands.waitSeconds(0.1).andThen(m_coralPivot.goToUpperSetpoint()),
+      Commands.none(),
+      () -> m_elevator.getCoralLevel() != null);
 
     return m_coralRollers
         .rollOutCommand(level)
