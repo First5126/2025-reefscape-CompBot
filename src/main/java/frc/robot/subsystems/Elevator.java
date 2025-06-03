@@ -155,6 +155,10 @@ public class Elevator extends SubsystemBase {
     return moveMotor(ElevatorConstants.TRIM_UP_SPEED);
   }
 
+  /*public Boolean isAtSetpoint() {
+    return Math.abs(m_leftMotor.getClosedLoopError().getValueAsDouble()) <
+  }
+
   /**
    * Slowly move the elevator in the down direction
    *
