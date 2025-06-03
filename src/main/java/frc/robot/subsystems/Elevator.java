@@ -126,7 +126,7 @@ public class Elevator extends SubsystemBase {
     return m_currentCoralLevel == CoralLevels.L3;
   }
 
-  private Boolean getLevel4() {
+  public Boolean getLevel4() {
     return m_currentCoralLevel == CoralLevels.L4;
   }
 
