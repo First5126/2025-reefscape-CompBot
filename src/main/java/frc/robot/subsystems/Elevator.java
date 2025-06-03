@@ -60,8 +60,8 @@ public class Elevator extends SubsystemBase {
   private CoralLevels m_currentCoralLevel = m_corralLevels[0];
 
   public Elevator() {
-    m_leftMotor = new TalonFX(CANConstants.LEFT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
-    m_rightMotor = new TalonFX(CANConstants.RIGHT_ELAVOTAR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
+    m_leftMotor = new TalonFX(CANConstants.LEFT_ELEVATOR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
+    m_rightMotor = new TalonFX(CANConstants.RIGHT_ELEVATOR_MOTOR, CANConstants.ELEVATOR_CANIVORE);
 
     m_CANdi = new CANdi(CANConstants.ELEVATOR_CANDI, CANConstants.ELEVATOR_CANIVORE);
     CANdiConfiguration candiConfig = new CANdiConfiguration();

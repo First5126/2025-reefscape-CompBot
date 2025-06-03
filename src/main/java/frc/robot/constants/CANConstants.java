@@ -13,8 +13,8 @@ public class CANConstants {
 
   public static final int ALGAE_MOTOR = 3;
 
-  public static final int RIGHT_ELAVOTAR_MOTOR = 15;
-  public static final int LEFT_ELAVOTAR_MOTOR = 12;
+  public static final int RIGHT_ELEVATOR_MOTOR = 15;
+  public static final int LEFT_ELEVATOR_MOTOR = 12;
 
   public static final int CORAL_PIVOT = 1;
   public static final int CORAL_MOTOR = 2;
