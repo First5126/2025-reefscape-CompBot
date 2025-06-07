@@ -43,7 +43,6 @@ public class VisonAdjustment {
   }
 
   public static double getGoalTX() {
-
     if (getNearestLimeLightToTag().equals(LIMELIGHT_FRONT)) {
       return 17.43; // Exact TX Value for the limelight
       // return getTY() * 7.68525 + -57.1;

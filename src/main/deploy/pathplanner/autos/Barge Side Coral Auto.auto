@@ -13,14 +13,14 @@
                 "data": {
                   "pathName": "Driver's Side Left to Reef Barge Left"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise ElevatorL4"
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Raise ElevatorL4"
           }
         },
         {

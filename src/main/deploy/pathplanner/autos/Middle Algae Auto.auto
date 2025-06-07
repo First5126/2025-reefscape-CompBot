@@ -34,6 +34,18 @@
           "data": {
             "name": "Place CoralL4"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Back"
+          }
         }
       ]
     }

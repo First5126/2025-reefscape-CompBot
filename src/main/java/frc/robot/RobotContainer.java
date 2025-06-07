@@ -37,6 +37,8 @@ import frc.robot.subsystems.Elevator;
 // import frc.robot.subsystems.LedLights;
 import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.VisonAdjustment;
+import frc.robot.vision.AprilTagLocalization;
+import frc.robot.constants.AprilTagLocalizationConstants;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(0);
@@ -65,14 +67,14 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  /*private AprilTagLocalization m_aprilTagLocalization =
+  private AprilTagLocalization m_aprilTagLocalization =
   new AprilTagLocalization(
       m_drivetrain::getPose2d,
       m_drivetrain::resetPose,
       m_drivetrain::addVisionMeasurement,
-      // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
-      // AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
-      AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);*/
+      AprilTagLocalizationConstants.LIMELIGHT_DETAILS_BACKL,
+      AprilTagLocalizationConstants.LIMELIGHT_DETAILS_ELEVATE,
+      AprilTagLocalizationConstants.LIMELIGHT_DETAILS_FRONTR);
 
   // private final LedLights m_ledLights = LedLights.getInstance();
   private final Climbing m_climbing = new Climbing();
@@ -148,6 +150,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Raise Elevator to position Coral Station",
         m_commandFactory.elevatorInTakeCoralStation().asProxy());
+    NamedCommands.registerCommand("Move Back", m_commandFactory.moveBack().asProxy());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -159,7 +162,7 @@ public class RobotContainer {
     new Trigger(DriverStation::isDisabled)
         .onTrue(
             Commands.runOnce(
-                    () -> {
+                     () -> {
                       System.out.println("DISABLING ROBOT");
                       m_elevator.disable();
                       m_coralPivot.disable();
@@ -207,10 +210,11 @@ public class RobotContainer {
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    // m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
+    //m_driverController.x().whileTrue(m_aprilTagRecognition.getAprilTagCommand());
 
-    // m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
-    // m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
+    m_driverController.a().onTrue(m_aprilTagLocalization.setTrust(true));
+    m_driverController.a().onFalse(m_aprilTagLocalization.setTrust(false));
+
 
     m_driverController
         .a()
