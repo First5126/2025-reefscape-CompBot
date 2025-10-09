@@ -27,7 +27,7 @@ public class DrivetrainConstants {
   public static final double rotationsPerSecond = maxSpeedMetersPerSecond / rotationDiameter;
   public static final double maxAngularVelocityRadiansPerSecond = 2 * Math.PI * rotationsPerSecond;
   public static Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, 0.9);
-  public static final double currentLimit = 60;
+  public static final double currentLimit = 70;
   public static final double autoMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond * 0.8;
   public static final double estimatedKp =
       12 / (maxSpeedMetersPerSecond / (TunerConstants.kWheelRadius.in(Meters) * 2 * Math.PI));
