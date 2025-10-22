@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.5481528693512185,
-        "y": 5.705317718463315
+        "x": 4.5484570766442785,
+        "y": 5.6964809804601355
       },
       "isLocked": false,
       "linkedName": "Reef Barge Left"
@@ -20,8 +20,8 @@
         "y": 6.7238
       },
       "prevControl": {
-        "x": 3.0208071872296474,
-        "y": 5.818083348961855
+        "x": 3.159332266965566,
+        "y": 6.061678632406116
       },
       "nextControl": null,
       "isLocked": false,
