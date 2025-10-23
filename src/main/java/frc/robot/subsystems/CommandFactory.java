@@ -250,8 +250,14 @@ public class CommandFactory {
   }
 
   private Command placeCoralonL4() {
+    ConditionalCommand flipUpCommand =
+        new ConditionalCommand(
+            Commands.waitSeconds(5).andThen(m_coralPivot.goToUpperSetpoint()),
+            Commands.none(),
+            m_elevator::getLevel4);
+
     System.out.println("Placing Coral L4");
-    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4);
+    Command ReleaseCoral = m_coralRollers.rollOutCommand(CoralLevels.L4).andThen(flipUpCommand);
 
     SmartDashboard.putData("Place Coral L4", ReleaseCoral);
     return ReleaseCoral;
