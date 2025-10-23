@@ -92,7 +92,7 @@ public class CommandFactory {
             m_algaePivot.goToLevel(level),
             m_coralRollers.hasCoral());
     Command intakeCoral = m_coralRollers.rollInCommand(level);
-    Command finishIntake = m_coralPivot.goToUpperSetpoint().alongWith(m_coralRollers.stopCommand());
+    Command finishIntake = (m_coralRollers.stopCommand());
 
     return elevator
         .andThen(pivotCoralRollers)
