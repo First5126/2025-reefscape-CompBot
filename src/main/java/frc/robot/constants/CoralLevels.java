@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public enum CoralLevels {
   L1(0.0, 1, -8.0, 5, 0.21, 1.0),
-  L2(1.31, 1, -8.0, 3.5, 0.21, 1.0), // changed from 1.33
+  L2(1.33, 1, -8.0, 3.5, 0.21, 1.0), // changed back to 1.33 from 1.31
   L3(2.75, 1, -8.0, 3.5, 0.21, 1.0),
   L4(4.94, 1, -8.0, 3.5, 0.21, 1.0), // -0.06
   CORAL_STATION(0.78, 1, 7.0, 70.5, 0.21, 1.0),
