@@ -75,7 +75,7 @@ public class AlgaeRollers extends SubsystemBase {
         });
   }
 
-  public Command feedOut() { //Algae Intake will not shoot Out
+  public Command feedOut() { // Algae Intake will not shoot Out
     return startFeedOut();
   }
 
