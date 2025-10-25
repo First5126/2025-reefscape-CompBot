@@ -354,7 +354,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
           boolean isBraking = false;
 
-          if (!(x == 0 && y == 0)) {
+          if (!(x == 0 && y == 0) && !(fieldCentricthrottleSupplier.get().intValue() == 0 && robotCentricthrottleSupplier.get().intValue() == 0)/* no gas */) {
             double angle = Math.atan2(x, y) + Math.PI / 2;
             x = Math.cos(angle) * activeThrottle;
             y = Math.sin(angle) * activeThrottle;

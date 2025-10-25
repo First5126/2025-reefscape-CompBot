@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.CoralLevels;
 import frc.robot.constants.PoseConstants;
+import frc.robot.controller.Driver;
+import frc.robot.controller.Operator;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.AlgaeRollers;
@@ -39,7 +41,8 @@ import frc.robot.subsystems.RecordInputs;
 import frc.robot.vision.VisonAdjustment;
 
 public class RobotContainer {
-  private final CommandXboxController m_driverController = new CommandXboxController(0);
+  private final CommandXboxController m_driverController = Driver.CONTROLLER;
+  private final CommandXboxController m_coDriverController = Operator.CONTROLLER;
 
   private final CommandSwerveDrivetrain m_drivetrain = TunerConstants.DriveTrain;
   private double MaxSpeed =
@@ -61,7 +64,6 @@ public class RobotContainer {
               DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final CommandXboxController m_coDriverController = new CommandXboxController(1);
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
