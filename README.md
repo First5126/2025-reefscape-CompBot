@@ -21,3 +21,5 @@ Welcome to the Parkhill South CompBot robot code for the [2025 ReefScape][1].
 * Make motors have PIDs configured
 * When make sure motors have Communication.MotorArrangnet set config
 * When applying a control request to a motor make sure its configured with a PID slot
+
+Ian was here
